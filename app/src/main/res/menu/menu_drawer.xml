@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_clients"
+            android:title="@string/clients"/>
+        <item
+            android:id="@+id/nav_travel"
+            android:title="@string/travel"/>
+        <item
+            android:id="@+id/nav_expense"
+            android:title="@string/expense"/>
+
+    </group>
+
+    <item android:title="@string/reports">
+        <menu>
+            <group android:checkableBehavior="single">
+            <item
+                android:id="@+id/nav_report_client"
+                android:title="@string/client_report"/>
+            <item
+                android:id="@+id/nav_report_expense"
+                android:title="@string/expense_report"/>
+            <item
+                android:id="@+id/nav_report_upcoming"
+                android:title="@string/upcoming_travels"/>
+            </group>
+        </menu>
+    </item>
+
+</menu>
