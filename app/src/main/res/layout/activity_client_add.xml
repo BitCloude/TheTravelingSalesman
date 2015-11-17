@@ -87,19 +87,21 @@
             android:hint="@string/group" />
 
         <EditText
+            android:editable="false"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="date"
             android:ems="10"
-            android:id="@+id/editText9"
+            android:id="@+id/client_dob"
             android:layout_gravity="center_horizontal"
             android:hint="@string/dob" />
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="New Button"
+            android:text="select date"
             android:id="@+id/button"
+            android:onClick="showDatePicker"
             android:layout_gravity="right" />
 
 

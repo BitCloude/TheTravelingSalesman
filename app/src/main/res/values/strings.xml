@@ -61,11 +61,16 @@
 
     <!-- Add Task  -->
     <string name="hint_task_new">New task, note</string>
-    <string-array name="tab_titles">
+    <string-array name="tab_titles_client">
         <item>Call</item>
         <item>Meeting</item>
         <item>Text</item>
         <item>Mail</item>
     </string-array>
-
+    <string-array name="tab_titles_task">
+        <item>Time</item>
+        <item>Invite</item>
+        <item>Location</item>
+        <item>Notes</item>
+</string-array>
 </resources>

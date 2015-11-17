@@ -16,10 +16,13 @@ public class TaskAddActivity extends AppCompatActivity
         TaskAddLocation.OnFragmentInteractionListener,
         TaskAddNotes.OnFragmentInteractionListener {
 
-    FragmentPagerAdapter mFragmentPagerAdapter;
-    ViewPager mViewPager;
-
-
+    private FragmentPagerAdapter mFragmentPagerAdapter;
+    private ViewPager mViewPager;
+    private String[] tabTitles;
+    private final int[] tabIcons = {R.drawable.ic_account_circle_black_24dp,
+            R.drawable.ic_account_circle_black_24dp,
+            R.drawable.ic_account_circle_black_24dp,
+            R.drawable.ic_account_circle_black_24dp};
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,7 +32,7 @@ public class TaskAddActivity extends AppCompatActivity
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mViewPager = (ViewPager) findViewById(R.id.viewpager);
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabLayout);
-
+        tabTitles = getResources().getStringArray(R.array.tab_titles_task);
         mFragmentPagerAdapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
             @Override
             public Fragment getItem(int position) {
@@ -52,23 +55,22 @@ public class TaskAddActivity extends AppCompatActivity
 
             @Override
             public int getCount() {
-                return 4;
+                return tabTitles.length;
             }
         };
 
         mViewPager.setAdapter(mFragmentPagerAdapter);
 
-        String[] tabTitles = getResources().getStringArray(R.array.tab_titles);
+
         // Add tabs, specifying the tab's text and TabListener
         for (int i = 0; i < 4; i++) {
-            tabLayout.addTab(
-                    tabLayout.newTab()
-                            .setText(tabTitles[i]));
-
+            TabLayout.Tab tab = tabLayout.newTab();
+            tab.setText(tabTitles[i]);
+            tab.setIcon(tabIcons[i]);
+            tabLayout.addTab(tab);
         }
 
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
-        tabLayout.getTabAt(0).setIcon(R.drawable.ic_account_circle_black_24dp);
 
 
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
