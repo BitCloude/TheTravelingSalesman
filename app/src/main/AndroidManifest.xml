@@ -28,11 +28,7 @@
             android:label="@string/title_activity_expense_add"
             android:theme="@style/AppTheme.NoActionBar" >
         </activity>
-        <activity
-            android:name=".ExpenseDetails"
-            android:label="@string/title_activity_expense_details"
-            android:theme="@style/AppTheme.NoActionBar" >
-        </activity>
+
         <activity
             android:name=".Travel"
             android:label="@string/title_activity_travel"
@@ -52,6 +48,15 @@
             android:name=".TaskAddActivity"
             android:label="@string/title_activity_task_add"
             android:theme="@style/AppTheme.NoActionBar" >
+        </activity>
+        <activity android:name=".ReportsActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+        <activity android:name=".ReportsExpenseActivity"
+            android:parentActivityName=".ReportsActivity">
+        </activity>
+        <activity android:name=".ReportsTasksActivity"
+            android:parentActivityName=".ReportsActivity">
         </activity>
     </application>
 
