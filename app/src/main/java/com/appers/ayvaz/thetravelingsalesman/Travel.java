@@ -26,6 +26,8 @@ public class Travel extends AppCompatActivity {
     Spinner spinnerClients;
     LinearLayout linearLayout;
     RelativeLayout childLayout;
+    String[] from= {"October 2015", "November 2015", "December 2015","January 2016", "February 2016", "March 2016","April 2016", "May 2016", "June 2016", "July 2016", "August 2016", "September 2016"};
+
     String data = "Trip From Delhi to Hyderhabad";
     String cost = "$125,000";
     //Trip From Delhi to Hyderhabad
@@ -63,44 +65,41 @@ Button travelbut;
 
         linearLayout = (LinearLayout) findViewById(R.id.travelLinearLayout);
 
-        childLayout = new RelativeLayout(this);
-        RelativeLayout.LayoutParams layoutParamsCost = new RelativeLayout.LayoutParams(
-                RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        layoutParamsCost.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        for(int i = 0; i< 12; i++) {
+            childLayout = new RelativeLayout(this);
+            RelativeLayout.LayoutParams layoutParamsCost = new RelativeLayout.LayoutParams(
+                    RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+            layoutParamsCost.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
 
-        RelativeLayout.LayoutParams layoutParamsData = new RelativeLayout.LayoutParams(
-                RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        layoutParamsData.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-        //childLayout.setOrientation(LinearLayout.HORIZONTAL);
-        TextView textdata = new TextView(this);
-        textdata.setLines(2);
+            RelativeLayout.LayoutParams layoutParamsData = new RelativeLayout.LayoutParams(
+                    RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+            layoutParamsData.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+            //childLayout.setOrientation(LinearLayout.HORIZONTAL);
+            TextView textdata = new TextView(this);
+            textdata.setLines(2);
 
-        textdata.setText(data);
-        TextView textcost = new TextView(this);
-        textcost.setLines(1);
-        textcost.setText(cost);
+            textdata.setText(data);
+            TextView textcost = new TextView(this);
+            textcost.setLines(1);
+            textcost.setText(cost);
 
-        childLayout.setBackgroundColor(Color.LTGRAY);
-        childLayout.addView(textdata,layoutParamsData);
-        childLayout.addView(textcost,layoutParamsCost);
-
-
-
-        TextView textView = new TextView(this);
-        textView.setText("October 2015");
-        TextView textView2 = new TextView(this);
-        textView2.setText("November 2015");
-        //   ArrayAdapter<String> adapter4 = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,expenses);
-        // listViewExpenses.setAdapter(adapter4);
-
-        //childlayout.addView(textView);
-        linearLayout.addView(textView);
-        linearLayout.addView(childLayout);
-        linearLayout.addView(textView2);
-
-        registerForContextMenu(childLayout);
+            childLayout.setBackgroundColor(Color.LTGRAY);
+            childLayout.addView(textdata, layoutParamsData);
+            childLayout.addView(textcost, layoutParamsCost);
 
 
+            TextView textView = new TextView(this);
+            textView.setText(from[i]);
+            //   ArrayAdapter<String> adapter4 = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,expenses);
+            // listViewExpenses.setAdapter(adapter4);
+
+            //childlayout.addView(textView);
+            linearLayout.addView(textView);
+            linearLayout.addView(childLayout);
+
+            registerForContextMenu(childLayout);
+
+        }
 
 
     }

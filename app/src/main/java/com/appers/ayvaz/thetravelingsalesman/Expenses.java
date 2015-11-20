@@ -32,7 +32,7 @@ Spinner spinnerClient, spinnerAmount, spinnerFrom;
     ListView listViewExpenses;
     String[] client = {"Client 0", "Client 1", "Client 2","Client 3", "Client 4", "Client 5","Client 6", "Client 7", "Client 8","Client 9", "Client 10", "Client 11","Client 12", "Client 13", "Client 14","Client 15", "Client 16", "Client 17"};
     Integer[] amount = {1,5,10,20,50,100,500,1000};
-    String[] from= {"Monday", "Tuesday", "Wednesday","Thursday", "Friday", "Saturday","Sunday"};
+    String[] from= {"October 2015", "November 2015", "December 2015","January 2016", "February 2016", "March 2016","April 2016", "May 2016", "June 2016", "July 2016", "August 2016", "September 2016"};
     String[] expenses= {"Client 1:10", "Client 2: 5", "Client 3: 20","Client 4: 100", "Client 5: 400", "Client 6: 1", "Client 7: 50", "Client 8: 24", "Client 9: 70", "Client 10: 13"};
     LinearLayout linearLayout;
     RelativeLayout childLayout;
@@ -50,42 +50,43 @@ Spinner spinnerClient, spinnerAmount, spinnerFrom;
         expensesBut = (Button) findViewById(R.id.expensesExpensesButton);
         linearLayout = (LinearLayout) findViewById(R.id.expensesLinearLayout);
 
-        childLayout = new RelativeLayout(this);
-        RelativeLayout.LayoutParams layoutParamsCost = new RelativeLayout.LayoutParams(
-                RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        layoutParamsCost.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+       for(int i = 0; i< 12; i++) {
+           childLayout = new RelativeLayout(this);
+           RelativeLayout.LayoutParams layoutParamsCost = new RelativeLayout.LayoutParams(
+                   RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+           layoutParamsCost.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
 
-        RelativeLayout.LayoutParams layoutParamsData = new RelativeLayout.LayoutParams(
-                RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        layoutParamsData.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-        //childLayout.setOrientation(LinearLayout.HORIZONTAL);
-        TextView textdata = new TextView(this);
-        textdata.setLines(2);
+           RelativeLayout.LayoutParams layoutParamsData = new RelativeLayout.LayoutParams(
+                   RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+           layoutParamsData.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+           //childLayout.setOrientation(LinearLayout.HORIZONTAL);
+           TextView textdata = new TextView(this);
+           textdata.setLines(2);
 
-        textdata.setText(data);
-        TextView textcost = new TextView(this);
-        textcost.setLines(1);
-        textcost.setText(cost);
+           textdata.setText(data);
+           TextView textcost = new TextView(this);
+           textcost.setLines(1);
+           textcost.setText(cost);
 
-        childLayout.setBackgroundColor(Color.LTGRAY);
-        childLayout.addView(textdata,layoutParamsData);
-        childLayout.addView(textcost,layoutParamsCost);
+           childLayout.setBackgroundColor(Color.LTGRAY);
+           childLayout.addView(textdata, layoutParamsData);
+           childLayout.addView(textcost, layoutParamsCost);
 
 
+           TextView textView = new TextView(this);
+           textView.setText(from[i]);
+           //TextView textView2 = new TextView(this);
+           //textView2.setText("November 2015");
+           //   ArrayAdapter<String> adapter4 = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,expenses);
+           // listViewExpenses.setAdapter(adapter4);
 
-        TextView textView = new TextView(this);
-        textView.setText("October 2015");
-        TextView textView2 = new TextView(this);
-        textView2.setText("November 2015");
-     //   ArrayAdapter<String> adapter4 = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,expenses);
-       // listViewExpenses.setAdapter(adapter4);
+           //childlayout.addView(textView);
+           linearLayout.addView(textView);
+           linearLayout.addView(childLayout);
+           //linearLayout.addView(textView2);
 
-        //childlayout.addView(textView);
-        linearLayout.addView(textView);
-        linearLayout.addView(childLayout);
-        linearLayout.addView(textView2);
-
-        registerForContextMenu(childLayout);
+           registerForContextMenu(childLayout);
+       }
 
        // linearLayout.addView(listViewExpenses);
        /* listViewExpenses.setOnItemClickListener(new AdapterView.OnItemClickListener() {
