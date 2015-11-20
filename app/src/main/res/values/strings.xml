@@ -20,11 +20,19 @@
         <item>Client3</item>
         <item>Client0</item>
     </string-array>
-
+<string name="notifications">Notifications</string>
+    <string name="reminders">Reminders</string>
+    <string name="message">Message</string>
+    <string name="trip">Trip</string>
+    <string name="export_data">Export Data</string>
+    <string name="conn_linkedin">Connect to LinkedIn</string>
+    <string name="help">Help</string>
+    <string name="exit">Exit</string>
     <string name="clients">Clients</string>
     <string name="travel">Travel</string>
-    <string name="expense">Expense</string>
+    <string name="expense">Expenses</string>
     <string name="reports">Reports</string>
+    <string name="tasks">Tasks</string>
     <!-- Reports submenu -->
     <string name="client_report">Client Report</string>
     <string name="expense_report">Expense Report</string>

@@ -2,18 +2,42 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <group android:checkableBehavior="single">
         <item
+            android:title="@string/notifications"/>
+        <item
+            android:title="@string/tasks"/>
+        <item
+            android:title="@string/reminders"/>
+        <item
+            android:title="@string/message"/>
+        <item
+            android:title="@string/expense"/>
+        <item
+            android:id="@+id/nav_trip"
+            android:title="@string/trip"/>
+        <item
+            android:title="@string/export_data"/>
+        <item
+            android:title="@string/conn_linkedin"/>
+        <item
+            android:id="@+id/nav_reports"
+            android:title="@string/reports"/>
+        <item
+            android:title="@string/help"/>
+        <item
+            android:title="@string/exit"/>
+        <item
             android:id="@+id/nav_clients"
             android:title="@string/clients"/>
-        <item
+        <!--item
             android:id="@+id/nav_travel"
             android:title="@string/travel"/>
         <item
             android:id="@+id/nav_expense"
-            android:title="@string/expense"/>
+            android:title="@string/expense"/-->
 
     </group>
 
-    <item android:title="@string/reports">
+    <!--item android:title="@string/reports">
         <menu>
             <group android:checkableBehavior="single">
             <item
@@ -27,6 +51,6 @@
                 android:title="@string/upcoming_travels"/>
             </group>
         </menu>
-    </item>
+    </item-->
 
 </menu>
