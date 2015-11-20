@@ -25,7 +25,7 @@
     <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/landingScreenAddClientButtonMicrophone"
+        android:id="@+id/landingScreenMicrophone"
         android:src="@android:drawable/ic_btn_speak_now"
         android:layout_toLeftOf="@+id/landingScreenAddClientButton"/>
 
@@ -38,7 +38,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/searchView"
         android:iconifiedByDefault="false"
-        android:layout_toLeftOf="@id/landingScreenAddClientButton"
+        android:layout_toLeftOf="@id/landingScreenMicrophone"
         android:layout_alignParentLeft="true"/>
 
 

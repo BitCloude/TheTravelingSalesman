@@ -6,6 +6,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.ContextMenu;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -49,6 +50,7 @@ FloatingActionButton fabAddClient;
 */
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,clients);
         listViewClient.setAdapter(adapter);
+        registerForContextMenu(listViewClient);
     }
 
     @Override
@@ -83,5 +85,31 @@ FloatingActionButton fabAddClient;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        int groupId = 1;
+        menu.add(groupId, 11, 100, "Edit");
+        menu.add(groupId, 22, 200, "Delete");
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == 11) {
+            Toast.makeText(getApplicationContext(), "Edit", Toast.LENGTH_SHORT).show();
+            return true;
+        }
+
+        if (id == 22) {
+            Toast.makeText(getApplicationContext(), "Delete", Toast.LENGTH_SHORT).show();
+            return true;
+        }
+
+
+        return super.onContextItemSelected(item);
     }
 }
