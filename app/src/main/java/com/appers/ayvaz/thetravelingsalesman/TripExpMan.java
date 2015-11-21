@@ -2,9 +2,13 @@ package com.appers.ayvaz.thetravelingsalesman;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
@@ -37,6 +41,11 @@ public class TripExpMan extends AppCompatActivity {
     String data = "Trip From Delhi to Hyderhabad";
     String cost = "$125,000";
 
+    DrawerLayout mDrawerLayout;
+    CharSequence mTitle, mDrawerTitle;
+    NavigationView mNavigationView;
+    ActionBarDrawerToggle mDrawerToggle;
+
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -58,8 +67,51 @@ public class TripExpMan extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trip_exp_man);
 
+        setTitle("Trips and Expenses");
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        ActionBar actionBar = getSupportActionBar();
+        ActionBarDrawerToggle mDrawerToggle;
+        // drawer stuff
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.layoutDraw);
+        mTitle = mDrawerTitle = getTitle();
+        //navi view implementation
+        mNavigationView = (NavigationView) findViewById(R.id.navi_menu);
+        setupDrawerContent(mNavigationView);
+        mNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(MenuItem item) {
+                item.setChecked(true);
+                selectItem(item.getItemId());
+                mDrawerLayout.closeDrawers();
+                return true;
+            }
+        });
+
+        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
+                toolbar, R.string.drawer_open, R.string.drawer_close) {
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+                setTitle(mTitle);
+                invalidateOptionsMenu();
+            }
+
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                setTitle(mDrawerTitle);
+                invalidateOptionsMenu();
+            }
+        };
+
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
+
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setHomeButtonEnabled(true);
+        }
+
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
@@ -70,6 +122,8 @@ public class TripExpMan extends AppCompatActivity {
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
+
+
 
       /*  FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -83,8 +137,29 @@ public class TripExpMan extends AppCompatActivity {
 */
 
     }
+    private void setupDrawerContent(NavigationView navigationView) {
+        navigationView.setNavigationItemSelectedListener(
 
+                new NavigationView.OnNavigationItemSelectedListener() {
 
+                    @Override
+                    public boolean onNavigationItemSelected(MenuItem menuItem) {
+                        menuItem.setChecked(true);
+                        mDrawerLayout.closeDrawers();
+                        return true;
+                    }
+                });
+    }
+
+    private void selectItem(int itemId) {
+        if (itemId == R.id.nav_reports) {
+            startActivity(new Intent(this, ReportsActivity.class));
+        }
+        if (itemId == R.id.nav_trip) {
+            startActivity(new Intent(this, Travel.class));
+        }
+
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -101,6 +176,9 @@ public class TripExpMan extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            return true;
+        }
+        if (mDrawerToggle.onOptionsItemSelected(item)) {
             return true;
         }
 
