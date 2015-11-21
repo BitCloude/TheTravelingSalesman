@@ -1,5 +1,6 @@
 package com.appers.ayvaz.thetravelingsalesman;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -19,6 +20,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -149,6 +152,7 @@ public class TripExpMan extends AppCompatActivity {
         String dataExp = "Hotel Bill From Delhi to Hyderhabad";
         String costExp = "$25,000";
 
+        ImageButton button;
         private static final String ARG_SECTION_NUMBER = "section_number";
 
         public PlaceholderFragment() {
@@ -171,7 +175,7 @@ public class TripExpMan extends AppCompatActivity {
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_trip_exp_man, container, false);
 
-            if(getArguments().getInt(ARG_SECTION_NUMBER) == 1) {
+
                 linearLayout = (LinearLayout) rootView.findViewById(R.id.fragmentLinearLayout);
 
                 for (int i = 0; i < 12; i++) {
@@ -186,11 +190,18 @@ public class TripExpMan extends AppCompatActivity {
                     //childLayout.setOrientation(LinearLayout.HORIZONTAL);
                     TextView textdata = new TextView(getActivity());
                     textdata.setLines(2);
-
-                    textdata.setText(data);
                     TextView textcost = new TextView(getActivity());
                     textcost.setLines(1);
-                    textcost.setText(cost);
+
+                    if(getArguments().getInt(ARG_SECTION_NUMBER) == 1) {
+                        textdata.setText(data);
+                        textcost.setText(cost);
+                    }
+                    else {
+                        textdata.setText(dataExp);
+                        textcost.setText(costExp);
+                    }
+
 
                     childLayout.setBackgroundColor(Color.LTGRAY);
                     childLayout.addView(textdata, layoutParamsData);
@@ -208,48 +219,20 @@ public class TripExpMan extends AppCompatActivity {
 
                     registerForContextMenu(childLayout);
 
-                }
-
-            }
-            else {
-                linearLayout = (LinearLayout) rootView.findViewById(R.id.fragmentLinearLayout);
-
-                for (int i = 0; i < 12; i++) {
-                    childLayout = new RelativeLayout(getActivity());
-                    RelativeLayout.LayoutParams layoutParamsCost = new RelativeLayout.LayoutParams(
-                            RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                    layoutParamsCost.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-
-                    RelativeLayout.LayoutParams layoutParamsData = new RelativeLayout.LayoutParams(
-                            RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                    layoutParamsData.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-                    //childLayout.setOrientation(LinearLayout.HORIZONTAL);
-                    TextView textdata = new TextView(getActivity());
-                    textdata.setLines(2);
-
-                    textdata.setText(dataExp);
-                    TextView textcost = new TextView(getActivity());
-                    textcost.setLines(1);
-                    textcost.setText(costExp);
-
-                    childLayout.setBackgroundColor(Color.LTGRAY);
-                    childLayout.addView(textdata, layoutParamsData);
-                    childLayout.addView(textcost, layoutParamsCost);
-
-
-                    TextView textView = new TextView(getActivity());
-                    textView.setText(from[i]);
-                    //   ArrayAdapter<String> adapter4 = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,expenses);
-                    // listViewExpenses.setAdapter(adapter4);
-
-                    //childlayout.addView(textView);
-                    linearLayout.addView(textView);
-                    linearLayout.addView(childLayout);
-
-                    registerForContextMenu(childLayout);
+                   button = (ImageButton) rootView.findViewById(R.id.fragmentCalenderButton);
+                    button.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent intent = new Intent(getActivity(),ReportsActivity.class);
+                            startActivity(intent);
+                        }
+                    });
 
                 }
-            }
+
+
+
+
           //  TextView textView = (TextView) rootView.findViewById(R.id.section_label);
            // textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
             return rootView;
