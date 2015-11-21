@@ -69,6 +69,7 @@ public class TripExpMan extends AppCompatActivity {
 
         setTitle("Trips and Expenses");
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setNavigationIcon(R.drawable.ic_drawer);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         ActionBarDrawerToggle mDrawerToggle;
@@ -163,7 +164,11 @@ public class TripExpMan extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_trip_exp_man, menu);
+        //getMenuInflater().inflate(R.menu.menu_trip_exp_man, menu);
+        menu.add(1, 66, 100, "ADD");
+        //menu.findItem(11).setIcon(android.R.drawable.ic_menu_save);
+        menu.findItem(66).setIcon(android.R.drawable.ic_menu_add);
+        menu.findItem(66).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
         return true;
     }
 
@@ -178,6 +183,8 @@ public class TripExpMan extends AppCompatActivity {
         if (id == R.id.action_settings) {
             return true;
         }
+        if(id == 66)
+            return true;
         if (mDrawerToggle.onOptionsItemSelected(item)) {
             return true;
         }
