@@ -1,9 +1,14 @@
 package com.appers.ayvaz.thetravelingsalesman;
 
+import android.content.Intent;
 import android.graphics.Color;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
@@ -19,6 +24,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -33,6 +40,11 @@ public class TripExpMan extends AppCompatActivity {
 
     String data = "Trip From Delhi to Hyderhabad";
     String cost = "$125,000";
+
+    DrawerLayout mDrawerLayout;
+    CharSequence mTitle, mDrawerTitle;
+    NavigationView mNavigationView;
+    ActionBarDrawerToggle mDrawerToggle;
 
 
     /**
@@ -55,8 +67,51 @@ public class TripExpMan extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trip_exp_man);
 
+        setTitle("Trips and Expenses");
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        ActionBar actionBar = getSupportActionBar();
+        ActionBarDrawerToggle mDrawerToggle;
+        // drawer stuff
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.layoutDraw);
+        mTitle = mDrawerTitle = getTitle();
+        //navi view implementation
+        mNavigationView = (NavigationView) findViewById(R.id.navi_menu);
+        setupDrawerContent(mNavigationView);
+        mNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(MenuItem item) {
+                item.setChecked(true);
+                selectItem(item.getItemId());
+                mDrawerLayout.closeDrawers();
+                return true;
+            }
+        });
+
+        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
+                toolbar, R.string.drawer_open, R.string.drawer_close) {
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+                setTitle(mTitle);
+                invalidateOptionsMenu();
+            }
+
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                setTitle(mDrawerTitle);
+                invalidateOptionsMenu();
+            }
+        };
+
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
+
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setHomeButtonEnabled(true);
+        }
+
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
@@ -67,6 +122,8 @@ public class TripExpMan extends AppCompatActivity {
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
+
+
 
       /*  FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -80,8 +137,29 @@ public class TripExpMan extends AppCompatActivity {
 */
 
     }
+    private void setupDrawerContent(NavigationView navigationView) {
+        navigationView.setNavigationItemSelectedListener(
 
+                new NavigationView.OnNavigationItemSelectedListener() {
 
+                    @Override
+                    public boolean onNavigationItemSelected(MenuItem menuItem) {
+                        menuItem.setChecked(true);
+                        mDrawerLayout.closeDrawers();
+                        return true;
+                    }
+                });
+    }
+
+    private void selectItem(int itemId) {
+        if (itemId == R.id.nav_reports) {
+            startActivity(new Intent(this, ReportsActivity.class));
+        }
+        if (itemId == R.id.nav_trip) {
+            startActivity(new Intent(this, Travel.class));
+        }
+
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -98,6 +176,9 @@ public class TripExpMan extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            return true;
+        }
+        if (mDrawerToggle.onOptionsItemSelected(item)) {
             return true;
         }
 
@@ -149,6 +230,7 @@ public class TripExpMan extends AppCompatActivity {
         String dataExp = "Hotel Bill From Delhi to Hyderhabad";
         String costExp = "$25,000";
 
+        ImageButton button;
         private static final String ARG_SECTION_NUMBER = "section_number";
 
         public PlaceholderFragment() {
@@ -171,7 +253,7 @@ public class TripExpMan extends AppCompatActivity {
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_trip_exp_man, container, false);
 
-            if(getArguments().getInt(ARG_SECTION_NUMBER) == 1) {
+
                 linearLayout = (LinearLayout) rootView.findViewById(R.id.fragmentLinearLayout);
 
                 for (int i = 0; i < 12; i++) {
@@ -186,11 +268,18 @@ public class TripExpMan extends AppCompatActivity {
                     //childLayout.setOrientation(LinearLayout.HORIZONTAL);
                     TextView textdata = new TextView(getActivity());
                     textdata.setLines(2);
-
-                    textdata.setText(data);
                     TextView textcost = new TextView(getActivity());
                     textcost.setLines(1);
-                    textcost.setText(cost);
+
+                    if(getArguments().getInt(ARG_SECTION_NUMBER) == 1) {
+                        textdata.setText(data);
+                        textcost.setText(cost);
+                    }
+                    else {
+                        textdata.setText(dataExp);
+                        textcost.setText(costExp);
+                    }
+
 
                     childLayout.setBackgroundColor(Color.LTGRAY);
                     childLayout.addView(textdata, layoutParamsData);
@@ -208,48 +297,20 @@ public class TripExpMan extends AppCompatActivity {
 
                     registerForContextMenu(childLayout);
 
-                }
-
-            }
-            else {
-                linearLayout = (LinearLayout) rootView.findViewById(R.id.fragmentLinearLayout);
-
-                for (int i = 0; i < 12; i++) {
-                    childLayout = new RelativeLayout(getActivity());
-                    RelativeLayout.LayoutParams layoutParamsCost = new RelativeLayout.LayoutParams(
-                            RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                    layoutParamsCost.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-
-                    RelativeLayout.LayoutParams layoutParamsData = new RelativeLayout.LayoutParams(
-                            RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                    layoutParamsData.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-                    //childLayout.setOrientation(LinearLayout.HORIZONTAL);
-                    TextView textdata = new TextView(getActivity());
-                    textdata.setLines(2);
-
-                    textdata.setText(dataExp);
-                    TextView textcost = new TextView(getActivity());
-                    textcost.setLines(1);
-                    textcost.setText(costExp);
-
-                    childLayout.setBackgroundColor(Color.LTGRAY);
-                    childLayout.addView(textdata, layoutParamsData);
-                    childLayout.addView(textcost, layoutParamsCost);
-
-
-                    TextView textView = new TextView(getActivity());
-                    textView.setText(from[i]);
-                    //   ArrayAdapter<String> adapter4 = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,expenses);
-                    // listViewExpenses.setAdapter(adapter4);
-
-                    //childlayout.addView(textView);
-                    linearLayout.addView(textView);
-                    linearLayout.addView(childLayout);
-
-                    registerForContextMenu(childLayout);
+                   button = (ImageButton) rootView.findViewById(R.id.fragmentCalenderButton);
+                    button.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent intent = new Intent(getActivity(),ReportsActivity.class);
+                            startActivity(intent);
+                        }
+                    });
 
                 }
-            }
+
+
+
+
           //  TextView textView = (TextView) rootView.findViewById(R.id.section_label);
            // textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
             return rootView;

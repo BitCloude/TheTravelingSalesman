@@ -41,7 +41,7 @@
                     android:text="12/12/2015" />
 
                 <ImageButton
-                    android:id="@+id/expensesCalenderButton"
+                    android:id="@+id/fragmentCalenderButton"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
