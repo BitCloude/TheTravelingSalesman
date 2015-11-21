@@ -1,52 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fillViewport="true"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.appers.ayvaz.thetravelingsalesman.Travel"
-    tools:showIn="@layout/activity_travel"
-    android:orientation="vertical">
-<LinearLayout
-    android:layout_weight="1"
-    android:layout_width="match_parent"
-    android:layout_height="0dp"
-    android:orientation="horizontal">
+    tools:showIn="@layout/activity_travel">
 
-    <TextView
-        android:layout_weight="1"
-        android:layout_width="0dp"
+    <LinearLayout
+        android:id="@+id/travelLinearLayout"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Choose Client"
-        android:id="@+id/textView"
-        android:gravity="center"/>
-    <Spinner
-        android:layout_weight="1"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:id="@+id/spinnerTravel" />
+        android:orientation="vertical">
 
-</LinearLayout>
-    <TextView
-        android:layout_weight="1"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:text="Upcoming Travels"
-        android:gravity="center"/>
-    <ListView
-        android:layout_weight="5"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:id="@+id/listViewTravel">
-    </ListView>
-    <Space
-        android:layout_weight="1"
-        android:layout_width="match_parent"
-        android:layout_height="0dp" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
-</LinearLayout>
+            <Button
+                android:id="@+id/travelTripButton"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="Trip" />
+
+            <Button
+                android:id="@+id/travelExpensesButton"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="Expenses" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="10dp">
+
+            <TextView
+                android:id="@+id/travelClientName"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:text="Replace w/ClientName" />
+
+            <TextView
+                android:id="@+id/travelDateText"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+
+                android:text="12/12/2015" />
+
+            <ImageButton
+                android:id="@+id/travelCalenderButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+
+                android:src="@android:drawable/ic_menu_my_calendar" />
+
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</ScrollView>

@@ -4,137 +4,229 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.appers.ayvaz.thetravelingsalesman.TravelDetail"
     tools:showIn="@layout/activity_travel_detail">
 
-    <LinearLayout
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:descendantFocusability="beforeDescendants"
+        android:focusableInTouchMode="true"
         android:paddingBottom="@dimen/activity_vertical_margin"
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingTop="@dimen/activity_vertical_margin"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:descendantFocusability="beforeDescendants"
-        android:focusableInTouchMode="true">
-        <Spinner
-            android:layout_gravity="center"
-            android:layout_width="match_parent"
+        android:paddingTop="@dimen/activity_vertical_margin">
+
+
+        <ImageButton
+            android:id="@+id/buttonTravelPlane"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/spinnerTravelAddClient"/>
+            android:layout_alignParentLeft="true"
+            android:src="@android:drawable/ic_dialog_alert" />
+
+        <ImageButton
+            android:id="@+id/buttonTravelTrain"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:src="@android:drawable/ic_input_get" />
+
+        <ImageButton
+            android:id="@+id/buttonTravelRoad"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:src="@android:drawable/ic_input_delete" />
+
+        <ImageButton
+            android:id="@+id/cameraTravelButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/buttonTravelPlane"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp"
+            android:src="@android:drawable/ic_menu_camera"
+            android:text="ADD Photo" />
 
         <TextView
+            android:id="@+id/travelDetailClientName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:textSize="20dp"
-            android:text="Mode of Transport" />
-
-        <RadioGroup
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <RadioButton
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:text="Car" />
-
-            <RadioButton
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:text="Plane" />
-
-            <RadioButton
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:text="Train" />
-
-            <RadioButton
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:text="Bus" />
-
-            <RadioButton
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:text="Other" />
-        </RadioGroup>
+            android:layout_below="@id/cameraTravelButton"
+            android:text="Replace W/ Client"
+            android:textSize="18dp" />
 
         <EditText
-            android:layout_width="match_parent"
+            android:id="@+id/travelDetailOriginEdit"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hint="Other mode of transport" />
+            android:layout_below="@id/travelDetailClientName"
+            android:hint="From                            "
+            android:textSize="15dp" />
+
+        <EditText
+            android:id="@+id/travelDetailDestinationEdit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/travelDetailOriginEdit"
+            android:layout_toRightOf="@+id/travelDetailOriginEdit"
+            android:hint="To                       "
+            android:textSize="15dp" />
 
         <TextView
-            android:layout_width="match_parent"
+            android:id="@+id/travelDetailBoardingText"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="Starting Location" />
+            android:layout_below="@id/travelDetailOriginEdit"
+            android:text="Boarding Pass"
+            android:textSize="15dp" />
 
         <EditText
-            android:id="@+id/editText"
+            android:id="@+id/travelDetailBoardingEdit"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@id/travelDetailDestinationEdit"
+            android:layout_alignTop="@id/travelDetailBoardingText"
+            android:textSize="15dp" />
+
+        <ImageButton
+            android:id="@+id/travelDetailBoardingCamera"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignTop="@id/travelDetailBoardingText"
+            android:src="@android:drawable/ic_menu_camera" />
+
+        <TextView
+            android:id="@+id/travelDetailPassportText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/travelDetailBoardingCamera"
+            android:text="Passport(Optional)"
+            android:textSize="15dp" />
+
+        <EditText
+            android:id="@+id/travelDetailPassPortEdit"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@id/travelDetailBoardingEdit"
+            android:layout_alignTop="@id/travelDetailPassportText"
+            android:textSize="15dp" />
+
+        <ImageButton
+            android:id="@+id/travelDetailPassportCamera"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@android:drawable/ic_menu_camera"
+            android:layout_alignParentEnd="true"
+            android:layout_alignTop="@id/travelDetailPassportText"/>
+
+        <TextView
+            android:id="@+id/travelDetailVisaText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/travelDetailPassportCamera"
+            android:text="Visa(Optional)"
+            android:textSize="15dp" />
+
+
+        <EditText
+            android:id="@+id/travelDetailVisaEdit"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@id/travelDetailPassPortEdit"
+            android:layout_alignTop="@id/travelDetailVisaText"
+            android:textSize="15dp" />
+
+
+        <ImageButton
+            android:id="@+id/travelDetailVisaCamera"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@android:drawable/ic_menu_camera"
+            android:layout_alignParentEnd="true"
+            android:layout_alignTop="@id/travelDetailVisaText"/>
+
+        <TextView
+            android:id="@+id/travelDetailDateFrom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Date From"
+            android:textSize="15dp"
+            android:layout_below="@id/travelDetailVisaCamera"/>
+
+        <TextView
+            android:id="@+id/travelDetailEditDateFrom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@id/travelDetailDateFrom"
+            android:layout_alignLeft="@id/travelDetailVisaEdit"
+            android:text="12/12/2015"
+            android:textSize="15dp" />
+
+        <ImageButton
+            android:id="@+id/travelDetailButtonCalenderFrom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignTop="@id/travelDetailDateFrom"
+            android:src="@android:drawable/ic_menu_my_calendar" />
+
+
+        <TextView
+            android:id="@+id/travelDetailDateTo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/travelDetailButtonCalenderFrom"
+            android:text="Date To"
+            android:textSize="15dp" />
+
+
+        <TextView
+            android:id="@+id/travelDetailEditDateTo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/travelDetailEditDateFrom"
+            android:layout_alignTop="@+id/travelDetailDateTo"
+            android:text="12/13/2015"
+            android:textSize="15dp" />
+
+        <ImageButton
+            android:id="@+id/travelDetailButtonCalenderTo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@id/travelDetailButtonCalenderFrom"
+            android:src="@android:drawable/ic_menu_my_calendar" />
+
+        <TextView
+            android:id="@+id/travelDetailDescription"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Description:  "
+            android:textSize="15dp"
+            android:layout_below="@id/travelDetailButtonCalenderTo"/>
+
+        <EditText
+            android:id="@+id/travelDetailEditDescription"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:hint="Starting Address Here"
-            android:inputType="textPostalAddress" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="Desitination" />
-
-        <EditText
-            android:id="@+id/editText2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="Destination Here"
-            android:inputType="textPostalAddress" />
-
-        <TimePicker
-            android:timePickerMode="spinner"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/timePicker2" />
-        <DatePicker
-            android:datePickerMode="spinner"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/datePicker2"
-            android:calendarViewShown="false"/>
-    <LinearLayout
-
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+            android:inputType="textMultiLine"
+            android:lines="5"
+            android:textSize="15dp"
+            android:layout_below="@id/travelDetailDescription"/>
 
         <Button
-            android:layout_weight="1"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:text="Delete"/>
-        <Button
-            android:layout_weight="1"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:text="Edit"/>
-        <Button
-            android:layout_weight="1"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:text="Save"/>
+            android:id="@+id/travelDetailAddExpense"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="+ Expense"
+            android:layout_below="@id/travelDetailEditDescription"
+            android:layout_centerHorizontal="true"/>
 
-    </LinearLayout>
 
-    </LinearLayout>
+    </RelativeLayout>
 </ScrollView>
