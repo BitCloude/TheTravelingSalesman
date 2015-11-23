@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -39,7 +40,7 @@ Spinner spinnerClient, spinnerAmount, spinnerFrom;
     String data = "Hotel Bill From Delhi to Hyderhabad";
     String cost = "$25,000";
     //Trip From Delhi to Hyderhabad
-    Button expensesBut;
+    ImageButton expensesBut;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,7 +48,7 @@ Spinner spinnerClient, spinnerAmount, spinnerFrom;
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         listViewExpenses = new ListView(this);
-        expensesBut = (Button) findViewById(R.id.expensesExpensesButton);
+        expensesBut = (ImageButton) findViewById(R.id.expensesCalenderButton);
         linearLayout = (LinearLayout) findViewById(R.id.expensesLinearLayout);
 
        for(int i = 0; i< 12; i++) {
