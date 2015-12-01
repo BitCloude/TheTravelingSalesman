@@ -20,7 +20,7 @@
         <item>Client3</item>
         <item>Client0</item>
     </string-array>
-<string name="notifications">Notifications</string>
+    <string name="notifications">Notifications</string>
     <string name="reminders">Reminders</string>
     <string name="message">Message</string>
     <string name="trip">Trip</string>
@@ -80,5 +80,7 @@
         <item>Invite</item>
         <item>Location</item>
         <item>Notes</item>
-</string-array>
+    </string-array>
+    <string name="title_activity_trip_exp_man">TripExpMan</string>
+    <string name="section_format">Hello World from section: %1$d</string>
 </resources>
