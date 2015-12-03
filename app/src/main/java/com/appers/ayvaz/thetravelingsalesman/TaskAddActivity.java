@@ -9,8 +9,10 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
-public class TaskAddActivity extends AppCompatActivity
+public class TaskAddActivity extends BaseActivity
         implements TaskAddTime.OnFragmentInteractionListener,
         TaskAddInvite.OnFragmentInteractionListener,
         TaskAddLocation.OnFragmentInteractionListener,
@@ -26,10 +28,16 @@ public class TaskAddActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ViewGroup viewStub = (ViewGroup) findViewById(R.id.aa);
+        getLayoutInflater().inflate(R.layout.content_task_add, viewStub);
+
+        /*
         setContentView(R.layout.activity_task_add);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        */
+
         mViewPager = (ViewPager) findViewById(R.id.viewpager);
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabLayout);
         tabTitles = getResources().getStringArray(R.array.tab_titles_task);
