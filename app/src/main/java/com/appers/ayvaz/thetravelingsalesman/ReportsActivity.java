@@ -27,8 +27,6 @@ public class ReportsActivity extends BaseActivity {
         getLayoutInflater().inflate(R.layout.activity_reports, viewStub);
 
         setTitle(R.string.reports);
-
-
     }
 
 

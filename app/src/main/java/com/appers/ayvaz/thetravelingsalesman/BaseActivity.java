@@ -69,7 +69,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
     private void setupDrawerContent(NavigationView navigationView) {
         navigationView.setNavigationItemSelectedListener(
-
                 new NavigationView.OnNavigationItemSelectedListener() {
 
                     @Override
@@ -83,13 +82,14 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     private void selectItem(int itemId) {
+
         if (itemId == R.id.nav_reports) {
             startActivity(new Intent(this, ReportsActivity.class));
+        } else if (itemId == R.id.nav_trip) {
+            startActivity(new Intent(this, TripExpMan.class));
+        } else if (itemId == R.id.nav_tasks) {
+            startActivity(new Intent(this, TaskAddActivity.class));
         }
-        if (itemId == R.id.nav_trip) {
-            startActivity(new Intent(this, Travel.class));
-        }
-
 
     }
 
