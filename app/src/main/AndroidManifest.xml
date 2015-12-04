@@ -55,9 +55,6 @@
             android:name=".TripExpMan"
             android:label="@string/title_activity_trip_exp_man"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".TestActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            ></activity>
     </application>
 
 </manifest>

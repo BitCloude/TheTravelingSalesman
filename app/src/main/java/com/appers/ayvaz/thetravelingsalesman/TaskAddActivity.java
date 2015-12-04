@@ -28,7 +28,7 @@ public class TaskAddActivity extends BaseActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ViewGroup viewStub = (ViewGroup) findViewById(R.id.aa);
+        ViewGroup viewStub = (ViewGroup) findViewById(R.id.view_stub);
         getLayoutInflater().inflate(R.layout.content_task_add, viewStub);
 
         /*
