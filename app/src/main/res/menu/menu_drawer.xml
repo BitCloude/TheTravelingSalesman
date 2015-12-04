@@ -7,6 +7,7 @@
             android:id="@+id/nav_tasks"
             android:title="@string/tasks"/>
         <item
+            android:id="@+id/nav_reminders"
             android:title="@string/reminders"/>
         <item
             android:title="@string/message"/>
