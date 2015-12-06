@@ -1,12 +1,17 @@
 package com.appers.ayvaz.thetravelingsalesman;
 
 import android.app.Activity;
+import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.appers.ayvaz.thetravelingsalesman.Adapters.NotesAdapter;
 
 
 /**
@@ -64,7 +69,19 @@ public class TaskAddNotes extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_task_add_time, container, false);
+        View v = inflater.inflate(R.layout.fragment_task_add_notes, container, false);
+
+
+
+        RecyclerView recyclerView = (RecyclerView) v.findViewById(R.id.note_recyclerview);
+
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setAdapter(new NotesAdapter());
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(v.getContext()));
+
+
+        return v;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -75,12 +92,12 @@ public class TaskAddNotes extends Fragment {
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
+    public void onAttach(Context context) {
+        super.onAttach(context);
         try {
-            mListener = (OnFragmentInteractionListener) activity;
+            mListener = (OnFragmentInteractionListener) getActivity();
         } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
+            throw new ClassCastException(getActivity().toString()
                     + " must implement OnFragmentInteractionListener");
         }
     }

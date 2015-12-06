@@ -4,9 +4,13 @@ import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.appers.ayvaz.thetravelingsalesman.Adapters.TaskInviteAdapter;
 
 
 /**
@@ -23,9 +27,13 @@ public class TaskAddInvite extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
+
+
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    private RecyclerView mRecyclerView;
 
     private OnFragmentInteractionListener mListener;
 
@@ -64,7 +72,17 @@ public class TaskAddInvite extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_task_add_time, container, false);
+        View view = inflater.inflate(R.layout.fragment_task_add_invite, container, false);
+
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.invite_recycler_view);
+        mRecyclerView.setHasFixedSize(true);
+
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
+
+        // TODO: put client data
+        mRecyclerView.setAdapter(new TaskInviteAdapter());
+
+        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
