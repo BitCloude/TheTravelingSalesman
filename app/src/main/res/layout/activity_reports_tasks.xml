@@ -9,5 +9,96 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.appers.ayvaz.thetravelingsalesman.ReportsTasksActivity">
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/clients"
+        android:id="@+id/client_label"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/tasks"
+        android:id="@+id/task_label"
+        android:layout_below="@+id/client_label"
+        android:layout_marginBottom="10dp"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/date"
+        android:layout_marginBottom="10dp"
+        android:id="@+id/date_label"
+        android:layout_below="@+id/task_label" />
+
+    <Spinner
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/spinner"
+        android:layout_alignParentTop="true"
+        android:layout_toEndOf="@+id/client_label"
+        android:layout_above="@+id/spinner2"
+        android:layout_alignStart="@+id/editText10" />
+
+    <Spinner
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/spinner2"
+        android:layout_below="@+id/client_label"
+        android:layout_alignBottom="@+id/task_label"
+        android:layout_alignStart="@+id/spinner" />
+
+    <EditText
+        android:layout_width="40dp"
+        android:layout_height="wrap_content"
+        android:inputType="date"
+        android:ems="10"
+        android:id="@+id/editText11"
+        android:layout_alignBottom="@+id/button3"
+        android:layout_toStartOf="@+id/button3" />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="30dp"
+        android:layout_height="20dp"
+        android:text="New Button"
+        android:id="@+id/button3"
+        android:layout_alignTop="@+id/button2"
+        android:layout_alignEnd="@+id/android.support.v7.widget.RecyclerView" />
+
+    <EditText
+        android:layout_width="40dp"
+        android:layout_height="wrap_content"
+        android:inputType="textPassword"
+        android:ems="10"
+        android:id="@+id/editText10"
+        android:layout_below="@+id/task_label"
+        android:layout_toStartOf="@+id/button2"
+        android:layout_alignBottom="@+id/date_label" />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="30dp"
+        android:layout_height="20dp"
+
+        android:text="New Button"
+        android:id="@+id/button2"
+        android:layout_alignBottom="@+id/editText10"
+        android:layout_centerHorizontal="true" />
+
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_below="@+id/date_label"
+        android:id="@+id/android.support.v7.widget.RecyclerView">
+
+    </android.support.v7.widget.RecyclerView>
 
 </RelativeLayout>
