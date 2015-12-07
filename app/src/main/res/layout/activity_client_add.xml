@@ -20,7 +20,7 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="?android:attr/actionBarSize"
@@ -33,9 +33,8 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:hint="@string/name"
+            android:layout_alignParentTop="true"
             android:inputType="textPersonName" />
-
-
 
         <EditText
             android:id="@+id/editText3"
@@ -43,7 +42,9 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:hint="@string/phone"
-            android:inputType="phone"/>
+            android:inputType="phone"
+            android:layout_below="@+id/editText"
+ />
         <EditText
             android:id="@+id/editText2"
             android:layout_width="wrap_content"
@@ -51,7 +52,9 @@
             android:layout_gravity="left|top"
             android:ems="10"
             android:hint="@string/email"
-            android:inputType="textEmailAddress" />
+            android:inputType="textEmailAddress"
+            android:layout_below="@+id/editText3"
+            android:layout_alignParentStart="true" />
 
         <EditText
             android:id="@+id/editText4"
@@ -59,32 +62,42 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:hint="@string/address"
-            android:inputType="textPostalAddress"/>
+            android:inputType="textPostalAddress"
+            android:layout_below="@+id/editText2"
+            android:layout_alignParentStart="true" />
 
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/editText5"
-            android:hint="@string/company" />
+            android:hint="@string/company"
+            android:layout_below="@+id/editText4"
+            android:layout_alignParentStart="true" />
 
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/editText6"
-            android:hint="@string/designation" />
+            android:hint="@string/designation"
+            android:layout_below="@+id/editText5"
+            android:layout_alignParentStart="true" />
 
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/editText7"
-            android:hint="@string/notes" />
+            android:hint="@string/notes"
+            android:layout_below="@+id/editText6"
+            android:layout_alignParentStart="true" />
 
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/editText8"
             android:layout_gravity="center_horizontal"
-            android:hint="@string/group" />
+            android:hint="@string/group"
+            android:layout_below="@+id/editText7"
+            android:layout_alignParentStart="true" />
 
         <EditText
             android:editable="false"
@@ -94,7 +107,10 @@
             android:ems="10"
             android:id="@+id/client_dob"
             android:layout_gravity="center_horizontal"
-            android:hint="@string/dob" />
+            android:hint="@string/dob"
+            android:layout_below="@+id/editText8"
+            android:layout_alignParentStart="true"
+            android:layout_toStartOf="@+id/button" />
 
         <Button
             android:layout_width="wrap_content"
@@ -102,8 +118,10 @@
             android:text="select date"
             android:id="@+id/button"
             android:onClick="showDatePicker"
-            android:layout_gravity="right" />
+            android:layout_gravity="right"
+            android:layout_alignTop="@+id/client_dob"
+            android:layout_alignParentEnd="true" />
 
 
-    </LinearLayout>
+    </RelativeLayout>
 </RelativeLayout>

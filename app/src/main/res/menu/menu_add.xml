@@ -4,5 +4,6 @@
     <item
         android:id="@+id/action_done"
         app:showAsAction="always"
+        android:icon="@drawable/ic_done_black_24dp"
         android:title="@string/ok" />
 </menu>

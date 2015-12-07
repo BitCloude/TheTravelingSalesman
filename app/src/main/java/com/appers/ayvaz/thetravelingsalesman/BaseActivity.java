@@ -1,5 +1,6 @@
 package com.appers.ayvaz.thetravelingsalesman;
 
+import android.app.Notification;
 import android.content.Intent;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
@@ -8,9 +9,12 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 public abstract class BaseActivity extends AppCompatActivity {
 
@@ -18,6 +22,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     CharSequence mTitle, mDrawerTitle;
     NavigationView mNavigationView;
     ActionBarDrawerToggle mDrawerToggle;
+    private LinearLayout view_stub;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,6 +30,8 @@ public abstract class BaseActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
+        view_stub = (LinearLayout) findViewById(R.id.view_stub);
+
         ActionBarDrawerToggle mDrawerToggle;
         // drawer stuff
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -89,9 +96,45 @@ public abstract class BaseActivity extends AppCompatActivity {
             startActivity(new Intent(this, TripExpMan.class));
         } else if (itemId == R.id.nav_tasks) {
             startActivity(new Intent(this, TaskAddActivity.class));
+        } else if (itemId == R.id.nav_notifications) {
+            startActivity(new Intent(this, NotificationActivity.class));
         }
 
     }
 
+    /* Override all setContentView methods to put the content view to the FrameLayout view_stub
+      * so that, we can make other activity implementations looks like normal activity subclasses.
+      */
 
+    /*
+    @Override
+    public void setContentView(int layoutResID) {
+        if (view_stub != null) {
+            LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+            ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT);
+            View stubView = inflater.inflate(layoutResID, view_stub, false);
+            view_stub.addView(stubView, lp);
+        }
+    }
+
+    @Override
+    public void setContentView(View view) {
+        if (view_stub != null) {
+            ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT);
+            view_stub.addView(view, lp);
+        }
+    }
+
+    @Override
+    public void setContentView(View view, ViewGroup.LayoutParams params) {
+        if (view_stub != null) {
+            view_stub.addView(view, params);
+        }
+    }
+
+    */
 }
