@@ -57,12 +57,6 @@
                 android:layout_marginTop="10dp"
                 android:text="Select A Trip" />
 
-            <Spinner
-                android:id="@+id/spinnerTripSelect"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignLeft="@+id/client"
-                android:layout_alignTop="@+id/SelectTrip" />
 
             <ImageButton
                 android:layout_width="wrap_content"
@@ -71,6 +65,14 @@
                 android:src="@android:drawable/ic_menu_add"
                 android:layout_alignTop="@+id/SelectTrip"
                 android:layout_alignParentEnd="true"/>
+
+            <Spinner
+                android:id="@+id/spinnerTripSelect"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/client"
+                android:layout_alignTop="@+id/SelectTrip"
+                android:layout_toLeftOf="@id/buttonAddTravel"/>
 
             <TextView
                 android:id="@+id/ExpenseType"
@@ -81,10 +83,11 @@
 
             <Spinner
                 android:id="@+id/spinnerExpenseType"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignLeft="@+id/spinnerTripSelect"
-                android:layout_alignTop="@+id/ExpenseType" />
+                android:layout_alignTop="@+id/ExpenseType"
+                android:layout_toLeftOf="@id/buttonAddTravel"/>
 
 
             <TextView
@@ -96,11 +99,12 @@
 
             <EditText
                 android:id="@+id/EditAmount"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignLeft="@+id/spinnerExpenseType"
                 android:layout_alignTop="@+id/Amount"
-                android:hint="Enter Amount" />
+                android:hint="Enter Amount"
+                android:layout_toLeftOf="@id/buttonAddTravel"/>
 
 
             <TextView
@@ -164,9 +168,7 @@
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textMultiLine"
-            android:lines="5"
-            android:ems="10"
+            android:minLines="5"
             android:id="@+id/editText3" />
 
 

@@ -50,6 +50,7 @@
             android:src="@android:drawable/ic_menu_camera"
             android:text="ADD Photo" />
 
+
         <TextView
             android:id="@+id/travelDetailClientName"
             android:layout_width="match_parent"
@@ -58,37 +59,54 @@
             android:text="Replace W/ Client"
             android:textSize="18dp" />
 
-        <EditText
-            android:id="@+id/travelDetailOriginEdit"
-            android:layout_width="wrap_content"
+        <RelativeLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/travelDetailClientName"
-            android:hint="From                            "
-            android:textSize="15dp" />
+            android:id="@+id/travelDetailLocationLayout"
+            android:layout_below="@id/travelDetailClientName">
+
+            <Space
+                android:id="@+id/travelDetailDummy"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_centerHorizontal="true"
+                android:visibility="invisible"/>
+
 
         <EditText
             android:id="@+id/travelDetailDestinationEdit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/travelDetailOriginEdit"
-            android:layout_toRightOf="@+id/travelDetailOriginEdit"
-            android:hint="To                       "
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/travelDetailDummy"
+            android:layout_toRightOf="@id/travelDetailDummy"
+            android:hint="To"
             android:textSize="15dp" />
+
+        <EditText
+            android:id="@+id/travelDetailOriginEdit"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignTop="@id/travelDetailDestinationEdit"
+            android:layout_toLeftOf="@id/travelDetailDestinationEdit"
+            android:hint="From"
+            android:textSize="15dp" />
+
+        </RelativeLayout>
+
+        <Space
+            android:id="@+id/travelDetailDummy2"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@id/travelDetailLocationLayout"
+            android:visibility="invisible"/>
 
         <TextView
             android:id="@+id/travelDetailBoardingText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/travelDetailOriginEdit"
+            android:layout_below="@id/travelDetailLocationLayout"
             android:text="Boarding Pass"
-            android:textSize="15dp" />
-
-        <EditText
-            android:id="@+id/travelDetailBoardingEdit"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:layout_alignLeft="@id/travelDetailDestinationEdit"
-            android:layout_alignTop="@id/travelDetailBoardingText"
             android:textSize="15dp" />
 
         <ImageButton
@@ -99,20 +117,24 @@
             android:layout_alignTop="@id/travelDetailBoardingText"
             android:src="@android:drawable/ic_menu_camera" />
 
+        <EditText
+            android:id="@+id/travelDetailBoardingEdit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_below="@id/travelDetailDummy2"
+            android:layout_alignLeft="@id/travelDetailDummy2"
+            android:layout_toLeftOf="@id/travelDetailBoardingCamera"
+            android:textSize="15dp" />
+
+
+
         <TextView
             android:id="@+id/travelDetailPassportText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/travelDetailBoardingCamera"
+            android:layout_below="@id/travelDetailBoardingEdit"
             android:text="Passport(Optional)"
-            android:textSize="15dp" />
-
-        <EditText
-            android:id="@+id/travelDetailPassPortEdit"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:layout_alignLeft="@id/travelDetailBoardingEdit"
-            android:layout_alignTop="@id/travelDetailPassportText"
             android:textSize="15dp" />
 
         <ImageButton
@@ -123,23 +145,23 @@
             android:layout_alignParentEnd="true"
             android:layout_alignTop="@id/travelDetailPassportText"/>
 
+        <EditText
+            android:id="@+id/travelDetailPassPortEdit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@id/travelDetailBoardingEdit"
+            android:layout_alignTop="@id/travelDetailPassportText"
+            android:layout_toLeftOf="@id/travelDetailPassportCamera"
+            android:textSize="15dp" />
+
+
         <TextView
             android:id="@+id/travelDetailVisaText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/travelDetailPassportCamera"
+            android:layout_below="@id/travelDetailPassPortEdit"
             android:text="Visa(Optional)"
             android:textSize="15dp" />
-
-
-        <EditText
-            android:id="@+id/travelDetailVisaEdit"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:layout_alignLeft="@id/travelDetailPassPortEdit"
-            android:layout_alignTop="@id/travelDetailVisaText"
-            android:textSize="15dp" />
-
 
         <ImageButton
             android:id="@+id/travelDetailVisaCamera"
@@ -149,13 +171,24 @@
             android:layout_alignParentEnd="true"
             android:layout_alignTop="@id/travelDetailVisaText"/>
 
+        <EditText
+            android:id="@+id/travelDetailVisaEdit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@id/travelDetailPassPortEdit"
+            android:layout_alignTop="@id/travelDetailVisaText"
+            android:layout_toLeftOf="@id/travelDetailVisaCamera"
+            android:textSize="15dp" />
+
+
+
         <TextView
             android:id="@+id/travelDetailDateFrom"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Date From"
             android:textSize="15dp"
-            android:layout_below="@id/travelDetailVisaCamera"/>
+            android:layout_below="@id/travelDetailVisaEdit"/>
 
         <TextView
             android:id="@+id/travelDetailEditDateFrom"
@@ -213,9 +246,7 @@
             android:id="@+id/travelDetailEditDescription"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="textMultiLine"
-            android:lines="5"
+            android:minLines="5"
             android:textSize="15dp"
             android:layout_below="@id/travelDetailDescription"/>
 
