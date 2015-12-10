@@ -2,6 +2,7 @@ package com.appers.ayvaz.thetravelingsalesman;
 
 import android.app.Notification;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -32,7 +33,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         view_stub = (LinearLayout) findViewById(R.id.view_stub);
 
-        ActionBarDrawerToggle mDrawerToggle;
         // drawer stuff
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mTitle = mDrawerTitle = getTitle();
@@ -68,10 +68,13 @@ public abstract class BaseActivity extends AppCompatActivity {
 
         mDrawerLayout.setDrawerListener(mDrawerToggle);
 
+
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setHomeButtonEnabled(true);
         }
+
+
 
     }
     private void setupDrawerContent(NavigationView navigationView) {
@@ -102,6 +105,31 @@ public abstract class BaseActivity extends AppCompatActivity {
             startActivity(new Intent(this, LandingActivity.class));
         }
 
+    }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        // Sync the toggle state after onRestoreInstanceState has occurred.
+        mDrawerToggle.syncState();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        mDrawerToggle.onConfigurationChanged(newConfig);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Pass the event to ActionBarDrawerToggle, if it returns
+        // true, then it has handled the app icon touch event
+        if (mDrawerToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
+        // Handle your other action bar items...
+
+        return super.onOptionsItemSelected(item);
     }
 
     /* Override all setContentView methods to put the content view to the FrameLayout view_stub
@@ -139,4 +167,5 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     */
+
 }
