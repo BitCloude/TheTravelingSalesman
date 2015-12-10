@@ -35,7 +35,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
         // drawer stuff
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mTitle = mDrawerTitle = getTitle();
+//        mTitle = mDrawerTitle = getTitle();
         //navi view implementation
         mNavigationView = (NavigationView) findViewById(R.id.navi_menu);
         setupDrawerContent(mNavigationView);
@@ -54,14 +54,14 @@ public abstract class BaseActivity extends AppCompatActivity {
             @Override
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
-                setTitle(mTitle);
+//                setTitle(mTitle);
                 invalidateOptionsMenu();
             }
 
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
-                setTitle(mDrawerTitle);
+//                setTitle(mDrawerTitle);
                 invalidateOptionsMenu();
             }
         };
