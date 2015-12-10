@@ -98,6 +98,8 @@ public abstract class BaseActivity extends AppCompatActivity {
             startActivity(new Intent(this, TaskAddActivity.class));
         } else if (itemId == R.id.nav_notifications) {
             startActivity(new Intent(this, NotificationActivity.class));
+        } else if (itemId == R.id.nav_clients) {
+            startActivity(new Intent(this, LandingActivity.class));
         }
 
     }

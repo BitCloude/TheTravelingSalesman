@@ -1,19 +1,15 @@
 package com.appers.ayvaz.thetravelingsalesman;
 
 import android.net.Uri;
-import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.os.Bundle;
 import android.view.Menu;
 import android.view.ViewGroup;
 
-public class TaskAddActivity extends BaseActivity
-        implements TaskAddTime.OnFragmentInteractionListener,
-        TaskAddInvite.OnFragmentInteractionListener,
-        TaskAddLocation.OnFragmentInteractionListener,
-        TaskAddNotes.OnFragmentInteractionListener {
+public class ClientActivity extends BaseActivity {
 
     private FragmentPagerAdapter mFragmentPagerAdapter;
     private ViewPager mViewPager;
@@ -22,37 +18,22 @@ public class TaskAddActivity extends BaseActivity
             R.drawable.ic_account_circle_black_24dp,
             R.drawable.ic_account_circle_black_24dp,
             R.drawable.ic_account_circle_black_24dp};
+    private int fakeClientId = 12345;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ViewGroup viewStub = (ViewGroup) findViewById(R.id.view_stub);
-        getLayoutInflater().inflate(R.layout.content_task_add, viewStub);
-
-        /*
-        setContentView(R.layout.activity_task_add);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        */
-
+//        setContentView(R.layout.activity_client);
+        ViewGroup vg = (ViewGroup) findViewById(R.id.view_stub);
+        getLayoutInflater().inflate(R.layout.activity_client, vg);
         mViewPager = (ViewPager) findViewById(R.id.viewpager);
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabLayout);
-        tabTitles = getResources().getStringArray(R.array.tab_titles_task);
+        tabTitles = getResources().getStringArray(R.array.tab_titles_client);
         mFragmentPagerAdapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
             @Override
             public Fragment getItem(int position) {
                 if (position == 0) {
-                    return new TaskAddTime();
-                }
-                if (position == 1) {
-                    return new TaskAddInvite();
-                }
-                if (position == 2) {
-                    return new TaskAddLocation();
-                }
-
-                if (position == 3) {
-                    return new TaskAddNotes();
+//                    return TaskFragment.newInstance(fakeClientId);
                 }
 
                 return null;
@@ -104,7 +85,7 @@ public class TaskAddActivity extends BaseActivity
         return true;
     }
 
-    @Override
+
     public void onFragmentInteraction(Uri uri) {
 
     }

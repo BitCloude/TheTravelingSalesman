@@ -12,6 +12,7 @@
     <string name="title_activity_client_add">Add a client</string>
     <string name="title_activity_reports">Reports</string>
     <string name="title_activity_task_add">Add a task</string>
+    <string name="title_activity_landing">My Clients</string>
 
 
     <string-array name="client_array">
@@ -70,8 +71,8 @@
     <!-- Add Task  -->
     <string name="hint_task_new">New task, note</string>
     <string-array name="tab_titles_client">
+        <item>Tasks</item>
         <item>Call</item>
-        <item>Meeting</item>
         <item>Text</item>
         <item>Mail</item>
     </string-array>
@@ -81,9 +82,17 @@
         <item>Location</item>
         <item>Notes</item>
     </string-array>
+
+    <string-array name="tab_titles_landing">
+        <item>Recent</item>
+        <item>All</item>
+        <item>Favorite</item>
+    </string-array>
     <string name="title_activity_trip_exp_man">TripExpMan</string>
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="amount">Amount</string>
     <string name="date">Date</string>
     <string name="title_activity_notification">Notification</string>
+
+    <string name="client_search_title">Search client</string>
 </resources>
