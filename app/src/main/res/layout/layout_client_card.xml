@@ -40,6 +40,8 @@
                 android:padding="10dp"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
+                android:background="@null"
+                android:src="@drawable/ic_linkedin_box"
 
                 />
             <ImageButton
