@@ -99,6 +99,6 @@ public class LandingActivity extends BaseActivity implements ClientFragment.OnLi
 
     @Override
     public void onListFragmentInteraction(Client item) {
-        Toast.makeText(getApplicationContext(), item.getFirstName(), Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(), item.getFirstName()+item.getLastName(), Toast.LENGTH_LONG).show();
     }
 }

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    tools:context="com.appers.ayvaz.thetravelingsalesman.TaskActivity">
+
+    <CalendarView
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:id="@+id/calendarView2"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true" />
+
+    <SearchView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/searchView2"
+        android:layout_below="@id/calendarView2"
+        android:voiceSearchMode="showVoiceSearchButton|launchRecognizer"
+        android:layout_alignParentStart="false" />
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/task_list"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/searchView2"
+        android:layout_alignParentStart="true">
+
+    </android.support.v7.widget.RecyclerView>
+</RelativeLayout>

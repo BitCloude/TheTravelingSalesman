@@ -68,7 +68,7 @@ public class TaskAddActivity extends BaseActivity
 
 
         // Add tabs, specifying the tab's text and TabListener
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < tabTitles.length; i++) {
             TabLayout.Tab tab = tabLayout.newTab();
             tab.setText(tabTitles[i]);
             tab.setIcon(tabIcons[i]);

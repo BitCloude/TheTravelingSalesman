@@ -18,13 +18,13 @@
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
 
-    <style name="MyCustomTabLayout" parent="Widget.Design.TabLayout">
+    <style name="MyCustomTabLayout" parent="Base.Widget.Design.TabLayout">
         <!--item name="tabMaxWidth">@dimen/tab_max_width</item-->
         <item name="tabIndicatorColor">?attr/colorAccent</item>
-        <item name="tabIndicatorHeight">2dp</item>
+        <item name="tabIndicatorHeight">3dp</item>
         <item name="tabPaddingStart">12dp</item>
         <item name="tabPaddingEnd">12dp</item>
-        <item name="tabBackground">?attr/colorPrimary</item>
+        <!--item name="tabBackground">?attr/colorPrimary</item-->
         <item name="tabTextAppearance">@style/MyCustomTabTextAppearance</item>
         <item name="tabSelectedTextColor">@color/tabTextSelected</item>
     </style>
@@ -32,5 +32,10 @@
         <item name="android:textSize">14sp</item>
         <item name="android:textColor">@color/tabText</item>
         <item name="textAllCaps">true</item>
+    </style>
+
+    <style name="ImageButtonStyle" parent="Widget.AppCompat.Button">
+        <item name="android:layout_width">18dp</item>
+        <item name="android:layout_height">18dp</item>
     </style>
 </resources>

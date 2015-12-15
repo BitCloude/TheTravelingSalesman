@@ -1,4 +1,4 @@
-package com.appers.ayvaz.thetravelingsalesman;
+package com.appers.ayvaz.thetravelingsalesman.Adapters;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.appers.ayvaz.thetravelingsalesman.ClientFragment.OnListFragmentInteractionListener;
 import com.appers.ayvaz.thetravelingsalesman.Model.Client;
+import com.appers.ayvaz.thetravelingsalesman.R;
 
 import java.util.List;
 
@@ -16,12 +17,12 @@ import java.util.List;
  * specified {@link OnListFragmentInteractionListener}.
  * TODO: Replace the implementation with code for your data type.
  */
-public class MyClientRecyclerViewAdapter extends RecyclerView.Adapter<MyClientRecyclerViewAdapter.ViewHolder> {
+public class ClientRecyclerViewAdapter extends RecyclerView.Adapter<ClientRecyclerViewAdapter.ViewHolder> {
 
     private final List<Client> mValues;
     private final OnListFragmentInteractionListener mListener;
 
-    public MyClientRecyclerViewAdapter(List<Client> items, OnListFragmentInteractionListener listener) {
+    public ClientRecyclerViewAdapter(List<Client> items, OnListFragmentInteractionListener listener) {
         mValues = items;
         mListener = listener;
     }

@@ -13,12 +13,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/analogClock"
-        android:layout_alignParentTop="true"
+        android:layout_alignBottom="@+id/calendarView"
         android:layout_alignParentEnd="true" />
 
     <CalendarView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="160dp"
+        android:layout_height="180dp"
         android:id="@+id/calendarView"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true" />
@@ -29,7 +29,7 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Reminder"
         android:id="@+id/textView4"
-        android:layout_below="@+id/analogClock"
+        android:layout_centerVertical="true"
         android:layout_alignParentStart="true" />
 
     <TextView
@@ -38,21 +38,21 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Repeater"
         android:id="@+id/repeater_label"
-        android:layout_centerVertical="true"
-        android:layout_alignParentStart="true" />
+        android:layout_below="@+id/calendarView"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="106dp" />
 
     <Spinner
         android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:id="@+id/spinner3"
-        android:layout_below="@+id/analogClock"
-        android:layout_alignParentEnd="true"
-         />
+        android:layout_alignTop="@+id/textView4"
+        android:layout_toEndOf="@+id/calendarView" />
 
     <Spinner
         android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:id="@+id/spinner4"
         android:layout_alignTop="@+id/repeater_label"
-        android:layout_alignParentEnd="true"/>
+        android:layout_alignStart="@+id/spinner3" />
 </RelativeLayout>

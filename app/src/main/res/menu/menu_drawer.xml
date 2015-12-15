@@ -21,8 +21,6 @@
             android:id="@+id/nav_trip"
             android:title="@string/trip"/>
         <item
-            android:title="@string/conn_linkedin"/>
-        <item
             android:id="@+id/nav_reports"
             android:title="@string/reports"/>
         <item

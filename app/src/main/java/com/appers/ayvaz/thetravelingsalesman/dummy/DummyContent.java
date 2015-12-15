@@ -1,6 +1,7 @@
 package com.appers.ayvaz.thetravelingsalesman.dummy;
 
 import com.appers.ayvaz.thetravelingsalesman.Model.Client;
+import com.appers.ayvaz.thetravelingsalesman.Model.Task;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,6 +20,7 @@ public class DummyContent {
      * An array of sample (dummy) items.
      */
     public static final List<Client> ITEMS = new ArrayList<Client>();
+    public static final List<Task> TASKS = new ArrayList<>();
 
     /**
      * A map of sample (dummy) items, by ID.
@@ -31,6 +33,7 @@ public class DummyContent {
         // Add some sample items.
         for (int i = 1; i <= COUNT; i++) {
             addItem(createDummyItem(i));
+            TASKS.add(createDummyTask(i));
         }
     }
 
@@ -49,4 +52,8 @@ public class DummyContent {
     }
 
 
+    public static Task createDummyTask(int position) {
+        int day = 1 + position%30;
+        return new Task("10/"+day, "11/"+day);
+    }
 }

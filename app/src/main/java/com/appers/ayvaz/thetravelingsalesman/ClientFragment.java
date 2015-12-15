@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.appers.ayvaz.thetravelingsalesman.Adapters.ClientRecyclerViewAdapter;
 import com.appers.ayvaz.thetravelingsalesman.Model.Client;
 import com.appers.ayvaz.thetravelingsalesman.dummy.DummyContent;
 
@@ -67,7 +68,7 @@ public class ClientFragment extends Fragment {
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new MyClientRecyclerViewAdapter(DummyContent.ITEMS, mListener));
+            recyclerView.setAdapter(new ClientRecyclerViewAdapter(DummyContent.ITEMS, mListener));
         }
         return view;
     }

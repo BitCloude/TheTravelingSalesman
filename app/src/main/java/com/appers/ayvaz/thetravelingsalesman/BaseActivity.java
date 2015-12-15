@@ -17,6 +17,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import com.appers.ayvaz.thetravelingsalesman.Adapters.TaskInviteAdapter;
+
 public abstract class BaseActivity extends AppCompatActivity {
 
     DrawerLayout mDrawerLayout;
@@ -38,7 +40,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 //        mTitle = mDrawerTitle = getTitle();
         //navi view implementation
         mNavigationView = (NavigationView) findViewById(R.id.navi_menu);
-        setupDrawerContent(mNavigationView);
+
         mNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem item) {
@@ -77,19 +79,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
 
     }
-    private void setupDrawerContent(NavigationView navigationView) {
-        navigationView.setNavigationItemSelectedListener(
-                new NavigationView.OnNavigationItemSelectedListener() {
 
-                    @Override
-                    public boolean onNavigationItemSelected(MenuItem menuItem) {
-                        menuItem.setChecked(true);
-                        mDrawerLayout.closeDrawers();
-                        selectItem(menuItem.getItemId());
-                        return true;
-                    }
-                });
-    }
 
     private void selectItem(int itemId) {
 
@@ -98,7 +88,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         } else if (itemId == R.id.nav_trip) {
             startActivity(new Intent(this, TripExpMan.class));
         } else if (itemId == R.id.nav_tasks) {
-            startActivity(new Intent(this, TaskAddActivity.class));
+            startActivity(new Intent(this, TaskActivity.class));
         } else if (itemId == R.id.nav_notifications) {
             startActivity(new Intent(this, NotificationActivity.class));
         } else if (itemId == R.id.nav_clients) {

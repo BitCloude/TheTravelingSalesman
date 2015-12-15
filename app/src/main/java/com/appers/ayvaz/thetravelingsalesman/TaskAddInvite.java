@@ -77,10 +77,10 @@ public class TaskAddInvite extends Fragment {
         mRecyclerView = (RecyclerView) view.findViewById(R.id.invite_recycler_view);
         mRecyclerView.setHasFixedSize(true);
 
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
+//        mRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
 
         // TODO: put client data
-        mRecyclerView.setAdapter(new TaskInviteAdapter());
+//        mRecyclerView.setAdapter(new TaskInviteAdapter());
 
         return view;
     }

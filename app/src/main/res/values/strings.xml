@@ -13,7 +13,8 @@
     <string name="title_activity_reports">Reports</string>
     <string name="title_activity_task_add">Add a task</string>
     <string name="title_activity_landing">My Clients</string>
-
+    <string name="title_activity_notification">Notification</string>
+    <string name="title_activity_task">All Tasks</string>
 
     <string-array name="client_array">
         <item>Client1</item>
@@ -80,7 +81,7 @@
         <item>Time</item>
         <item>Invite</item>
         <item>Location</item>
-        <item>Notes</item>
+        <!--item>Notes</item-->
     </string-array>
 
     <string-array name="tab_titles_landing">
@@ -92,7 +93,6 @@
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="amount">Amount</string>
     <string name="date">Date</string>
-    <string name="title_activity_notification">Notification</string>
 
     <string name="client_search_title">Search client</string>
 </resources>
