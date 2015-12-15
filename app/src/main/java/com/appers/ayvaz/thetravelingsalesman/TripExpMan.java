@@ -66,6 +66,8 @@ public class TripExpMan extends BaseActivity {
         super.onCreate(savedInstanceState);
         ViewGroup viewStub = (ViewGroup) findViewById(R.id.view_stub);
         getLayoutInflater().inflate(R.layout.activity_trip_exp_man, viewStub);
+        ViewGroup appBar = (ViewGroup) findViewById(R.id.appbar);
+        getLayoutInflater().inflate(R.layout.layout_tab, appBar);
 
         setTitle("Trips and Expenses");
        /* Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -86,7 +88,7 @@ public class TripExpMan extends BaseActivity {
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabLayout);
         tabLayout.setupWithViewPager(mViewPager);
 
 
@@ -110,7 +112,7 @@ public class TripExpMan extends BaseActivity {
         //getMenuInflater().inflate(R.menu.menu_trip_exp_man, menu);
         menu.add(1, 66, 100, "ADD");
         //menu.findItem(11).setIcon(android.R.drawable.ic_menu_save);
-        menu.findItem(66).setIcon(android.R.drawable.ic_menu_add);
+        menu.findItem(66).setIcon(R.drawable.ic_add_white_24dp);
         menu.findItem(66).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
         return true;
     }

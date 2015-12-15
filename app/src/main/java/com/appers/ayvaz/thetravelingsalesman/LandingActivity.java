@@ -26,9 +26,9 @@ public class LandingActivity extends BaseActivity implements ClientFragment.OnLi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ViewGroup viewStub = (ViewGroup) findViewById(R.id.view_stub);
-        ViewGroup appBar = (ViewGroup) findViewById(R.id.appbar);
-
         getLayoutInflater().inflate(R.layout.activity_landing, viewStub);
+
+        ViewGroup appBar = (ViewGroup) findViewById(R.id.appbar);
         getLayoutInflater().inflate(R.layout.layout_tab, appBar);
         setTitle(R.string.title_activity_landing);
 //        viewStub.removeView(findViewById(R.id.appbar_shadow));
