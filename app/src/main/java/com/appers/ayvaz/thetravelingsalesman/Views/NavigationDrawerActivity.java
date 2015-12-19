@@ -1,29 +1,37 @@
-package com.appers.ayvaz.thetravelingsalesman;
+package com.appers.ayvaz.thetravelingsalesman.Views;
 
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
-public abstract class BaseActivity extends AppCompatActivity {
+import com.appers.ayvaz.thetravelingsalesman.LandingActivity;
+import com.appers.ayvaz.thetravelingsalesman.NotificationActivity;
+import com.appers.ayvaz.thetravelingsalesman.R;
+import com.appers.ayvaz.thetravelingsalesman.ReportsActivity;
+import com.appers.ayvaz.thetravelingsalesman.TaskListActivity;
+import com.appers.ayvaz.thetravelingsalesman.TripExpMan;
+
+public abstract class NavigationDrawerActivity extends AppCompatActivity {
 
     DrawerLayout mDrawerLayout;
-    CharSequence mTitle, mDrawerTitle;
     NavigationView mNavigationView;
     ActionBarDrawerToggle mDrawerToggle;
     private LinearLayout view_stub;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_base);
+        super.setContentView(R.layout.activity_base);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
@@ -31,8 +39,6 @@ public abstract class BaseActivity extends AppCompatActivity {
 
         // drawer stuff
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-//        mTitle = mDrawerTitle = getTitle();
-        //navi view implementation
         mNavigationView = (NavigationView) findViewById(R.id.navi_menu);
 
         mNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -64,13 +70,10 @@ public abstract class BaseActivity extends AppCompatActivity {
 
         mDrawerLayout.setDrawerListener(mDrawerToggle);
 
-
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setHomeButtonEnabled(true);
         }
-
-
 
     }
 
@@ -120,7 +123,7 @@ public abstract class BaseActivity extends AppCompatActivity {
       * so that, we can make other activity implementations looks like normal activity subclasses.
       */
 
-    /*
+
     @Override
     public void setContentView(int layoutResID) {
         if (view_stub != null) {
@@ -150,6 +153,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
     }
 
-    */
+
 
 }

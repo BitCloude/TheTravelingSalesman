@@ -7,9 +7,10 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.view.Menu;
-import android.view.ViewGroup;
 
-public class ClientActivity extends BaseActivity {
+import com.appers.ayvaz.thetravelingsalesman.Views.NavigationDrawerActivity;
+
+public class ClientActivity extends NavigationDrawerActivity {
 
     private FragmentPagerAdapter mFragmentPagerAdapter;
     private ViewPager mViewPager;
@@ -23,9 +24,9 @@ public class ClientActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_client);
-        ViewGroup vg = (ViewGroup) findViewById(R.id.view_stub);
-        getLayoutInflater().inflate(R.layout.activity_client, vg);
+        setContentView(R.layout.activity_client);
+//        ViewGroup vg = (ViewGroup) findViewById(R.id.view_stub);
+//        getLayoutInflater().inflate(R.layout.activity_client, vg);
         mViewPager = (ViewPager) findViewById(R.id.viewpager);
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabLayout);
         tabTitles = getResources().getStringArray(R.array.tab_titles_client);

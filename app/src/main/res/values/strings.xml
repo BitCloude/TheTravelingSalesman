@@ -83,7 +83,7 @@
         <item>Location</item>
         <!--item>Notes</item-->
     </string-array>
-
+    <string name="location">Location</string>
     <string-array name="tab_titles_landing">
         <item>Recent</item>
         <item>All</item>
