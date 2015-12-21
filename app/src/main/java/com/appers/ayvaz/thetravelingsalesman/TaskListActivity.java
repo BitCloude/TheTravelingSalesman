@@ -8,8 +8,6 @@ import android.view.ViewGroup;
 import android.widget.TableRow;
 import android.widget.TextView;
 
-import com.appers.ayvaz.thetravelingsalesman.Views.SingleFragmentActivity;
-
 import java.text.DateFormatSymbols;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -64,5 +62,11 @@ public class TaskListActivity extends SingleFragmentActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_tasks, menu);
         return true;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        checkMenu(R.id.nav_tasks);
     }
 }

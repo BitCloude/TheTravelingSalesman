@@ -11,12 +11,10 @@ import android.os.Bundle;
 import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
-import com.appers.ayvaz.thetravelingsalesman.Adapters.ClientRecyclerViewAdapter;
 import com.appers.ayvaz.thetravelingsalesman.Model.Client;
 
-public class LandingActivity extends BaseActivity implements ClientListFragment.OnListFragmentInteractionListener{
+public class LandingActivity extends NavigationDrawerActivity implements ClientListFragment.OnListFragmentInteractionListener {
 
     private ViewPager mViewPager;
     private String[] tabTitles;
@@ -25,14 +23,11 @@ public class LandingActivity extends BaseActivity implements ClientListFragment.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ViewGroup viewStub = (ViewGroup) findViewById(R.id.view_stub);
-        getLayoutInflater().inflate(R.layout.activity_landing, viewStub);
+        setContentView(R.layout.activity_landing);
 
         ViewGroup appBar = (ViewGroup) findViewById(R.id.appbar);
         getLayoutInflater().inflate(R.layout.layout_tab, appBar);
         setTitle(R.string.title_activity_landing);
-//        viewStub.removeView(findViewById(R.id.appbar_shadow));
-
 
         mViewPager = (ViewPager) findViewById(R.id.viewpager);
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabLayout);
@@ -95,6 +90,12 @@ public class LandingActivity extends BaseActivity implements ClientListFragment.
         //searchView.setIconifiedByDefault(false); // Do not iconify the widget; expand it by default
 
         return true;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        checkMenu(R.id.nav_clients);
     }
 
     @Override

@@ -6,16 +6,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.appers.ayvaz.thetravelingsalesman.Model.Client;
 import com.appers.ayvaz.thetravelingsalesman.Model.Task;
-import com.appers.ayvaz.thetravelingsalesman.Model.TaskList;
 import com.appers.ayvaz.thetravelingsalesman.R;
 import com.appers.ayvaz.thetravelingsalesman.TaskActivity;
-import com.appers.ayvaz.thetravelingsalesman.TaskFragment;
 import com.appers.ayvaz.thetravelingsalesman.TaskListFragment;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 /**
@@ -38,7 +35,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
     @Override
     public TaskAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.layout_task_card, parent, false);
+                .inflate(R.layout.layout_task_item, parent, false);
         return new ViewHolder(view);
     }
 
@@ -47,8 +44,9 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
         holder.mItem = mTasks.get(position);
         holder.mName.setText(holder.mItem.name);
         holder.mNote.setText(holder.mItem.note);
-        holder.mToDate.setText(holder.mItem.getEndDate().toString());
-        holder.mFromDate.setText(holder.mItem.getStartDate().toString());
+        SimpleDateFormat dt = new SimpleDateFormat("M-dd");
+        holder.mToDate.setText(dt.format(holder.mItem.getEndDate()));
+        holder.mFromDate.setText(dt.format(holder.mItem.getStartDate()));
 
 
     }

@@ -1,6 +1,5 @@
 package com.appers.ayvaz.thetravelingsalesman.Adapters;
 
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,12 +17,12 @@ import java.util.List;
  * specified {@link OnListFragmentInteractionListener}.
  * TODO: Replace the implementation with code for your data type.
  */
-public class ClientRecyclerViewAdapter extends RecyclerView.Adapter<ClientRecyclerViewAdapter.ViewHolder> {
+public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ViewHolder> {
 
     private final List<Client> mValues;
     private final OnListFragmentInteractionListener mListener;
 
-    public ClientRecyclerViewAdapter(List<Client> items, OnListFragmentInteractionListener listener) {
+    public ClientAdapter(List<Client> items, OnListFragmentInteractionListener listener) {
         mValues = items;
         mListener = listener;
     }
@@ -38,8 +37,8 @@ public class ClientRecyclerViewAdapter extends RecyclerView.Adapter<ClientRecycl
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-        holder.mName.setText(holder.mItem.getFirstName() + holder.mItem.getLastName());
-        holder.mCompanyPhone.setText(mValues.get(position).getCompany());
+        holder.mName.setText(holder.mItem.getFirstName() + " " + holder.mItem.getLastName());
+        holder.mCompanyPhone.setText(holder.mItem.getCompany() + " - " + holder.mItem.getMobile());
         holder.mEmail.setText(holder.mItem.getEmail());
 
         holder.mView.setOnClickListener(new View.OnClickListener() {

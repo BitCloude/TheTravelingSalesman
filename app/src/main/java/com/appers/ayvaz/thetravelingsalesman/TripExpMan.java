@@ -31,7 +31,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class TripExpMan extends BaseActivity {
+public class TripExpMan extends NavigationDrawerActivity {
 
 
     LinearLayout linearLayout;
@@ -64,8 +64,9 @@ public class TripExpMan extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ViewGroup viewStub = (ViewGroup) findViewById(R.id.view_stub);
-        getLayoutInflater().inflate(R.layout.activity_trip_exp_man, viewStub);
+        setContentView(R.layout.activity_trip_exp_man);
+//        ViewGroup viewStub = (ViewGroup) findViewById(R.id.view_stub);
+//        getLayoutInflater().inflate(R.layout.activity_trip_exp_man, viewStub);
         ViewGroup appBar = (ViewGroup) findViewById(R.id.appbar);
         getLayoutInflater().inflate(R.layout.layout_tab, appBar);
 
@@ -302,5 +303,11 @@ public class TripExpMan extends BaseActivity {
             }
             return null;
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        checkMenu(R.id.nav_trip);
     }
 }

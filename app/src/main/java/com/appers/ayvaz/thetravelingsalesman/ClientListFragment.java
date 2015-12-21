@@ -10,7 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.appers.ayvaz.thetravelingsalesman.Adapters.ClientRecyclerViewAdapter;
+import com.appers.ayvaz.thetravelingsalesman.Adapters.ClientAdapter;
 import com.appers.ayvaz.thetravelingsalesman.Model.Client;
 import com.appers.ayvaz.thetravelingsalesman.Model.DummyContent;
 
@@ -63,12 +63,15 @@ public class ClientListFragment extends Fragment {
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
             RecyclerView recyclerView = (RecyclerView) view;
+            recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST));
+            recyclerView.setHasFixedSize(true);
             if (mColumnCount <= 1) {
                 recyclerView.setLayoutManager(new LinearLayoutManager(context));
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new ClientRecyclerViewAdapter(DummyContent.getItems(), mListener));
+            recyclerView.setAdapter(new ClientAdapter(DummyContent.getItems(), mListener));
+
         }
         return view;
     }

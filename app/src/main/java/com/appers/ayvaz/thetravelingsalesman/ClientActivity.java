@@ -8,8 +8,6 @@ import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.view.Menu;
 
-import com.appers.ayvaz.thetravelingsalesman.Views.NavigationDrawerActivity;
-
 public class ClientActivity extends NavigationDrawerActivity {
 
     private FragmentPagerAdapter mFragmentPagerAdapter;

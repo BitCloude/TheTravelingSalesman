@@ -93,7 +93,7 @@
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="amount">Amount</string>
     <string name="date">Date</string>
-<string name="first_name">First Name</string>
+    <string name="first_name">First Name</string>
     <string name="last_name">Last Name</string>
     <string name="client_search_title">Search client</string>
 </resources>

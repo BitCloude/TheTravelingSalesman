@@ -1,11 +1,8 @@
-package com.appers.ayvaz.thetravelingsalesman.Views;
+package com.appers.ayvaz.thetravelingsalesman;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.os.Bundle;
-
-import com.appers.ayvaz.thetravelingsalesman.R;
-import com.appers.ayvaz.thetravelingsalesman.Views.NavigationDrawerActivity;
 
 public abstract class SingleFragmentActivity extends NavigationDrawerActivity {
 

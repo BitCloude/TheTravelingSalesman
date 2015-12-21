@@ -60,8 +60,8 @@ public class DummyContent {
         client.setFirstName("Anthony");
         client.setLastName("Cashmore");
         client.setEmail(makeDetails(position));
-        client.setMobile("415-523-1234");
-
+        client.setMobile("415-567-1234");
+        client.setCompany("Company Name");
         return client;
     }
 

@@ -1,4 +1,4 @@
-package com.appers.ayvaz.thetravelingsalesman.Views;
+package com.appers.ayvaz.thetravelingsalesman;
 
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -44,7 +44,7 @@ public abstract class NavigationDrawerActivity extends AppCompatActivity {
         mNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem item) {
-                item.setChecked(true);
+//                item.setChecked(true);
                 selectItem(item.getItemId());
                 mDrawerLayout.closeDrawers();
                 return true;
@@ -75,6 +75,11 @@ public abstract class NavigationDrawerActivity extends AppCompatActivity {
             actionBar.setHomeButtonEnabled(true);
         }
 
+    }
+
+    protected void checkMenu(int menuId) {
+        MenuItem currentItem = mNavigationView.getMenu().findItem(menuId);
+        currentItem.setChecked(true);
     }
 
 
