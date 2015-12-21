@@ -1,12 +1,13 @@
 package com.appers.ayvaz.thetravelingsalesman.Adapters;
 
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.appers.ayvaz.thetravelingsalesman.ClientFragment.OnListFragmentInteractionListener;
+import com.appers.ayvaz.thetravelingsalesman.ClientListFragment.OnListFragmentInteractionListener;
 import com.appers.ayvaz.thetravelingsalesman.Model.Client;
 import com.appers.ayvaz.thetravelingsalesman.R;
 
@@ -58,7 +59,7 @@ public class ClientRecyclerViewAdapter extends RecyclerView.Adapter<ClientRecycl
         return mValues.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder{
         public final View mView;
         public final TextView mName;
         public final TextView mCompanyPhone;
@@ -77,5 +78,7 @@ public class ClientRecyclerViewAdapter extends RecyclerView.Adapter<ClientRecycl
         public String toString() {
             return super.toString() + " '" + mName.getText() + "'";
         }
+
+
     }
 }

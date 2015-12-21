@@ -10,8 +10,11 @@ import android.widget.Toast;
 
 import com.appers.ayvaz.thetravelingsalesman.Model.Client;
 import com.appers.ayvaz.thetravelingsalesman.Model.Task;
+import com.appers.ayvaz.thetravelingsalesman.Model.TaskList;
 import com.appers.ayvaz.thetravelingsalesman.R;
 import com.appers.ayvaz.thetravelingsalesman.TaskActivity;
+import com.appers.ayvaz.thetravelingsalesman.TaskFragment;
+import com.appers.ayvaz.thetravelingsalesman.TaskListFragment;
 
 import java.util.List;
 
@@ -20,9 +23,10 @@ import java.util.List;
  */
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
     private List<Task> mTasks;
+    private TaskListFragment mFragment;
 
-
-    public TaskAdapter(List<Task> tasks) {
+    public TaskAdapter(List<Task> tasks, TaskListFragment fragment) {
+        mFragment = fragment;
         mTasks = tasks;
     }
 
@@ -75,8 +79,9 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
 
         @Override
         public void onClick(View v) {
-            Intent intent = TaskActivity.newIntent(v.getContext(), mItem.getId());
-            v.getContext().startActivity(intent);
+            Intent intent = TaskActivity.newIntent(mFragment.getActivity(), mItem.getId());
+            mFragment.mPosition = getAdapterPosition();
+            mFragment.startActivity(intent);
         }
     }
 }

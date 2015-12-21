@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 
 import com.appers.ayvaz.thetravelingsalesman.Adapters.ClientRecyclerViewAdapter;
 import com.appers.ayvaz.thetravelingsalesman.Model.Client;
-import com.appers.ayvaz.thetravelingsalesman.dummy.DummyContent;
+import com.appers.ayvaz.thetravelingsalesman.Model.DummyContent;
 
 /**
  * A fragment representing a list of Items.
@@ -20,7 +20,7 @@ import com.appers.ayvaz.thetravelingsalesman.dummy.DummyContent;
  * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
  * interface.
  */
-public class ClientFragment extends Fragment {
+public class ClientListFragment extends Fragment {
 
     // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
@@ -32,13 +32,13 @@ public class ClientFragment extends Fragment {
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public ClientFragment() {
+    public ClientListFragment() {
     }
 
     // TODO: Customize parameter initialization
     @SuppressWarnings("unused")
-    public static ClientFragment newInstance(int columnCount) {
-        ClientFragment fragment = new ClientFragment();
+    public static ClientListFragment newInstance(int columnCount) {
+        ClientListFragment fragment = new ClientListFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_COLUMN_COUNT, columnCount);
         fragment.setArguments(args);
@@ -57,7 +57,7 @@ public class ClientFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_client_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_list, container, false);
 
         // Set the adapter
         if (view instanceof RecyclerView) {
@@ -68,7 +68,7 @@ public class ClientFragment extends Fragment {
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new ClientRecyclerViewAdapter(DummyContent.ITEMS, mListener));
+            recyclerView.setAdapter(new ClientRecyclerViewAdapter(DummyContent.getItems(), mListener));
         }
         return view;
     }

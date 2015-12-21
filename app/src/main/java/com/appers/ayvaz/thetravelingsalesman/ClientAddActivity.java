@@ -1,7 +1,10 @@
 package com.appers.ayvaz.thetravelingsalesman;
 
 import android.app.DatePickerDialog;
+import android.content.Context;
+import android.content.Intent;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -10,20 +13,32 @@ import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
 
+import com.appers.ayvaz.thetravelingsalesman.Views.SingleFragmentActivity;
+
 import java.util.Calendar;
 
-public class ClientAddActivity extends AppCompatActivity {
+public class ClientAddActivity extends SingleFragmentActivity {
 
-    Toolbar toolbar;
+
+    private static final String EXTRA_CLIENT_ID = "com.appers.ayvaz.thetravelingsalesman.client_id";
+
+    public static Intent newIntent(Context packageContext, int clientId) {
+        Intent intent = new Intent(packageContext, ClientAddActivity.class);
+        intent.putExtra(EXTRA_CLIENT_ID, clientId);
+        return intent;
+    }
+
+    @Override
+    protected Fragment createFragment() {
+        int clientId = (int) getIntent().getSerializableExtra(EXTRA_CLIENT_ID);
+        return ClientAddFragment.newInstance(clientId);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_client_add);
+        super.setContentView(R.layout.activity_client_add);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setTitle(R.string.title_activity_client_add);
     }
 

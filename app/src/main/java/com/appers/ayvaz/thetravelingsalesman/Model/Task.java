@@ -33,7 +33,8 @@ public class Task {
         mId = UUID.randomUUID();
         startDate = new Date();
         endDate = new Date();
-        this.note = "Do something...........................................";
+        note = "Do something...........................................";
+        name = "Anthony Cashmore";
     }
 
     public Task(String fromDate, String toDate) {

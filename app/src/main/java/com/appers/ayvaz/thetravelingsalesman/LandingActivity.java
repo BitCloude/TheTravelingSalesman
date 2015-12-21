@@ -2,21 +2,21 @@ package com.appers.ayvaz.thetravelingsalesman;
 
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.Intent;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.support.v7.widget.SearchView;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.appers.ayvaz.thetravelingsalesman.Adapters.ClientRecyclerViewAdapter;
 import com.appers.ayvaz.thetravelingsalesman.Model.Client;
 
-public class LandingActivity extends BaseActivity implements ClientFragment.OnListFragmentInteractionListener{
+public class LandingActivity extends BaseActivity implements ClientListFragment.OnListFragmentInteractionListener{
 
     private ViewPager mViewPager;
     private String[] tabTitles;
@@ -40,7 +40,7 @@ public class LandingActivity extends BaseActivity implements ClientFragment.OnLi
         mFragmentPagerAdapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
             @Override
             public Fragment getItem(int position) {
-                return ClientFragment.newInstance(0);
+                return ClientListFragment.newInstance(0);
             }
 
             @Override
@@ -99,6 +99,7 @@ public class LandingActivity extends BaseActivity implements ClientFragment.OnLi
 
     @Override
     public void onListFragmentInteraction(Client item) {
-        Toast.makeText(getApplicationContext(), item.getFirstName()+item.getLastName(), Toast.LENGTH_LONG).show();
+        Intent intent = ClientAddActivity.newIntent(getApplicationContext(), item.getId());
+        startActivity(intent);
     }
 }

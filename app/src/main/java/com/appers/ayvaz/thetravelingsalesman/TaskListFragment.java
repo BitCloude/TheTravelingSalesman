@@ -1,5 +1,7 @@
 package com.appers.ayvaz.thetravelingsalesman;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -24,6 +26,8 @@ public class TaskListFragment extends Fragment {
 
     private TaskAdapter mTaskAdapter;
     private RecyclerView mRecyclerView;
+    private static final int REQUEST_TASK = 1;
+    public int mPosition;
 
     public TaskListFragment() {
         // Required empty public constructor
@@ -35,7 +39,6 @@ public class TaskListFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_list, container, false);
-
 
         //set up RecyclerView
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
@@ -49,12 +52,36 @@ public class TaskListFragment extends Fragment {
     private void updateUI() {
         TaskList taskList = TaskList.get(getActivity());
         List<Task> tasks = taskList.getTasks();
-        mTaskAdapter = new TaskAdapter(tasks);
-        mRecyclerView.setAdapter(mTaskAdapter);
+
+        if (mTaskAdapter == null) {
+            mTaskAdapter = new TaskAdapter(tasks, TaskListFragment.this);
+            mRecyclerView.setAdapter(mTaskAdapter);
+        } else {
+            if (mPosition < 0) {
+                mTaskAdapter.notifyDataSetChanged();
+            } else {
+                mTaskAdapter.notifyItemChanged(mPosition);
+            }
+
+        }
+
+    }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_TASK && resultCode == Activity.RESULT_OK) {
+            //
+        }
     }
 
 
 
-
-
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateUI();
+    }
+    
+    
 }

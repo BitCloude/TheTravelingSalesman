@@ -33,10 +33,6 @@
             android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".TaskAddActivity"
-            android:label="@string/title_activity_task_add"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
             android:name=".ReportsActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity

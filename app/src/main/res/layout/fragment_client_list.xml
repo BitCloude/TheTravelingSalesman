@@ -9,5 +9,5 @@
     android:layout_marginLeft="16dp"
     android:layout_marginRight="16dp"
     app:layoutManager="LinearLayoutManager"
-    tools:context="com.appers.ayvaz.thetravelingsalesman.ClientFragment"
+    tools:context=".ClientListFragment"
     tools:listitem="@layout/fragment_client" />
