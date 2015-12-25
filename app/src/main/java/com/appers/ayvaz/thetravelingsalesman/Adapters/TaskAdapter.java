@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.appers.ayvaz.thetravelingsalesman.Model.Task;
+import com.appers.ayvaz.thetravelingsalesman.MySingleton;
 import com.appers.ayvaz.thetravelingsalesman.R;
 import com.appers.ayvaz.thetravelingsalesman.TaskActivity;
 import com.appers.ayvaz.thetravelingsalesman.TaskListFragment;
@@ -44,9 +45,9 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
         holder.mItem = mTasks.get(position);
         holder.mName.setText(holder.mItem.name);
         holder.mNote.setText(holder.mItem.note);
-        SimpleDateFormat dt = new SimpleDateFormat("M-dd");
-        holder.mToDate.setText(dt.format(holder.mItem.getEndDate()));
-        holder.mFromDate.setText(dt.format(holder.mItem.getStartDate()));
+
+        holder.mToDate.setText(MySingleton.formatMed(holder.mItem.getEndDate().getTime()));
+        holder.mFromDate.setText(MySingleton.formatMed(holder.mItem.getStartDate().getTime()));
 
 
     }
