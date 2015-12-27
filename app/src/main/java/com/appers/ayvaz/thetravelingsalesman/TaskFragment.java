@@ -8,16 +8,20 @@ import android.support.v4.app.DialogFragment;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 
 import com.appers.ayvaz.thetravelingsalesman.Model.Task;
 import com.appers.ayvaz.thetravelingsalesman.Model.TaskList;
 
-import java.sql.Time;
+
 import java.util.Calendar;
 import java.util.Date;
 import java.util.UUID;
@@ -35,6 +39,7 @@ public class TaskFragment extends Fragment {
 
     private Task mTask;
     private Button mStartDate, mEndDate, mStartTime, mEndTime;
+    private EditText mNote, mLocation;
     private View.OnClickListener mDateListener, mTimeListener;
 
     public TaskFragment() {
@@ -52,6 +57,7 @@ public class TaskFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
         if (getArguments() != null) {
             UUID taskId = (UUID) getArguments().getSerializable(ARG_TASK_ID);
             mTask = TaskList.get(getContext()).getTask(taskId);
@@ -105,6 +111,9 @@ public class TaskFragment extends Fragment {
         mEndDate.setOnClickListener(mDateListener);
         mStartTime.setOnClickListener(mTimeListener);
         mEndTime.setOnClickListener(mTimeListener);
+        mNote = (EditText) view.findViewById(R.id.taskNote);
+        mLocation = (EditText) view.findViewById(R.id.taskLocation);
+        updateUI();
 
         return view;
     }
@@ -204,5 +213,29 @@ public class TaskFragment extends Fragment {
     private void makeErrorToast() {
         Toast.makeText(getContext(), "End time is earlier than start time", Toast.LENGTH_LONG)
                 .show();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_task, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_item_delete:
+                TaskList.get(getActivity()).deleteTask(mTask.getId());
+                getActivity().finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+
+    }
+
+    private void updateUI() {
+//        mLocation.setText();
+        mNote.setText(mTask.getNote());
     }
 }

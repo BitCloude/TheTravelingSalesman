@@ -89,6 +89,7 @@
         <item>All</item>
         <item>Favorite</item>
     </string-array>
+    <string name="note">Note</string>
     <string name="title_activity_trip_exp_man">TripExpMan</string>
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="amount">Amount</string>

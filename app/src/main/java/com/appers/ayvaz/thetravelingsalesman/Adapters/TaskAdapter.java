@@ -12,6 +12,7 @@ import com.appers.ayvaz.thetravelingsalesman.MySingleton;
 import com.appers.ayvaz.thetravelingsalesman.R;
 import com.appers.ayvaz.thetravelingsalesman.TaskActivity;
 import com.appers.ayvaz.thetravelingsalesman.TaskListFragment;
+import com.appers.ayvaz.thetravelingsalesman.TaskPagerActivity;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -43,8 +44,8 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(TaskAdapter.ViewHolder holder, int position) {
         holder.mItem = mTasks.get(position);
-        holder.mName.setText(holder.mItem.name);
-        holder.mNote.setText(holder.mItem.note);
+        holder.mName.setText(holder.mItem.getName());
+        holder.mNote.setText(holder.mItem.getNote());
 
         holder.mToDate.setText(MySingleton.formatMed(holder.mItem.getEndDate().getTime()));
         holder.mFromDate.setText(MySingleton.formatMed(holder.mItem.getStartDate().getTime()));
@@ -78,7 +79,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
 
         @Override
         public void onClick(View v) {
-            Intent intent = TaskActivity.newIntent(mFragment.getActivity(), mItem.getId());
+            Intent intent = TaskPagerActivity.newIntent(mFragment.getActivity(), mItem.getId());
             mFragment.mPosition = getAdapterPosition();
             mFragment.startActivity(intent);
         }

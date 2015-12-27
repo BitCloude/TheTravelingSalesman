@@ -11,8 +11,46 @@ import java.util.UUID;
 public class Task {
     private UUID mId;
 
+
+
+    private Calendar startDate;
+    private Calendar endDate;
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    private String name;
+    private String note;
+    private String location;
+//    public String fromDate;
+//    public String toDate;
+
+    public Task() {
+        mId = UUID.randomUUID();
+        startDate = GregorianCalendar.getInstance();
+        endDate = GregorianCalendar.getInstance();
+//        startDate.setTime(new Date());
+//        endDate.setTime(new Date());
+
+        note = mId.toString().substring(0, 3) + "Do something...........................................";
+        name = "Anthony Cashmore";
+    }
+
     public Calendar getStartDate() {
         return startDate;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public UUID getId() {
@@ -23,14 +61,9 @@ public class Task {
         return endDate;
     }
 
-    private Calendar startDate;
-    private Calendar endDate;
-
-    public String name;
-    public String note;
-    public String fromDate;
-    public String toDate;
-
+    public String getNote() {
+        return note;
+    }
     public void setStartDate(Calendar startDate) {
         this.startDate = startDate;
     }
@@ -59,18 +92,13 @@ public class Task {
         this.note = note;
     }
 
-    public Task() {
-        mId = UUID.randomUUID();
-        startDate = new GregorianCalendar();
-        endDate = new GregorianCalendar();
-        note = "Do something...........................................";
-        name = "Anthony Cashmore";
-    }
-
+/*
     public Task(String fromDate, String toDate) {
         this.name = "Anthony Cashmore";
         this.fromDate = fromDate;
         this.toDate = toDate;
         this.note = "Do something...........................................";
     }
+*/
+
 }

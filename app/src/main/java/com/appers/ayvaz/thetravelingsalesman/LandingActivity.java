@@ -25,6 +25,7 @@ public class LandingActivity extends NavigationDrawerActivity implements ClientL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_landing);
 
+
         ViewGroup appBar = (ViewGroup) findViewById(R.id.appbar);
         getLayoutInflater().inflate(R.layout.layout_tab, appBar);
         setTitle(R.string.title_activity_landing);

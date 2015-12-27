@@ -21,8 +21,7 @@ public class TaskList {
         map = new HashMap<>();
         for (int i = 0; i < 10; i++) {
             Task task = new Task();
-            mList.add(task);
-            map.put(task.getId(), task);
+            addTask(task);
         }
     }
 
@@ -41,5 +40,21 @@ public class TaskList {
 
     public List<Task> getTasks() {
         return mList;
+    }
+
+    public void addTask(Task task) {
+        mList.add(task);
+        map.put(task.getId(), task);
+    }
+
+    public boolean deleteTask(UUID id) {
+        Task task = map.get(id);
+        if (task != null) {
+            map.remove(id);
+            mList.remove(task);
+            return true;
+        }
+        return false;
+
     }
 }
