@@ -30,8 +30,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ClientAddActivity"
-            android:parentActivityName=".MainActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:parentActivityName=".MainActivity" />
         <activity
             android:name=".ReportsActivity"
             android:theme="@style/AppTheme.NoActionBar" />

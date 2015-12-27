@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">TheTravelingSalesman</string>
+    <string name="app_name">The Traveling Salesman</string>
     <string name="action_settings">Settings</string>
 
     <!-- titles -->
@@ -50,7 +50,7 @@
     <!-- Client details -->
     <string name="name">Name</string>
     <string name="email">Email</string>
-    <string name="phone">Mobile Number</string>
+    <string name="phone">Phone</string>
     <string name="address">Address</string>
     <string name="company">Company</string>
     <string name="designation">Designation</string>

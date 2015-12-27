@@ -12,7 +12,7 @@ import android.widget.EditText;
 
 import java.util.Calendar;
 
-public class ClientAddActivity extends SingleFragmentActivity {
+public class ClientAddActivity extends SingleFragmentActivityNoNav {
 
 
     private static final String EXTRA_CLIENT_ID = "com.appers.ayvaz.thetravelingsalesman.client_id";
@@ -32,7 +32,7 @@ public class ClientAddActivity extends SingleFragmentActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        super.setContentView(R.layout.activity_client_add);
+//        super.setContentView(R.layout.activity_client_add);
 
         setTitle(R.string.title_activity_client_add);
     }
@@ -43,19 +43,19 @@ public class ClientAddActivity extends SingleFragmentActivity {
         getMenuInflater().inflate(R.menu.menu_add, menu);
         return true;
     }
-
-    public void showDatePicker(View view) {
-        Calendar c = Calendar.getInstance();
-        int year = c.get(Calendar.YEAR);
-        int month = c.get(Calendar.MONTH);
-        int date = c.get(Calendar.DATE);
-        final EditText dateText = (EditText) findViewById(R.id.client_dob);
-        DatePickerDialog dialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                dateText.setText(monthOfYear + "/" + dayOfMonth+  "/" + year  );
-            }
-        }, year, month, date);
-        dialog.show();
-    }
+//
+//    public void showDatePicker(View view) {
+//        Calendar c = Calendar.getInstance();
+//        int year = c.get(Calendar.YEAR);
+//        int month = c.get(Calendar.MONTH);
+//        int date = c.get(Calendar.DATE);
+//        final EditText dateText = (EditText) findViewById(R.id.client_dob);
+//        DatePickerDialog dialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
+//            @Override
+//            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+//                dateText.setText(monthOfYear + "/" + dayOfMonth+  "/" + year  );
+//            }
+//        }, year, month, date);
+//        dialog.show();
+//    }
 }

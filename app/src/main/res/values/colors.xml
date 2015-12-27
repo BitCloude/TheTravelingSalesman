@@ -5,4 +5,6 @@
     <color name="colorAccent">#FFF176</color>
     <color name="tabTextSelected">#ffffff</color>
     <color name="tabText">#E0F7FA</color>
+    <color name="TextPrimary">#111111</color>
+    <color name="TextSecondary">#333333</color>
 </resources>
