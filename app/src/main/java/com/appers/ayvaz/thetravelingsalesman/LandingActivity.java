@@ -1,16 +1,11 @@
 package com.appers.ayvaz.thetravelingsalesman;
 
-import android.app.SearchManager;
-import android.content.Context;
-import android.content.Intent;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
-import android.support.v7.widget.SearchView;
 import android.util.Log;
-import android.view.Menu;
 import android.view.ViewGroup;
 
 import com.appers.ayvaz.thetravelingsalesman.Model.Client;

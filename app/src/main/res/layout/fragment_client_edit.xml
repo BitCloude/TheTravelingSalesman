@@ -1,4 +1,11 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:fadingEdge="none"
+    android:background="@color/background_primary">
+
+<RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -113,7 +120,8 @@
         android:ems="10"
         android:hint="@string/address"
         android:inputType="textPostalAddress"
-        android:layout_alignEnd="@+id/email" />
+        android:layout_alignEnd="@+id/email"
+        android:minLines="2" />
 
     <TextView
         android:id="@+id/companyLabel"
@@ -193,3 +201,4 @@
 
 </RelativeLayout>
 
+</ScrollView>

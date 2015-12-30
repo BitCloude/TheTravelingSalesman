@@ -9,7 +9,6 @@ import android.widget.Toast;
 import com.appers.ayvaz.thetravelingsalesman.ClientListFragment;
 import com.appers.ayvaz.thetravelingsalesman.database.ClientCursorWrapper;
 import com.appers.ayvaz.thetravelingsalesman.database.DatabaseHelper;
-import com.appers.ayvaz.thetravelingsalesman.database.DbSchema;
 import com.appers.ayvaz.thetravelingsalesman.database.DbSchema.ClientTable;
 
 import java.util.ArrayList;

@@ -13,7 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.appers.ayvaz.thetravelingsalesman.Adapters.TaskAdapter;
+import com.appers.ayvaz.thetravelingsalesman.adapter.TaskAdapter;
 import com.appers.ayvaz.thetravelingsalesman.Model.Task;
 import com.appers.ayvaz.thetravelingsalesman.Model.TaskList;
 

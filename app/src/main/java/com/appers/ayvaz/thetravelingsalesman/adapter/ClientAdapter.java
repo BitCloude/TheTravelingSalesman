@@ -1,4 +1,4 @@
-package com.appers.ayvaz.thetravelingsalesman.Adapters;
+package com.appers.ayvaz.thetravelingsalesman.adapter;
 
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;

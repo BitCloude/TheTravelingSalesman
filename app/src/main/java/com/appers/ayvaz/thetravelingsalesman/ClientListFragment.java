@@ -14,7 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.appers.ayvaz.thetravelingsalesman.Adapters.ClientAdapter;
+import com.appers.ayvaz.thetravelingsalesman.adapter.ClientAdapter;
 import com.appers.ayvaz.thetravelingsalesman.Model.Client;
 import com.appers.ayvaz.thetravelingsalesman.Model.ClientContent;
 

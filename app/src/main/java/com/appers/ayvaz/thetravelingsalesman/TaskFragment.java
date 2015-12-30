@@ -23,7 +23,6 @@ import com.appers.ayvaz.thetravelingsalesman.Model.TaskList;
 
 
 import java.util.Calendar;
-import java.util.Date;
 import java.util.UUID;
 
 public class TaskFragment extends Fragment {
@@ -192,21 +191,21 @@ public class TaskFragment extends Fragment {
     private void updateDate(int option) {
 
         if (option != 1) {
-            mStartDate.setText(MySingleton.formatMed(mTask.getStartDate().getTime()));
+            mStartDate.setText(DateTimeHelper.formatMed(mTask.getStartDate().getTime()));
         }
 
         if (option != 0) {
-            mEndDate.setText(MySingleton.formatMed(mTask.getEndDate().getTime()));
+            mEndDate.setText(DateTimeHelper.formatMed(mTask.getEndDate().getTime()));
         }
     }
 
     private void updateTime(int option) {
         if (option != 1) {
-            mStartTime.setText(MySingleton.formatTime(mTask.getStartDate().getTime()));
+            mStartTime.setText(DateTimeHelper.formatTime(mTask.getStartDate().getTime()));
         }
 
         if (option != 0) {
-            mEndTime.setText(MySingleton.formatTime(mTask.getEndDate().getTime()));
+            mEndTime.setText(DateTimeHelper.formatTime(mTask.getEndDate().getTime()));
         }
     }
 

@@ -7,7 +7,7 @@ import java.util.Locale;
 /**
  * Created by D on 12/24/2015.
  */
-public class MySingleton {
+public class DateTimeHelper {
     public static DateFormat getDateFormat() {
         return DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.getDefault());
     }
