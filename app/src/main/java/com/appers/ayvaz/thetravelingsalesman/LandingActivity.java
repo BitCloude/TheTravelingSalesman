@@ -8,7 +8,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.ViewGroup;
 
-import com.appers.ayvaz.thetravelingsalesman.Model.Client;
+import com.appers.ayvaz.thetravelingsalesman.model.Client;
 
 public class LandingActivity extends NavigationDrawerActivity implements ClientListFragment.OnListFragmentInteractionListener {
 

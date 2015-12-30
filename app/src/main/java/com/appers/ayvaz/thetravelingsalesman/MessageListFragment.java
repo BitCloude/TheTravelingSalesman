@@ -13,7 +13,7 @@ import android.view.ViewGroup;
 import android.widget.SimpleCursorAdapter;
 
 import com.appers.ayvaz.thetravelingsalesman.adapter.MessageAdapterSlow;
-import com.appers.ayvaz.thetravelingsalesman.Model.MessageBox;
+import com.appers.ayvaz.thetravelingsalesman.model.MessageBox;
 
 
 /**

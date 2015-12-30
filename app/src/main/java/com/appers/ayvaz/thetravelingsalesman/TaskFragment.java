@@ -18,8 +18,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 
-import com.appers.ayvaz.thetravelingsalesman.Model.Task;
-import com.appers.ayvaz.thetravelingsalesman.Model.TaskList;
+import com.appers.ayvaz.thetravelingsalesman.model.Task;
+import com.appers.ayvaz.thetravelingsalesman.model.TaskList;
 
 
 import java.util.Calendar;

@@ -7,7 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.appers.ayvaz.thetravelingsalesman.Model.Task;
+import com.appers.ayvaz.thetravelingsalesman.model.Task;
 import com.appers.ayvaz.thetravelingsalesman.DateTimeHelper;
 import com.appers.ayvaz.thetravelingsalesman.R;
 import com.appers.ayvaz.thetravelingsalesman.TaskListFragment;

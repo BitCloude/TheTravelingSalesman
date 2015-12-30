@@ -19,8 +19,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.appers.ayvaz.thetravelingsalesman.Model.Client;
-import com.appers.ayvaz.thetravelingsalesman.Model.ClientContent;
+import com.appers.ayvaz.thetravelingsalesman.model.Client;
+import com.appers.ayvaz.thetravelingsalesman.model.ClientContent;
 
 import java.util.UUID;
 

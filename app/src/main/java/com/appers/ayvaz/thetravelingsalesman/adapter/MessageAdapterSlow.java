@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.appers.ayvaz.thetravelingsalesman.DateTimeHelper;
 import com.appers.ayvaz.thetravelingsalesman.R;
-import com.appers.ayvaz.thetravelingsalesman.Model.SmsMms;
+import com.appers.ayvaz.thetravelingsalesman.model.SmsMms;
 
 import java.util.List;
 
