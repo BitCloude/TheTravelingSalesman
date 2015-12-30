@@ -15,7 +15,7 @@
         android:layout_alignParentTop="true"
         android:layout_marginRight="6dp"
         android:layout_marginBottom="6dp"
-        android:background="@drawable/avatar" />
+        android:src="@drawable/avatar" />
 
     <EditText
         android:id="@+id/firstName"

@@ -1,11 +1,14 @@
 package com.appers.ayvaz.thetravelingsalesman.Adapters;
 
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.appers.ayvaz.thetravelingsalesman.ClientEditActivity;
 import com.appers.ayvaz.thetravelingsalesman.ClientListFragment.OnListFragmentInteractionListener;
 import com.appers.ayvaz.thetravelingsalesman.Model.Client;
 import com.appers.ayvaz.thetravelingsalesman.R;
@@ -19,12 +22,17 @@ import java.util.List;
  */
 public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ViewHolder> {
 
-    private final List<Client> mValues;
-    private final OnListFragmentInteractionListener mListener;
+    List<Client> mClients;
+    private OnListFragmentInteractionListener mListener;
 
-    public ClientAdapter(List<Client> items, OnListFragmentInteractionListener listener) {
-        mValues = items;
+    public ClientAdapter(List<Client> items,
+                         OnListFragmentInteractionListener listener) {
+        mClients = items;
         mListener = listener;
+    }
+
+    public void setClients(List<Client> clients) {
+        mClients = clients;
     }
 
     @Override
@@ -36,34 +44,31 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ViewHolder
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        holder.mItem = mValues.get(position);
-        holder.mName.setText(holder.mItem.getFirstName() + " " + holder.mItem.getLastName());
-        holder.mCompanyPhone.setText(holder.mItem.getCompany() + " - " + holder.mItem.getMobile());
+        holder.mItem = mClients.get(position);
+        holder.mName.setText(holder.mItem.getFirstName() + " "
+                + holder.mItem.getLastName());
+        holder.mCompanyPhone.setText(holder.mItem.getCompany() + " - "
+                + holder.mItem.getFirstPhone());
         holder.mEmail.setText(holder.mItem.getEmail());
+        holder.mStar.setImageResource(holder.mItem.isStared() ? R.drawable.ic_star_yellow_500_24dp :
+                R.drawable.ic_star_outline_grey_500_18dp);
+        holder.mView.setOnClickListener(holder);
 
-        holder.mView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (null != mListener) {
-                    // Notify the active callbacks interface (the activity, if the
-                    // fragment is attached to one) that an item has been selected.
-                    mListener.onListFragmentInteraction(holder.mItem);
-                }
-            }
-        });
+
     }
 
     @Override
     public int getItemCount() {
-        return mValues.size();
+        return mClients.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         public final View mView;
         public final TextView mName;
         public final TextView mCompanyPhone;
         public final TextView mEmail;
         public Client mItem;
+        public final ImageButton mStar;
 
         public ViewHolder(View view) {
             super(view);
@@ -71,6 +76,7 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ViewHolder
             mName = (TextView) view.findViewById(R.id.client_name);
             mCompanyPhone = (TextView) view.findViewById(R.id.client_company);
             mEmail = (TextView) view.findViewById(R.id.client_email);
+            mStar = (ImageButton) view.findViewById(R.id.favorite);
         }
 
         @Override
@@ -79,5 +85,10 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ViewHolder
         }
 
 
+        @Override
+        public void onClick(View v) {
+            Intent intent = ClientEditActivity.newIntent(v.getContext(), mItem.getId());
+            v.getContext().startActivity(intent);
+        }
     }
 }

@@ -6,15 +6,41 @@ import android.widget.TextView;
 
 import com.appers.ayvaz.thetravelingsalesman.R;
 
-public class Client {
-    private final int id;
-    private String firstName, lastName, email, company, mobile, designation, note, group;
+import java.util.UUID;
 
-    public Client(int id) {
+public class Client {
+    private final UUID id;
+    private String firstName, lastName, email, company, firstPhone, secondPhone,
+            designation, note, group, address;
+    private boolean stared;
+
+    public Client() {
+        this(UUID.randomUUID());
+
+    }
+
+    public boolean isStared() {
+        return stared;
+    }
+
+    public void setStared(boolean stared) {
+        this.stared = stared;
+    }
+
+    public Client(UUID id) {
         this.id = id;
     }
 
-    public int getId() {return id;};
+    public UUID getId() {return id;};
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getAddress() {
+        return address;
+
+    }
 
     public String getLastName() {
         return lastName;
@@ -48,12 +74,20 @@ public class Client {
         this.group = group;
     }
 
-    public String getMobile() {
-        return mobile;
+    public String getFirstPhone() {
+        return firstPhone;
     }
 
-    public void setMobile(String mobile) {
-        this.mobile = mobile;
+    public String getSecondPhone() {
+        return secondPhone;
+    }
+
+    public void setSecondPhone(String phone) {
+        this.secondPhone = phone;
+    }
+
+    public void setFirstPhone(String mobile) {
+        this.firstPhone = mobile;
     }
 
     public String getNote() {

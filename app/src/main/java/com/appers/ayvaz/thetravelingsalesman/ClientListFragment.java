@@ -1,18 +1,24 @@
 package com.appers.ayvaz.thetravelingsalesman;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.appers.ayvaz.thetravelingsalesman.Adapters.ClientAdapter;
 import com.appers.ayvaz.thetravelingsalesman.Model.Client;
-import com.appers.ayvaz.thetravelingsalesman.Model.DummyContent;
+import com.appers.ayvaz.thetravelingsalesman.Model.ClientContent;
+
+import java.util.List;
 
 /**
  * A fragment representing a list of Items.
@@ -22,11 +28,15 @@ import com.appers.ayvaz.thetravelingsalesman.Model.DummyContent;
  */
 public class ClientListFragment extends Fragment {
 
+    public static final int RECENT = 0;
+    public static final int ALL = 1;
+    public static final int FAVORITE = 2;
     // TODO: Customize parameter argument names
-    private static final String ARG_COLUMN_COUNT = "column-count";
-    // TODO: Customize parameters
-    private int mColumnCount = 1;
+    private static final String ARG_RANGE = "list_range";
+    private int mRange = -1;
     private OnListFragmentInteractionListener mListener;
+    private ClientAdapter mAdapter;
+    private RecyclerView mRecyclerView;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -36,11 +46,10 @@ public class ClientListFragment extends Fragment {
     }
 
     // TODO: Customize parameter initialization
-    @SuppressWarnings("unused")
-    public static ClientListFragment newInstance(int columnCount) {
+    public static ClientListFragment newInstance(int arg) {
         ClientListFragment fragment = new ClientListFragment();
         Bundle args = new Bundle();
-        args.putInt(ARG_COLUMN_COUNT, columnCount);
+        args.putInt(ARG_RANGE, arg);
         fragment.setArguments(args);
         return fragment;
     }
@@ -48,9 +57,9 @@ public class ClientListFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        setHasOptionsMenu(true);
         if (getArguments() != null) {
-            mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
+            mRange = getArguments().getInt(ARG_RANGE);
         }
     }
 
@@ -60,25 +69,23 @@ public class ClientListFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_list, container, false);
 
         // Set the adapter
-        if (view instanceof RecyclerView) {
-            Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
-            if (mColumnCount <= 1) {
-                recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            } else {
-                recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
-            }
-            recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST));
-            recyclerView.setHasFixedSize(true);
-            recyclerView.setAdapter(new ClientAdapter(DummyContent.getItems(), mListener));
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
+        Context context = view.getContext();
 
-        }
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(context));
+
+        mRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST));
+        mRecyclerView.setHasFixedSize(true);
+        updateUI();
+
+
         return view;
     }
 
 
     @Override
     public void onAttach(Context context) {
+        Log.i("........", "onAttach()");
         super.onAttach(context);
         if (context instanceof OnListFragmentInteractionListener) {
             mListener = (OnListFragmentInteractionListener) context;
@@ -94,18 +101,49 @@ public class ClientListFragment extends Fragment {
         mListener = null;
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
+    @Override
+    public void onResume() {
+        Log.i("........", "onResume()");
+        super.onResume();
+        updateUI();
+    }
+
+    private void updateUI() {
+        ClientContent clientContent = ClientContent.get(getActivity());
+        List<Client> clients = clientContent.getClients(mRange);
+
+        if (mAdapter == null) {
+            mAdapter = new ClientAdapter(clients, mListener);
+            mRecyclerView.setAdapter(mAdapter);
+        } else {
+            mRecyclerView.setAdapter(mAdapter);
+            mAdapter.setClients(clients);
+            mAdapter.notifyDataSetChanged();
+        }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_client_list, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_add_person:
+                Intent intent = ClientEditActivity.newIntent(getActivity());
+                startActivity(intent);
+                return true;
+
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
     public interface OnListFragmentInteractionListener {
-        // TODO: Update argument type and name
+
         void onListFragmentInteraction(Client item);
     }
 }

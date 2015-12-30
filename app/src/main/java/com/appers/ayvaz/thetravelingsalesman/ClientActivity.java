@@ -80,7 +80,7 @@ public class ClientActivity extends NavigationDrawerActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_add, menu);
+        getMenuInflater().inflate(R.menu.menu_client_edit, menu);
         return true;
     }
 

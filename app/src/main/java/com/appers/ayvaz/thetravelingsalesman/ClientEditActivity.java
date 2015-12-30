@@ -1,32 +1,35 @@
 package com.appers.ayvaz.thetravelingsalesman;
 
-import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.View;
-import android.widget.DatePicker;
-import android.widget.EditText;
 
-import java.util.Calendar;
+import java.io.Serializable;
+import java.util.UUID;
 
-public class ClientAddActivity extends SingleFragmentActivityNoNav {
+public class ClientEditActivity extends SingleFragmentActivityNoNav {
 
 
     private static final String EXTRA_CLIENT_ID = "com.appers.ayvaz.thetravelingsalesman.client_id";
 
-    public static Intent newIntent(Context packageContext, int clientId) {
-        Intent intent = new Intent(packageContext, ClientAddActivity.class);
+
+    public static Intent newIntent(Context packageContext, UUID clientId) {
+        Intent intent = new Intent(packageContext, ClientEditActivity.class);
         intent.putExtra(EXTRA_CLIENT_ID, clientId);
+        return intent;
+    }
+
+    public static Intent newIntent(Context packageContext) {
+        Intent intent = new Intent(packageContext, ClientEditActivity.class);
         return intent;
     }
 
     @Override
     protected Fragment createFragment() {
-        int clientId = (int) getIntent().getSerializableExtra(EXTRA_CLIENT_ID);
-        return ClientAddFragment.newInstance(clientId);
+        Serializable s = getIntent().getSerializableExtra(EXTRA_CLIENT_ID);
+        UUID clientId = s == null ? null : (UUID) s;
+        return ClientEditFragment.newInstance(clientId);
     }
 
     @Override
@@ -37,12 +40,7 @@ public class ClientAddActivity extends SingleFragmentActivityNoNav {
         setTitle(R.string.title_activity_client_add);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_add, menu);
-        return true;
-    }
+
 //
 //    public void showDatePicker(View view) {
 //        Calendar c = Calendar.getInstance();

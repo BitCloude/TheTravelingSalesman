@@ -7,6 +7,8 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -94,7 +96,7 @@ public class TaskListFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.menu_new_task:
+            case R.id.action_new_task:
                 Task task = new Task();
                 TaskList.get(getActivity()).addTask(task);
                 Intent intent = TaskActivity.newIntent(getActivity(), task.getId());
@@ -103,5 +105,11 @@ public class TaskListFragment extends Fragment {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_tasks, menu);
     }
 }

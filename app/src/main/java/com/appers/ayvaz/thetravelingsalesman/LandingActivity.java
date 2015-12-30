@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.ViewGroup;
 
@@ -19,6 +20,8 @@ public class LandingActivity extends NavigationDrawerActivity implements ClientL
     private ViewPager mViewPager;
     private String[] tabTitles;
     private FragmentPagerAdapter mFragmentPagerAdapter;
+    private int[] rangeArg = {ClientListFragment.RECENT, ClientListFragment.ALL, ClientListFragment.FAVORITE};
+//    private ClientListFragment[] mFragments = new ClientListFragment[3];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +39,8 @@ public class LandingActivity extends NavigationDrawerActivity implements ClientL
         mFragmentPagerAdapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
             @Override
             public Fragment getItem(int position) {
-                return ClientListFragment.newInstance(0);
+                Log.i(".............", "getItem()");
+                return ClientListFragment.newInstance(rangeArg[position]);
             }
 
             @Override
@@ -64,6 +68,7 @@ public class LandingActivity extends NavigationDrawerActivity implements ClientL
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 mViewPager.setCurrentItem(tab.getPosition());
+
             }
 
             @Override
@@ -77,10 +82,10 @@ public class LandingActivity extends NavigationDrawerActivity implements ClientL
             }
         });
     }
-
+/*
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_landing, menu);
+        getMenuInflater().inflate(R.menu.menu_client_list, menu);
 
         // Get the SearchView and set the searchable configuration
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
@@ -91,7 +96,7 @@ public class LandingActivity extends NavigationDrawerActivity implements ClientL
         //searchView.setIconifiedByDefault(false); // Do not iconify the widget; expand it by default
 
         return true;
-    }
+    }*/
 
     @Override
     protected void onResume() {
@@ -101,7 +106,6 @@ public class LandingActivity extends NavigationDrawerActivity implements ClientL
 
     @Override
     public void onListFragmentInteraction(Client item) {
-        Intent intent = ClientAddActivity.newIntent(getApplicationContext(), item.getId());
-        startActivity(intent);
+
     }
 }

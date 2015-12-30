@@ -58,11 +58,7 @@ public class TaskListActivity extends SingleFragmentActivity {
 
 
     }
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_tasks, menu);
-        return true;
-    }
+
 
     @Override
     protected void onResume() {
