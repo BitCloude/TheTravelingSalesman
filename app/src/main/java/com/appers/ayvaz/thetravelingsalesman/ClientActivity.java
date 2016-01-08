@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.provider.CalendarContract;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
@@ -14,16 +15,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
-import com.appers.ayvaz.thetravelingsalesman.model.Client;
-import com.appers.ayvaz.thetravelingsalesman.model.ClientContent;
+import com.appers.ayvaz.thetravelingsalesman.dialog.DeleteAlertDialogFragment;
+import com.appers.ayvaz.thetravelingsalesman.Model.Client;
+import com.appers.ayvaz.thetravelingsalesman.Model.ClientContent;
 
 import java.util.UUID;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class ClientActivity extends NavigationDrawerActivity {
+public class ClientActivity extends NavigationDrawerActivity implements DeleteAlertDialogFragment
+        .NoticeDialogListener{
+
+
 
     interface ClientChanged {
         void updateUI(Client client);
@@ -37,6 +43,8 @@ public class ClientActivity extends NavigationDrawerActivity {
     private UUID mClientId;
     private Client mClient;
     private static final String EXTRA_CLIENT_ID = "client_id";
+    private static final String DIALOG_DELETE = "DialogDelete";
+    private final int REQUEST_DELETE = 2;
     private final int REQUEST_EDIT = 0;
     private ClientChanged[] fragments;
     @Bind (R.id.editNewTask) EditText mEditNewTask;
@@ -151,7 +159,10 @@ public class ClientActivity extends NavigationDrawerActivity {
     * */
     private void updateCallnText() {
         for (int i = 1; i < 3; i++) {
-            fragments[i].updateUI(mClient);
+            if (fragments[i] != null) {
+                fragments[i].updateUI(mClient);
+            }
+
         }
     }
 
@@ -169,17 +180,36 @@ public class ClientActivity extends NavigationDrawerActivity {
 
 
     @Override
+    public void onDialogPositiveClick(android.support.v4.app.DialogFragment dialog) {
+        if (ClientContent.get(getApplicationContext()).delete(mClientId)) {
+            Toast.makeText(this, "Client deleted", Toast.LENGTH_LONG).show();
+            finish();
+        }
+    }
+
+    @Override
+    public void onDialogNegativeClick(android.support.v4.app.DialogFragment dialog) {
+
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()) {
             case R.id.action_edit:
                 Intent intent = ClientEditActivity.newIntent(getApplicationContext(), mClientId);
                 startActivityForResult(intent, REQUEST_EDIT);
-
+                return true;
             case R.id.action_star:
                 mClient.setStared(!mClient.isStared());
                 updateActionBar();
-
                 return true;
+
+            case R.id.action_delete:
+                FragmentManager manager = getSupportFragmentManager();
+                DeleteAlertDialogFragment dialog = DeleteAlertDialogFragment.newInstance("client");
+                dialog.show(manager, DIALOG_DELETE);
+                return true;
+
             default:return super.onOptionsItemSelected(item);
         }
     }

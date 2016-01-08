@@ -13,8 +13,7 @@
         <item
             android:id="@+id/nav_reminders"
             android:title="@string/reminders"/>
-        <item
-            android:title="@string/message"/>
+
         <item
             android:title="@string/expense"/>
         <item

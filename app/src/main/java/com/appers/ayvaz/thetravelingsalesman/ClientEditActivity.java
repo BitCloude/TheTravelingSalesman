@@ -12,7 +12,7 @@ public class ClientEditActivity extends SingleFragmentActivityNoNav {
 
 
     private static final String EXTRA_CLIENT_ID = "com.appers.ayvaz.thetravelingsalesman.client_id";
-
+    private UUID mClientId;
 
     public static Intent newIntent(Context packageContext, UUID clientId) {
         Intent intent = new Intent(packageContext, ClientEditActivity.class);
@@ -28,8 +28,8 @@ public class ClientEditActivity extends SingleFragmentActivityNoNav {
     @Override
     protected Fragment createFragment() {
         Serializable s = getIntent().getSerializableExtra(EXTRA_CLIENT_ID);
-        UUID clientId = s == null ? null : (UUID) s;
-        return ClientEditFragment.newInstance(clientId);
+        mClientId = s == null ? null : (UUID) s;
+        return ClientEditFragment.newInstance(mClientId);
     }
 
     @Override
@@ -37,7 +37,9 @@ public class ClientEditActivity extends SingleFragmentActivityNoNav {
         super.onCreate(savedInstanceState);
 //        super.setContentView(R.layout.activity_client_add);
 
-        setTitle(R.string.title_activity_client_add);
+        setTitle(R.string.title_activity_client_edit);
+
+
     }
 
 

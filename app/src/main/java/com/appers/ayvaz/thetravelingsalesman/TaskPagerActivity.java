@@ -9,8 +9,8 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 
-import com.appers.ayvaz.thetravelingsalesman.model.Task;
-import com.appers.ayvaz.thetravelingsalesman.model.TaskList;
+import com.appers.ayvaz.thetravelingsalesman.Model.Task;
+import com.appers.ayvaz.thetravelingsalesman.Model.TaskList;
 
 import java.util.List;
 import java.util.UUID;

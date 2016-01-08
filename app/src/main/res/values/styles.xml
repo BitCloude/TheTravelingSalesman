@@ -45,7 +45,7 @@
     </style>
 
     <style name="ItemTextStylePrimary" parent="TextAppearance.AppCompat.Medium">
-        <item name="android:textSize">20sp</item>
+        <item name="android:textSize">17sp</item>
         <item name="android:textColor">@color/TextPrimary</item>
         <item name="textAllCaps">true</item>
     </style>

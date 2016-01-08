@@ -6,8 +6,8 @@
         android:name="android.hardware.camera"
         android:required="false" />
 
-    <uses-permission android:name="android.permission.READ_SMS"/>
-    <uses-permission android:name="android.permission.READ_CALL_LOG"/>
+    <uses-permission android:name="android.permission.READ_SMS" />
+    <uses-permission android:name="android.permission.READ_CALL_LOG" />
 
     <application
         android:allowBackup="true"
@@ -59,15 +59,13 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ClientActivity"
-            android:theme="@style/AppTheme.NoActionBar">
-
-
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
             android:name=".LandingActivity"
-            android:theme="@style/AppTheme.NoActionBar" >
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -83,12 +81,19 @@
         <activity
             android:name=".TaskListWithCalendar"
             android:label="@string/title_activity_task_list_with_calendar"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name=".TaskList"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ClientInfoActivity"
+            android:label="@string/title_activity_client_info"
+            android:parentActivityName=".LandingActivity"
             android:theme="@style/AppTheme.NoActionBar">
-
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.appers.ayvaz.thetravelingsalesman.LandingActivity" />
         </activity>
-        <activity android:name=".TaskList"
-            android:theme="@style/AppTheme.NoActionBar"
-            ></activity>
     </application>
 
 </manifest>

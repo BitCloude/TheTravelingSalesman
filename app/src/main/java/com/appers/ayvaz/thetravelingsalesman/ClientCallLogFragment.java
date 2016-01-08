@@ -15,10 +15,11 @@ import android.widget.ImageView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
-import com.appers.ayvaz.thetravelingsalesman.model.CallEntry;
-import com.appers.ayvaz.thetravelingsalesman.model.Client;
-import com.appers.ayvaz.thetravelingsalesman.model.MessageBox;
+import com.appers.ayvaz.thetravelingsalesman.Model.CallEntry;
+import com.appers.ayvaz.thetravelingsalesman.Model.Client;
+import com.appers.ayvaz.thetravelingsalesman.Model.MessageBox;
 import com.appers.ayvaz.thetravelingsalesman.utils.DateTimeHelper;
+import com.appers.ayvaz.thetravelingsalesman.view.DividerItemDecoration;
 
 import java.util.List;
 
@@ -85,6 +86,8 @@ public class ClientCallLogFragment extends Fragment implements ClientActivity.Cl
         ButterKnife.bind(this, view);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        mRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(),
+                DividerItemDecoration.VERTICAL_LIST));
         mRecyclerView.setHasFixedSize(true);
         updateUI();
         return view;

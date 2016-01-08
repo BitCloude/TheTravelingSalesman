@@ -29,10 +29,10 @@ import butterknife.ButterKnife;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link ClientEditFragment#newInstance} factory method to
+ * Use the {@link ClientInfoFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ClientEditFragment extends Fragment {
+public class ClientInfoFragment extends Fragment {
     // parameter arguments, choose names that match
     private static final String ARG_CLIENT_ID = "client_id";
     private static final int REQUEST_IMAGE_CAPTURE = 1;
@@ -57,7 +57,7 @@ public class ClientEditFragment extends Fragment {
 
 
 
-    public ClientEditFragment() {
+    public ClientInfoFragment() {
         // Required empty public constructor
     }
 
@@ -68,8 +68,8 @@ public class ClientEditFragment extends Fragment {
 
      * @return A new instance of fragment ClientEditFragment.
      */
-    public static ClientEditFragment newInstance(UUID clientId) {
-        ClientEditFragment fragment = new ClientEditFragment();
+    public static ClientInfoFragment newInstance(UUID clientId) {
+        ClientInfoFragment fragment = new ClientInfoFragment();
         if (clientId != null) {
             Bundle args = new Bundle();
             args.putSerializable(ARG_CLIENT_ID, clientId);
@@ -117,7 +117,7 @@ public class ClientEditFragment extends Fragment {
     private void setPhoto() {
         FragmentManager manager = getFragmentManager();
         PickOrTakePhotoFragment dialog = new PickOrTakePhotoFragment();
-        dialog.setTargetFragment(ClientEditFragment.this, REQUEST_PICK_OR_CAPTURE);
+        dialog.setTargetFragment(ClientInfoFragment.this, REQUEST_PICK_OR_CAPTURE);
         dialog.show(manager, DIALOG_PHOTO);
     }
 
