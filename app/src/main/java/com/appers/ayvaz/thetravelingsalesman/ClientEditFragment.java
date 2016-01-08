@@ -21,8 +21,8 @@ import android.widget.Toast;
 
 import com.appers.ayvaz.thetravelingsalesman.dialog.DeleteAlertDialogFragment;
 import com.appers.ayvaz.thetravelingsalesman.dialog.PickOrTakePhotoFragment;
-import com.appers.ayvaz.thetravelingsalesman.modell.Client;
-import com.appers.ayvaz.thetravelingsalesman.modell.ClientContent;
+import com.appers.ayvaz.thetravelingsalesman.model.Client;
+import com.appers.ayvaz.thetravelingsalesman.model.ClientContent;
 
 import java.util.UUID;
 

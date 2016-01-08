@@ -15,9 +15,9 @@ import android.widget.ImageView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
-import com.appers.ayvaz.thetravelingsalesman.modell.CallEntry;
-import com.appers.ayvaz.thetravelingsalesman.modell.Client;
-import com.appers.ayvaz.thetravelingsalesman.modell.MessageBox;
+import com.appers.ayvaz.thetravelingsalesman.model.CallEntry;
+import com.appers.ayvaz.thetravelingsalesman.model.Client;
+import com.appers.ayvaz.thetravelingsalesman.model.MessageBox;
 import com.appers.ayvaz.thetravelingsalesman.utils.DateTimeHelper;
 
 import java.util.List;

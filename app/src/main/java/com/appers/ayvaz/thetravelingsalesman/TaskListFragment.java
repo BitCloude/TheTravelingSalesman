@@ -14,8 +14,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.appers.ayvaz.thetravelingsalesman.adapter.TaskAdapter;
-import com.appers.ayvaz.thetravelingsalesman.modell.Task;
-import com.appers.ayvaz.thetravelingsalesman.modell.TaskList;
+import com.appers.ayvaz.thetravelingsalesman.model.Task;
+import com.appers.ayvaz.thetravelingsalesman.model.TaskList;
 import com.appers.ayvaz.thetravelingsalesman.view.DividerItemDecoration;
 import com.wefika.calendar.CollapseCalendarView;
 

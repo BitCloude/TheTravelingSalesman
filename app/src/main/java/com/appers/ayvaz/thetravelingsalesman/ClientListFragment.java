@@ -14,8 +14,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.appers.ayvaz.thetravelingsalesman.adapter.ClientAdapter;
-import com.appers.ayvaz.thetravelingsalesman.modell.Client;
-import com.appers.ayvaz.thetravelingsalesman.modell.ClientContent;
+import com.appers.ayvaz.thetravelingsalesman.model.Client;
+import com.appers.ayvaz.thetravelingsalesman.model.ClientContent;
 import com.appers.ayvaz.thetravelingsalesman.view.DividerItemDecoration;
 
 import java.util.List;

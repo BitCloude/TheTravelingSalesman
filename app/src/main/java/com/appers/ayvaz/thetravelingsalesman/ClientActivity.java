@@ -15,8 +15,8 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
-import com.appers.ayvaz.thetravelingsalesman.modell.Client;
-import com.appers.ayvaz.thetravelingsalesman.modell.ClientContent;
+import com.appers.ayvaz.thetravelingsalesman.model.Client;
+import com.appers.ayvaz.thetravelingsalesman.model.ClientContent;
 
 import java.util.UUID;
 

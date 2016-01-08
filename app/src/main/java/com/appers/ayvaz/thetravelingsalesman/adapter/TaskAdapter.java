@@ -10,7 +10,7 @@ import android.widget.TextView;
 import com.appers.ayvaz.thetravelingsalesman.R;
 import com.appers.ayvaz.thetravelingsalesman.TaskListFragment;
 import com.appers.ayvaz.thetravelingsalesman.TaskPagerActivity;
-import com.appers.ayvaz.thetravelingsalesman.modell.Task;
+import com.appers.ayvaz.thetravelingsalesman.model.Task;
 import com.appers.ayvaz.thetravelingsalesman.utils.DateTimeHelper;
 
 import java.util.List;

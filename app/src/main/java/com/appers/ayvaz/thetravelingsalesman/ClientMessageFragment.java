@@ -10,8 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.appers.ayvaz.thetravelingsalesman.adapter.MessageAdapterSlow;
-import com.appers.ayvaz.thetravelingsalesman.modell.Client;
-import com.appers.ayvaz.thetravelingsalesman.modell.MessageBox;
+import com.appers.ayvaz.thetravelingsalesman.model.Client;
+import com.appers.ayvaz.thetravelingsalesman.model.MessageBox;
 
 import java.util.UUID;
 
