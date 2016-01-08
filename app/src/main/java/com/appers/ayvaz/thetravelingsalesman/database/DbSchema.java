@@ -17,7 +17,11 @@ public class DbSchema {
             public static final String ADDRESS = "address";
             public static final String NOTE = "note";
             public static final String STARED = "stared";
+            public static final String LINKEDIN = "linkedin";
+            public static final String IMAGE = "img";
 
         }
     }
+
+
 }

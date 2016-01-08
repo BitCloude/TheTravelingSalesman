@@ -1,4 +1,4 @@
-package com.appers.ayvaz.thetravelingsalesman.Model;
+package com.appers.ayvaz.thetravelingsalesman.modell;
 
 import android.database.Cursor;
 
@@ -8,9 +8,9 @@ import java.util.Date;
 /**
  * Created by D on 030 12/30.
  */
-public class SmsMms implements Comparable<SmsMms> {
+public class MyMessage implements Comparable<MyMessage> {
     @Override
-    public int compareTo(SmsMms another) {
+    public int compareTo(MyMessage another) {
 
         if (time.equals(another.getTime())) {
             return 0;
@@ -47,8 +47,8 @@ public class SmsMms implements Comparable<SmsMms> {
 
 
 
-    public static SmsMms fromCursor(Cursor cursor, int type) {
-        SmsMms msg = new SmsMms();
+    public static MyMessage fromCursor(Cursor cursor, int type) {
+        MyMessage msg = new MyMessage();
         // // TODO: more attributes
         msg.body = cursor.getString(cursor.getColumnIndex(Cols.BODY));
         msg.address = cursor.getString(cursor.getColumnIndex(Cols.ADDRESS));

@@ -7,11 +7,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.appers.ayvaz.thetravelingsalesman.model.Task;
-import com.appers.ayvaz.thetravelingsalesman.DateTimeHelper;
 import com.appers.ayvaz.thetravelingsalesman.R;
 import com.appers.ayvaz.thetravelingsalesman.TaskListFragment;
 import com.appers.ayvaz.thetravelingsalesman.TaskPagerActivity;
+import com.appers.ayvaz.thetravelingsalesman.modell.Task;
+import com.appers.ayvaz.thetravelingsalesman.utils.DateTimeHelper;
 
 import java.util.List;
 
@@ -45,8 +45,8 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
         holder.mName.setText(holder.mItem.getName());
         holder.mNote.setText(holder.mItem.getNote());
 
-        holder.mToDate.setText(DateTimeHelper.formatMed(holder.mItem.getEndDate().getTime()));
-        holder.mFromDate.setText(DateTimeHelper.formatMed(holder.mItem.getStartDate().getTime()));
+        holder.mToDate.setText(DateTimeHelper.formatMed(holder.mItem.getEndTime().getTime()));
+        holder.mFromDate.setText(DateTimeHelper.formatMed(holder.mItem.getBeginTime().getTime()));
 
 
     }

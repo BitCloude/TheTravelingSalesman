@@ -14,8 +14,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.appers.ayvaz.thetravelingsalesman.adapter.TaskAdapter;
-import com.appers.ayvaz.thetravelingsalesman.model.Task;
-import com.appers.ayvaz.thetravelingsalesman.model.TaskList;
+import com.appers.ayvaz.thetravelingsalesman.modell.Task;
+import com.appers.ayvaz.thetravelingsalesman.modell.TaskList;
+import com.appers.ayvaz.thetravelingsalesman.view.DividerItemDecoration;
+import com.wefika.calendar.CollapseCalendarView;
+
+import org.joda.time.LocalDate;
 
 import java.util.List;
 
@@ -24,17 +28,22 @@ import java.util.List;
  * A simple {@link Fragment} subclass.
 
  */
-public class TaskListFragment extends Fragment {
+public class TaskListFragment extends Fragment{
 
 
     private TaskAdapter mTaskAdapter;
     private RecyclerView mRecyclerView;
     private static final int REQUEST_TASK = 1;
     public int mPosition;
+    private CollapseCalendarView mCollapseCalendarView;
+    private int scrolledDistance = 0;
+
+    private final int HIDE_THRESHOLD = 80;
 
     public TaskListFragment() {
         // Required empty public constructor
     }
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -47,13 +56,46 @@ public class TaskListFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_list, container, false);
+        mCollapseCalendarView = (CollapseCalendarView) getActivity().findViewById(R.id.calendar);
+        mCollapseCalendarView.setListener(new CollapseCalendarView.OnDateSelect() {
+            @Override
+            public void onDateSelected(LocalDate localDate) {
+                changeRange(localDate);
+            }
+        });
 
         //set up RecyclerView
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST));
         mRecyclerView.setHasFixedSize(true);
+        /*
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                CalendarManager manager = mCollapseCalendarView.getManager();
+                boolean controlsVisible = manager.getState() == CalendarManager.State.MONTH;
+                if (scrolledDistance > HIDE_THRESHOLD && controlsVisible){
+                    manager.toggleView();
+                    mCollapseCalendarView.populateLayout();
+                    scrolledDistance = 0;
+                }else if (scrolledDistance < -HIDE_THRESHOLD && !controlsVisible ) {
+                    manager.toggleView();
+                    mCollapseCalendarView.populateLayout();
+                    scrolledDistance = 0;
+                }
+
+                if ((controlsVisible && dy > 0) || (!controlsVisible && dy < 0)) {
+                    scrolledDistance += dy;
+                }
+
+                Log.i(".................", (dy > 0 ? "up" : "down") +
+                        (manager.getState() == CalendarManager.State.WEEK ? "week" : "month"));
+            }
+        });*/
         updateUI();
+
 
         return view;
     }
@@ -72,10 +114,15 @@ public class TaskListFragment extends Fragment {
             } else {
                 mTaskAdapter.notifyItemChanged(mPosition);
             }
-
         }
 
     }
+
+    private void changeRange(LocalDate localDate) {
+        // when user click a date, change the adapter
+    }
+
+
 
 
     @Override
@@ -112,4 +159,6 @@ public class TaskListFragment extends Fragment {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu_tasks, menu);
     }
+
+
 }

@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -15,26 +14,25 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.appers.ayvaz.thetravelingsalesman.adapter.ClientAdapter;
-import com.appers.ayvaz.thetravelingsalesman.model.Client;
-import com.appers.ayvaz.thetravelingsalesman.model.ClientContent;
+import com.appers.ayvaz.thetravelingsalesman.modell.Client;
+import com.appers.ayvaz.thetravelingsalesman.modell.ClientContent;
+import com.appers.ayvaz.thetravelingsalesman.view.DividerItemDecoration;
 
 import java.util.List;
 
 /**
  * A fragment representing a list of Items.
  * <p/>
- * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
- * interface.
+
  */
 public class ClientListFragment extends Fragment {
 
     public static final int RECENT = 0;
     public static final int ALL = 1;
     public static final int FAVORITE = 2;
-    // TODO: Customize parameter argument names
     private static final String ARG_RANGE = "list_range";
     private int mRange = -1;
-    private OnListFragmentInteractionListener mListener;
+
     private ClientAdapter mAdapter;
     private RecyclerView mRecyclerView;
 
@@ -74,7 +72,8 @@ public class ClientListFragment extends Fragment {
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(context));
 
-        mRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST));
+        mRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(),
+                DividerItemDecoration.VERTICAL_LIST));
         mRecyclerView.setHasFixedSize(true);
         updateUI();
 
@@ -85,25 +84,19 @@ public class ClientListFragment extends Fragment {
 
     @Override
     public void onAttach(Context context) {
-        Log.i("........", "onAttach()");
+
         super.onAttach(context);
-        if (context instanceof OnListFragmentInteractionListener) {
-            mListener = (OnListFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnListFragmentInteractionListener");
-        }
+
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
     }
 
     @Override
     public void onResume() {
-        Log.i("........", "onResume()");
+
         super.onResume();
         updateUI();
     }
@@ -113,12 +106,13 @@ public class ClientListFragment extends Fragment {
         List<Client> clients = clientContent.getClients(mRange);
 
         if (mAdapter == null) {
-            mAdapter = new ClientAdapter(clients, mListener);
+            mAdapter = new ClientAdapter(clients);
             mRecyclerView.setAdapter(mAdapter);
         } else {
-            mRecyclerView.setAdapter(mAdapter);
             mAdapter.setClients(clients);
             mAdapter.notifyDataSetChanged();
+            // this line necessary in the case of FragmentViewPager.. don't exactly know why
+            mRecyclerView.setAdapter(mAdapter);
         }
     }
 
@@ -142,8 +136,5 @@ public class ClientListFragment extends Fragment {
         }
     }
 
-    public interface OnListFragmentInteractionListener {
 
-        void onListFragmentInteraction(Client item);
-    }
 }

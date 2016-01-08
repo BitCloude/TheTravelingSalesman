@@ -1,4 +1,4 @@
-package com.appers.ayvaz.thetravelingsalesman.Model;
+package com.appers.ayvaz.thetravelingsalesman.modell;
 
 
 import android.view.View;
@@ -11,12 +11,34 @@ import java.util.UUID;
 public class Client {
     private final UUID id;
     private String firstName, lastName, email, company, firstPhone, secondPhone,
-            designation, note, group, address;
+            designation, note, group, address, linkedIn;
+    private byte[] image;
     private boolean stared;
 
     public Client() {
         this(UUID.randomUUID());
 
+    }
+
+    @Override
+    public String toString() {
+        return firstName + " " + lastName;
+    }
+
+    public byte[] getImage() {
+        return image;
+    }
+
+    public void setImage(byte[] image) {
+        this.image = image;
+    }
+
+    public String getLinkedIn() {
+        return linkedIn;
+    }
+
+    public void setLinkedIn(String linkedIn) {
+        this.linkedIn = linkedIn;
     }
 
     public boolean isStared() {

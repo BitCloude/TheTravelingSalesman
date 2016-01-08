@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@color/background_primary"
+    android:orientation="vertical">
+
+    <com.wefika.calendar.CollapseCalendarView
+        android:id="@+id/calendar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+    </com.wefika.calendar.CollapseCalendarView>
+</FrameLayout>

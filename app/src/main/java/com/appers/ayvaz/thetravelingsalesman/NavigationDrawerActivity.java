@@ -15,13 +15,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
-import com.appers.ayvaz.thetravelingsalesman.LandingActivity;
-import com.appers.ayvaz.thetravelingsalesman.NotificationActivity;
-import com.appers.ayvaz.thetravelingsalesman.R;
-import com.appers.ayvaz.thetravelingsalesman.ReportsActivity;
-import com.appers.ayvaz.thetravelingsalesman.TaskListActivity;
-import com.appers.ayvaz.thetravelingsalesman.TripExpMan;
-
 public abstract class NavigationDrawerActivity extends AppCompatActivity {
 
     DrawerLayout mDrawerLayout;

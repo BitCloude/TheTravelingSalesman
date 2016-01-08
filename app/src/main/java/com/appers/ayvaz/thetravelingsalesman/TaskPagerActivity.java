@@ -2,15 +2,15 @@ package com.appers.ayvaz.thetravelingsalesman;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 
-import com.appers.ayvaz.thetravelingsalesman.model.Task;
-import com.appers.ayvaz.thetravelingsalesman.model.TaskList;
+import com.appers.ayvaz.thetravelingsalesman.modell.Task;
+import com.appers.ayvaz.thetravelingsalesman.modell.TaskList;
 
 import java.util.List;
 import java.util.UUID;

@@ -24,8 +24,16 @@
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <include
+        android:id="@+id/newTask"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_above="@+id/tabLayout"
+        layout="@layout/layout_new_task"/>
+
+    <include
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:layout_alignParentBottom="true"
         layout="@layout/layout_tab"/>
+
 </RelativeLayout>

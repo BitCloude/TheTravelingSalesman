@@ -1,15 +1,14 @@
-package com.appers.ayvaz.thetravelingsalesman;
+package com.appers.ayvaz.thetravelingsalesman.dialog;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
+import com.appers.ayvaz.thetravelingsalesman.R;
 
-import java.util.ArrayList;
 
 
 public class DeleteAlertDialogFragment extends DialogFragment {

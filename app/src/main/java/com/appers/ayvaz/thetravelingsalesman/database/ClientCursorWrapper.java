@@ -3,8 +3,8 @@ package com.appers.ayvaz.thetravelingsalesman.database;
 import android.database.Cursor;
 import android.database.CursorWrapper;
 
-import com.appers.ayvaz.thetravelingsalesman.model.Client;
 import com.appers.ayvaz.thetravelingsalesman.database.DbSchema.ClientTable.Cols;
+import com.appers.ayvaz.thetravelingsalesman.modell.Client;
 
 import java.util.UUID;
 
@@ -28,6 +28,8 @@ public class ClientCursorWrapper extends CursorWrapper {
         String company = getString(getColumnIndex(Cols.COMPANY));
         String note = getString(getColumnIndex(Cols.NOTE));
         boolean stared = getInt(getColumnIndex(Cols.STARED)) == 1;
+        String linkedIn = getString(getColumnIndex(Cols.LINKEDIN));
+        byte[] img = getBlob(getColumnIndex(Cols.IMAGE));
 
         Client client = new Client(UUID.fromString(uuidString));
         client.setLastName(lastName);
@@ -39,6 +41,8 @@ public class ClientCursorWrapper extends CursorWrapper {
         client.setNote(note);
         client.setAddress(address);
         client.setStared(stared);
+        client.setLinkedIn(linkedIn);
+        client.setImage(img);
 
         return client;
 

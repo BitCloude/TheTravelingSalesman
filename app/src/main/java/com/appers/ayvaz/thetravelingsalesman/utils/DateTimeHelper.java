@@ -1,4 +1,4 @@
-package com.appers.ayvaz.thetravelingsalesman;
+package com.appers.ayvaz.thetravelingsalesman.utils;
 
 import java.text.DateFormat;
 import java.util.Date;

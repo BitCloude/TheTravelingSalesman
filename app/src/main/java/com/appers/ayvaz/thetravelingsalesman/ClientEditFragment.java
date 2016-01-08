@@ -19,8 +19,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.appers.ayvaz.thetravelingsalesman.model.Client;
-import com.appers.ayvaz.thetravelingsalesman.model.ClientContent;
+import com.appers.ayvaz.thetravelingsalesman.dialog.DeleteAlertDialogFragment;
+import com.appers.ayvaz.thetravelingsalesman.dialog.PickOrTakePhotoFragment;
+import com.appers.ayvaz.thetravelingsalesman.modell.Client;
+import com.appers.ayvaz.thetravelingsalesman.modell.ClientContent;
 
 import java.util.UUID;
 
@@ -37,11 +39,15 @@ public class ClientEditFragment extends Fragment {
     private static final String ARG_CLIENT_ID = "client_id";
     private static final int REQUEST_IMAGE_CAPTURE = 1;
     private static final int REQUEST_DELETE = 2;
+    private static final int REQUEST_PICK_PHOTO = 3;
+    private static final int REQUEST_PICK_OR_CAPTURE = 4;
+    public static final String EXTRA_PICK_OR_CAPTURE = "pick_or_capture";
     private static final String DIALOG_DELETE = "DialogDelete";
+    private static final String DIALOG_PHOTO = "DialogPhoto";
+
     private UUID mClientId;
     private Client mClient;
     private ImageView mImageView;
-    private Menu mMenu;
     private MenuItem mStar, mDelete;
     @Bind(R.id.firstName) TextView mFirstName;
     @Bind(R.id.lastName) TextView mLastName;
@@ -64,7 +70,6 @@ public class ClientEditFragment extends Fragment {
 
      * @return A new instance of fragment ClientEditFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static ClientEditFragment newInstance(UUID clientId) {
         ClientEditFragment fragment = new ClientEditFragment();
         if (clientId != null) {
@@ -103,13 +108,20 @@ public class ClientEditFragment extends Fragment {
         mImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dispatchTakePictureIntent();
+                setPhoto();
             }
         });
         return view;
     }
 
 
+
+    private void setPhoto() {
+        FragmentManager manager = getFragmentManager();
+        PickOrTakePhotoFragment dialog = new PickOrTakePhotoFragment();
+        dialog.setTargetFragment(ClientEditFragment.this, REQUEST_PICK_OR_CAPTURE);
+        dialog.show(manager, DIALOG_PHOTO);
+    }
 
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -118,9 +130,28 @@ public class ClientEditFragment extends Fragment {
         }
     }
 
+    private void takePictureFromGallery()
+    {
+        startActivityForResult(
+                Intent.createChooser(
+                        new Intent(Intent.ACTION_GET_CONTENT)
+                                .setType("image/*"), "Choose an image"),
+                REQUEST_PICK_PHOTO);
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode != Activity.RESULT_OK) {
+            return;
+        }
+
+        if (requestCode == REQUEST_PICK_OR_CAPTURE) {
+            int res = data.getIntExtra(EXTRA_PICK_OR_CAPTURE, 1);
+            if (res == PickOrTakePhotoFragment.CAPTURE) {
+                dispatchTakePictureIntent();
+            } else {
+                takePictureFromGallery();
+            }
             return;
         }
 
@@ -129,6 +160,8 @@ public class ClientEditFragment extends Fragment {
             Bitmap imageBitmap = (Bitmap) extras.get("data");
             mImageView.setImageBitmap(imageBitmap);
         }
+
+        // // TODO: 007 01/07 Process and save image
 
         if (requestCode == REQUEST_DELETE) {
             if (ClientContent.get(getContext()).delete(mClientId)) {
@@ -156,6 +189,7 @@ public class ClientEditFragment extends Fragment {
                 updateClient();
                 if (mClientId != null) {
                     content.updateClient(mClient);
+                    getActivity().setResult(Activity.RESULT_OK);
                 } else {
                     mClientId = mClient.getId();
                     content.addClient(mClient);
@@ -163,7 +197,7 @@ public class ClientEditFragment extends Fragment {
                 getActivity().finish();
                 return true;
 
-            case R.id.action_star:
+           /* case R.id.action_star:
                 if (mClientId != null) {
                     mClient.setStared(!mClient.isStared());
                     updateActionBar();
@@ -171,7 +205,7 @@ public class ClientEditFragment extends Fragment {
                     Toast.makeText(getActivity(), "You need to save this client first", Toast.LENGTH_LONG)
                             .show();
                 }
-                return true;
+                return true;*/
 
             case R.id.action_delete:
                 FragmentManager manager = getFragmentManager();
@@ -204,12 +238,14 @@ public class ClientEditFragment extends Fragment {
         mNote.setText(mClient.getNote());
         mAddress.setText(mClient.getAddress());
         mEmail.setText(mClient.getEmail());
+        // // TODO: 007 01/07 set other attributes
 
     }
 
+
     private void updateActionBar() {
-        mStar.setIcon(mClient.isStared() ? R.drawable.ic_star_yellow_500_24dp :
-                R.drawable.ic_star_outline_white_24dp);
+        //mStar.setIcon(mClient.isStared() ? R.drawable.ic_star_yellow_500_24dp :
+        //        R.drawable.ic_star_outline_white_24dp);
         mDelete.setVisible(mClientId != null);
     }
 

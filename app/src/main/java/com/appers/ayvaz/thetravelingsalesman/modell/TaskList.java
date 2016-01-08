@@ -1,4 +1,4 @@
-package com.appers.ayvaz.thetravelingsalesman.Model;
+package com.appers.ayvaz.thetravelingsalesman.modell;
 
 import android.content.Context;
 
@@ -57,4 +57,6 @@ public class TaskList {
         return false;
 
     }
+
+
 }

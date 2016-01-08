@@ -1,4 +1,4 @@
-package com.appers.ayvaz.thetravelingsalesman.Model;
+package com.appers.ayvaz.thetravelingsalesman.modell;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -13,24 +13,22 @@ import com.appers.ayvaz.thetravelingsalesman.database.DbSchema.ClientTable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Random;
 import java.util.UUID;
 
-/**
- * Helper class for providing sample content for user interfaces created by
- * Android template wizards.
- * <p/>
- * TODO: Replace all uses of this class before publishing your app.
- */
+/*
+* A singleton class to provide access to Clients
+*
+* */
 public class ClientContent {
-
-
-    private static final int COUNT = 25;
-    private static ClientContent content;
+/*
     private List<Client> ITEMS;
     private Random random;
     private Map<Integer, Client> ITEM_MAP;
+    private static final int COUNT = 25;
+    */
+
+    private static ClientContent content;
+
     private Context mContext;
     private SQLiteDatabase mDatabase;
 
@@ -70,6 +68,8 @@ public class ClientContent {
         values.put(ClientTable.Cols.FIRST_PHONE, client.getFirstPhone());
         values.put(ClientTable.Cols.SECOND_PHONE, client.getSecondPhone());
         values.put(ClientTable.Cols.STARED, client.isStared() ? 1 : 0);
+        values.put(ClientTable.Cols.LINKEDIN, client.getLinkedIn());
+        values.put(ClientTable.Cols.IMAGE, client.getImage());
 
         return values;
     }
@@ -120,8 +120,6 @@ public class ClientContent {
     }
 
     public void addClient(Client item) {
-//        ITEMS.add(item);
-//        ITEM_MAP.put(item.getId(), item);
         ContentValues values = getContentValues(item);
         mDatabase.insert(ClientTable.NAME, null, values);
     }
@@ -150,6 +148,16 @@ public class ClientContent {
         return new ClientCursorWrapper(cursor);
     }
 
+
+    public boolean delete(UUID uuid) {
+        String whereClause = ClientTable.Cols.UUID + " = ?";
+        String[] whereArgs = new String[]{uuid.toString()};
+        return mDatabase.delete(ClientTable.NAME, whereClause, whereArgs) > 0;
+    }
+/*
+    private String makeDetails(int position) {
+        return random.nextInt() + "@gmail.com";
+    }
     private Client createDummyItem(int position) {
         Client client = new Client();
         client.setFirstName("Anthony");
@@ -159,14 +167,5 @@ public class ClientContent {
         client.setCompany("Company Name");
         return client;
     }
-
-    public boolean delete(UUID uuid) {
-        String whereClause = ClientTable.Cols.UUID + " = ?";
-        String[] whereArgs = new String[]{uuid.toString()};
-        return mDatabase.delete(ClientTable.NAME, whereClause, whereArgs) > 0;
-    }
-
-    private String makeDetails(int position) {
-        return random.nextInt() + "@gmail.com";
-    }
+    */
 }

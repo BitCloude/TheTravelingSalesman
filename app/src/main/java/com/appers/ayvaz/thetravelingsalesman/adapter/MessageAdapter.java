@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.appers.ayvaz.thetravelingsalesman.R;
-import com.appers.ayvaz.thetravelingsalesman.model.SmsMms;
+import com.appers.ayvaz.thetravelingsalesman.modell.MyMessage;
 
 /**
  * Created by D on 030 12/30.
@@ -24,7 +24,7 @@ public class MessageAdapter extends
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, Cursor cursor) {
         //// TODO: 030 12/30 set other field 
-        SmsMms myListItem = SmsMms.fromCursor(cursor,0);
+        MyMessage myListItem = MyMessage.fromCursor(cursor, 0);
         viewHolder.mBody.setText(myListItem.getBody());
         viewHolder.mTime.setText(myListItem.getTime().toString());
     }

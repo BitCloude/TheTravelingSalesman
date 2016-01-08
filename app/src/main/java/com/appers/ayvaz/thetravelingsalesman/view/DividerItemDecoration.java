@@ -1,4 +1,4 @@
-package com.appers.ayvaz.thetravelingsalesman;
+package com.appers.ayvaz.thetravelingsalesman.view;
 
 import android.content.Context;
 import android.content.res.TypedArray;

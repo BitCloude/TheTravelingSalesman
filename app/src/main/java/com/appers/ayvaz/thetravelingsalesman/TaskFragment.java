@@ -1,11 +1,11 @@
 package com.appers.ayvaz.thetravelingsalesman;
 
 
-
 import android.app.Activity;
 import android.content.Intent;
-import android.support.v4.app.DialogFragment;
 import android.os.Bundle;
+import android.provider.CalendarContract;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -17,10 +17,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-
-import com.appers.ayvaz.thetravelingsalesman.model.Task;
-import com.appers.ayvaz.thetravelingsalesman.model.TaskList;
-
+import com.appers.ayvaz.thetravelingsalesman.dialog.DatePickerFragment;
+import com.appers.ayvaz.thetravelingsalesman.dialog.TimePickerFragment;
+import com.appers.ayvaz.thetravelingsalesman.modell.Task;
+import com.appers.ayvaz.thetravelingsalesman.modell.TaskList;
+import com.appers.ayvaz.thetravelingsalesman.utils.DateTimeHelper;
 
 import java.util.Calendar;
 import java.util.UUID;
@@ -68,7 +69,7 @@ public class TaskFragment extends Fragment {
 
                 boolean start = v.getId() == R.id.startDate;
                 DialogFragment dialog = DatePickerFragment
-                        .newInstance(start ? mTask.getStartDate() : mTask.getEndDate());
+                        .newInstance(start ? mTask.getBeginTime() : mTask.getEndTime());
                 int requestCode = start ? REQUEST_DATE_START : REQUEST_DATE_END;
                 dialog.setTargetFragment(TaskFragment.this, requestCode);
                 dialog.show(getFragmentManager(), DIALOG_DATE);
@@ -81,10 +82,10 @@ public class TaskFragment extends Fragment {
                 DialogFragment dialogFragment;
                 int code;
                 if (v.getId() == R.id.startTime) {
-                    dialogFragment = TimePickerFragment.newInstance(mTask.getStartDate());
+                    dialogFragment = TimePickerFragment.newInstance(mTask.getBeginTime());
                     code = REQUEST_TIME_START;
                 } else {
-                    dialogFragment = TimePickerFragment.newInstance(mTask.getEndDate());
+                    dialogFragment = TimePickerFragment.newInstance(mTask.getEndTime());
                     code = REQUEST_TIME_END;
                 }
                 dialogFragment.setTargetFragment(TaskFragment.this, code);
@@ -97,7 +98,7 @@ public class TaskFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_task, container, false);
+        View view = inflater.inflate(R.layout.fragment_task_edit, container, false);
 
         mStartDate = (Button) view.findViewById(R.id.startDate);
         mEndDate = (Button) view.findViewById(R.id.endDate);
@@ -134,18 +135,18 @@ public class TaskFragment extends Fragment {
             int option;
             if (requestCode == REQUEST_DATE_START) {
                 mTask.setStartDate(date);
-                if (mTask.getStartDate().after(mTask.getEndDate())) {
-                    mTask.setEndDate(date);
+                if (mTask.getBeginTime().after(mTask.getEndTime())) {
+                    mTask.setEndTime(date);
                     option = 2;
                 } else {
                     option = 0;
                 }
             } else {
-                if (date.before(mTask.getStartDate())) {
+                if (date.before(mTask.getBeginTime())) {
                     makeErrorToast();
                     return;
                 }
-                mTask.setEndDate(date);
+                mTask.setEndTime(date);
                 option = 1;
             }
 
@@ -158,27 +159,27 @@ public class TaskFragment extends Fragment {
 
             int option;
             if (requestCode == REQUEST_TIME_START) {
-                Calendar date = mTask.getStartDate();
+                Calendar date = mTask.getBeginTime();
                 date.set(Calendar.HOUR, time / 60);
                 date.set(Calendar.MINUTE, time % 60);
                 mTask.setStartDate(date);
 
-                if (mTask.getStartDate().after(mTask.getEndDate())) {
-                    mTask.setEndDate(date);
+                if (mTask.getBeginTime().after(mTask.getEndTime())) {
+                    mTask.setEndTime(date);
                     option = 2;
                 } else {
                     option = 0;
                 }
 
             } else {
-                Calendar c = mTask.getEndDate();
+                Calendar c = mTask.getEndTime();
                 c.set(Calendar.HOUR, time / 60);
                 c.set(Calendar.MINUTE, time % 60);
-                if (c.before(mTask.getStartDate())) {
+                if (c.before(mTask.getBeginTime())) {
                     makeErrorToast();
                     return;
                 }
-                mTask.setEndDate(c);
+                mTask.setEndTime(c);
                 option = 1;
             }
 
@@ -191,21 +192,21 @@ public class TaskFragment extends Fragment {
     private void updateDate(int option) {
 
         if (option != 1) {
-            mStartDate.setText(DateTimeHelper.formatMed(mTask.getStartDate().getTime()));
+            mStartDate.setText(DateTimeHelper.formatMed(mTask.getBeginTime().getTime()));
         }
 
         if (option != 0) {
-            mEndDate.setText(DateTimeHelper.formatMed(mTask.getEndDate().getTime()));
+            mEndDate.setText(DateTimeHelper.formatMed(mTask.getEndTime().getTime()));
         }
     }
 
     private void updateTime(int option) {
         if (option != 1) {
-            mStartTime.setText(DateTimeHelper.formatTime(mTask.getStartDate().getTime()));
+            mStartTime.setText(DateTimeHelper.formatTime(mTask.getBeginTime().getTime()));
         }
 
         if (option != 0) {
-            mEndTime.setText(DateTimeHelper.formatTime(mTask.getEndDate().getTime()));
+            mEndTime.setText(DateTimeHelper.formatTime(mTask.getEndTime().getTime()));
         }
     }
 
@@ -226,6 +227,13 @@ public class TaskFragment extends Fragment {
             case R.id.menu_item_delete:
                 TaskList.get(getActivity()).deleteTask(mTask.getId());
                 getActivity().finish();
+                return true;
+            case R.id.action_done:
+                Intent intent = new Intent(Intent.ACTION_INSERT)
+                        .setData(CalendarContract.Events.CONTENT_URI)
+                        .putExtra(CalendarContract.Events.TITLE, "Yoga")
+                        .putExtra(Intent.EXTRA_EMAIL, "rowan@example.com");
+                startActivity(intent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

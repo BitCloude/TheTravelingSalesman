@@ -8,27 +8,23 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.appers.ayvaz.thetravelingsalesman.ClientEditActivity;
-import com.appers.ayvaz.thetravelingsalesman.ClientListFragment.OnListFragmentInteractionListener;
-import com.appers.ayvaz.thetravelingsalesman.model.Client;
+import com.appers.ayvaz.thetravelingsalesman.ClientActivity;
 import com.appers.ayvaz.thetravelingsalesman.R;
+import com.appers.ayvaz.thetravelingsalesman.modell.Client;
 
 import java.util.List;
 
 /**
- * {@link RecyclerView.Adapter} that can display a {@link Client} and makes a call to the
- * specified {@link OnListFragmentInteractionListener}.
- * TODO: Replace the implementation with code for your data type.
+ * {@link RecyclerView.Adapter} that can display a {@link Client}
+ *
  */
 public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ViewHolder> {
 
     List<Client> mClients;
-    private OnListFragmentInteractionListener mListener;
 
-    public ClientAdapter(List<Client> items,
-                         OnListFragmentInteractionListener listener) {
+
+    public ClientAdapter(List<Client> items) {
         mClients = items;
-        mListener = listener;
     }
 
     public void setClients(List<Client> clients) {
@@ -87,7 +83,8 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ViewHolder
 
         @Override
         public void onClick(View v) {
-            Intent intent = ClientEditActivity.newIntent(v.getContext(), mItem.getId());
+//            Intent intent = ClientEditActivity.newIntent(v.getContext(), mItem.getId());
+            Intent intent = ClientActivity.newIntent(v.getContext(), mItem.getId());
             v.getContext().startActivity(intent);
         }
     }

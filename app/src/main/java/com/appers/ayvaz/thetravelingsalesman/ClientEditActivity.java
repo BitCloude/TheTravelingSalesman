@@ -2,8 +2,8 @@ package com.appers.ayvaz.thetravelingsalesman;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 
 import java.io.Serializable;
 import java.util.UUID;

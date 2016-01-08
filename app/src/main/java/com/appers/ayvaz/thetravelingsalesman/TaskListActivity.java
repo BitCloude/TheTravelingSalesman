@@ -2,15 +2,14 @@ package com.appers.ayvaz.thetravelingsalesman;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.view.Gravity;
-import android.view.Menu;
 import android.view.ViewGroup;
-import android.widget.TableRow;
-import android.widget.TextView;
 
-import java.text.DateFormatSymbols;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
+import com.wefika.calendar.CollapseCalendarView;
+
+import org.joda.time.LocalDate;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
 
 public class TaskListActivity extends SingleFragmentActivity {
 
@@ -21,18 +20,40 @@ public class TaskListActivity extends SingleFragmentActivity {
 
     private final String TAG = "debuging--------";
 
+    @Bind (R.id.calendar) CollapseCalendarView mCalendarView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         ViewGroup appbar = (ViewGroup) findViewById(R.id.appbar);
-        getLayoutInflater().inflate(R.layout.content_task, appbar);
+        getLayoutInflater().inflate(R.layout.layout_collapse_calenar_view, appbar);
+        ButterKnife.bind(this);
 
         setTitle(R.string.title_activity_task);
 
+//        CalendarManager manager = new CalendarManager(LocalDate.now(), CalendarManager.State.MONTH, LocalDate.now(), LocalDate.now().plusYears(1));
 
-        // set up week overview
+//        mCalendarView = (CollapseCalendarView) findViewById(R.id.calendar);
+//        mCalendarView.init(manager);
+        mCalendarView.init(LocalDate.now(), LocalDate.now().minusYears(3), LocalDate.now().plusYears(3));
+
+
+
+
+
+
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        checkMenu(R.id.nav_tasks);
+    }
+/*
+    private void setUpWeekTable() {
         String[] namesOfDays = DateFormatSymbols.getInstance().getShortWeekdays();
 
         TableRow tableRow = (TableRow) findViewById(R.id.dateRow1);
@@ -53,16 +74,6 @@ public class TaskListActivity extends SingleFragmentActivity {
             tv.setText(""+calendar.get(Calendar.DATE));
             calendar.roll(Calendar.DATE, 1);
         }
-
-
-
-
     }
-
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        checkMenu(R.id.nav_tasks);
-    }
+    */
 }

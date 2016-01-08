@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context="com.appers.ayvaz.thetravelingsalesman.TaskListWithCalendar">
+
+    <android.support.design.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        >
+
+        <include layout="@layout/layout_calendar_appbar" />
+
+        <View
+            android:id="@+id/appbar_shadow"
+            android:layout_width="match_parent"
+            android:layout_height="4dp"
+            android:background="@drawable/shadow" />
+
+        <include layout="@layout/content_task_list_with_calendar" />
+
+    </android.support.design.widget.CoordinatorLayout>
+
+    <include layout="@layout/navigation_panel" />
+
+</android.support.v4.widget.DrawerLayout>

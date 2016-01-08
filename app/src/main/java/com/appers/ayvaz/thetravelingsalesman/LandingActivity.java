@@ -1,16 +1,14 @@
 package com.appers.ayvaz.thetravelingsalesman;
 
+import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.ViewGroup;
 
-import com.appers.ayvaz.thetravelingsalesman.model.Client;
-
-public class LandingActivity extends NavigationDrawerActivity implements ClientListFragment.OnListFragmentInteractionListener {
+public class LandingActivity extends NavigationDrawerActivity {
 
     private ViewPager mViewPager;
     private String[] tabTitles;
@@ -99,8 +97,5 @@ public class LandingActivity extends NavigationDrawerActivity implements ClientL
         checkMenu(R.id.nav_clients);
     }
 
-    @Override
-    public void onListFragmentInteraction(Client item) {
 
-    }
 }

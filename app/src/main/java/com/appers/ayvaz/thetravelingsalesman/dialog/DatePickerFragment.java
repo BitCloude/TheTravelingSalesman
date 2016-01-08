@@ -1,4 +1,4 @@
-package com.appers.ayvaz.thetravelingsalesman;
+package com.appers.ayvaz.thetravelingsalesman.dialog;
 
 
 import android.app.Activity;
@@ -14,8 +14,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.DatePicker;
 
+import com.appers.ayvaz.thetravelingsalesman.R;
+
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
 
 

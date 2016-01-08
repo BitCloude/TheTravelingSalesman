@@ -1,4 +1,4 @@
-package com.appers.ayvaz.thetravelingsalesman.Model;
+package com.appers.ayvaz.thetravelingsalesman.modell;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -13,8 +13,8 @@ public class Task {
 
 
 
-    private Calendar startDate;
-    private Calendar endDate;
+    private Calendar beginTime;
+    private Calendar endTime;
 
     public void setLocation(String location) {
         this.location = location;
@@ -32,17 +32,17 @@ public class Task {
 
     public Task() {
         mId = UUID.randomUUID();
-        startDate = GregorianCalendar.getInstance();
-        endDate = GregorianCalendar.getInstance();
+        beginTime = GregorianCalendar.getInstance();
+        endTime = GregorianCalendar.getInstance();
 //        startDate.setTime(new Date());
-//        endDate.setTime(new Date());
+//        endTime.setTime(new Date());
 
         note = mId.toString().substring(0, 3) + "Do something...........................................";
         name = "Anthony Cashmore";
     }
 
-    public Calendar getStartDate() {
-        return startDate;
+    public Calendar getBeginTime() {
+        return beginTime;
     }
 
     public void setName(String name) {
@@ -57,19 +57,19 @@ public class Task {
         return mId;
     }
 
-    public Calendar getEndDate() {
-        return endDate;
+    public Calendar getEndTime() {
+        return endTime;
     }
 
     public String getNote() {
         return note;
     }
     public void setStartDate(Calendar startDate) {
-        this.startDate = startDate;
+        this.beginTime = startDate;
     }
 
     public void setStartDate(Date date) {
-        setByDate(date, startDate);
+        setByDate(date, beginTime);
     }
 
     private void setByDate(Date date, Calendar target) {
@@ -80,12 +80,12 @@ public class Task {
         target.set(Calendar.DAY_OF_MONTH, cal.get(Calendar.DAY_OF_MONTH));
     }
 
-    public void setEndDate(Calendar endDate) {
-        this.endDate = endDate;
+    public void setEndTime(Calendar endTime) {
+        this.endTime = endTime;
     }
 
     public void setEndDate(Date date) {
-        setByDate(date, endDate);
+        setByDate(date, endTime);
     }
 
     public void setNote(String note) {

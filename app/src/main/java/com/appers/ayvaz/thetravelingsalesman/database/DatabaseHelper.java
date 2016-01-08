@@ -9,6 +9,8 @@ import com.appers.ayvaz.thetravelingsalesman.database.DbSchema.ClientTable;
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final int VERSION = 1;
     private static final String DATABASE_NAME = "clientBase.db";
+    private static final String TYPE_INT = " INT";
+    private static final String TYPE_BLOB = " BLOB";
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, VERSION);
@@ -17,10 +19,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         String sql = String.format("create table %s " +
-                        "(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
+                        "(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
                 ClientTable.NAME,
                 ClientTable.Cols.UUID,
-                ClientTable.Cols.STARED,
+                ClientTable.Cols.STARED + TYPE_INT,
                 ClientTable.Cols.FIRST_NAME,
                 ClientTable.Cols.LAST_NAME,
                 ClientTable.Cols.FIRST_PHONE,
@@ -28,7 +30,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 ClientTable.Cols.EMAIL,
                 ClientTable.Cols.ADDRESS,
                 ClientTable.Cols.COMPANY,
-                ClientTable.Cols.NOTE
+                ClientTable.Cols.LINKEDIN,
+                ClientTable.Cols.NOTE,
+                ClientTable.Cols.IMAGE + TYPE_BLOB
                 );
         db.execSQL(sql);
 
