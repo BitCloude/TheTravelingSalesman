@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+
+    android:layout_margin="12dp"
+        android:layout_height="54dp"
+
+        android:layout_width="match_parent">
+
+        <ImageButton
+            android:id="@+id/callButton"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_call_black_24dp"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true" />
+
+        <ImageButton
+            android:id="@+id/textButton"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_textsms_black_24dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/ItemTextStylePrimary"
+            android:text="+1 415 555 555"
+            android:id="@+id/clientPhone"
+            android:layout_marginStart="32dp"
+            android:layout_above="@+id/numberLabel"
+            android:layout_toEndOf="@+id/callButton" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Home"
+            android:id="@+id/numberLabel"
+            android:layout_alignBottom="@+id/callButton"
+            android:layout_alignStart="@+id/clientPhone" />
+    </RelativeLayout>

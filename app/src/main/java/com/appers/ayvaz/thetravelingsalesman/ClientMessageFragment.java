@@ -10,8 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.appers.ayvaz.thetravelingsalesman.adapter.MessageAdapterSlow;
-import com.appers.ayvaz.thetravelingsalesman.Model.Client;
-import com.appers.ayvaz.thetravelingsalesman.Model.MessageBox;
+import com.appers.ayvaz.thetravelingsalesman.models.Client;
+import com.appers.ayvaz.thetravelingsalesman.models.MessageBox;
 
 import java.util.UUID;
 
@@ -105,7 +105,7 @@ public class ClientMessageFragment extends Fragment  implements ClientActivity.C
 
     private void updateUI() {
 //        if (mAdapter == null) {
-        mAdapter = MessageBox.get(getContext()).query(mNumber1, mNumber2);
+        mAdapter = MessageBox.get(getContext()).queryText(mNumber1, mNumber2);
 //        } else {
 //            mAdapter.notifyDataSetChanged();
 //        }

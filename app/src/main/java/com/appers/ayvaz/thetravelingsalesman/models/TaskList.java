@@ -1,4 +1,4 @@
-package com.appers.ayvaz.thetravelingsalesman.Model;
+package com.appers.ayvaz.thetravelingsalesman.models;
 
 import android.content.Context;
 

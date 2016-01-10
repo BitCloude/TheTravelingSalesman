@@ -1,9 +1,10 @@
-package com.appers.ayvaz.thetravelingsalesman.Model;
+package com.appers.ayvaz.thetravelingsalesman.models;
 
 import android.database.Cursor;
 import android.provider.CallLog.Calls;
 
-import java.util.Calendar;
+import com.appers.ayvaz.thetravelingsalesman.utils.DateTimeHelper;
+
 import java.util.Date;
 
 /**
@@ -35,10 +36,7 @@ public class CallEntry {
         call.number = cursor.getString(cursor.getColumnIndex(Calls.NUMBER));
         call.type = cursor.getInt(cursor.getColumnIndex(Calls.TYPE));
         String date = cursor.getString(cursor.getColumnIndex(Calls.DATE));
-        Long timestamp = Long.parseLong(date);
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(timestamp);
-        call.time = calendar.getTime();
+        call.time = DateTimeHelper.fromContentResolver(date);
 
         return call;
     }

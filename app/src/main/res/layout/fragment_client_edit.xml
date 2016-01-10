@@ -55,16 +55,18 @@
         android:id="@+id/phoneLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
         android:text="@string/phone"
-        android:textAppearance="?android:attr/textAppearanceSmall" />
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true" />
     <TextView
         android:id="@+id/mobileLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Mobile"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:layout_centerVertical="true"
+        android:layout_alignBaseline="@+id/mobile"
+        android:layout_alignBottom="@+id/mobile"
         android:layout_alignParentStart="true" />
 
     <EditText
@@ -76,6 +78,25 @@
         android:inputType="phone"
         android:layout_below="@+id/phoneLabel"
         android:layout_alignParentEnd="true" />
+    <TextView
+        android:id="@+id/phoneLabel2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Home"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:layout_alignBaseline="@+id/secondPhone"
+        android:layout_alignBottom="@+id/secondPhone"
+        android:layout_alignParentStart="true" />
+
+    <EditText
+        android:id="@+id/secondPhone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="@string/phone"
+        android:inputType="phone"
+        android:layout_below="@+id/mobile"
+        android:layout_alignParentEnd="true" />
 </RelativeLayout>
 
 
@@ -83,14 +104,14 @@
         android:id="@+id/emailLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/email"
-        android:layout_alignBottom="@+id/email"
+        android:layout_alignBaseline="@+id/clientPhone"
+        android:layout_alignBottom="@+id/clientPhone"
         android:layout_alignParentStart="true"
         android:text="@string/email"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
     <EditText
-        android:id="@+id/email"
+        android:id="@+id/clientPhone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/phoneLayout"
@@ -115,12 +136,12 @@
         android:id="@+id/address"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/email"
-        android:layout_below="@+id/email"
+        android:layout_alignStart="@+id/clientPhone"
+        android:layout_below="@+id/clientPhone"
         android:ems="10"
         android:hint="@string/address"
         android:inputType="textPostalAddress"
-        android:layout_alignEnd="@+id/email"
+        android:layout_alignEnd="@+id/clientPhone"
         android:minLines="2" />
 
     <TextView

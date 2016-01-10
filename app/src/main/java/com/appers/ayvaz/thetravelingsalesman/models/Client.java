@@ -1,10 +1,5 @@
-package com.appers.ayvaz.thetravelingsalesman.Model;
+package com.appers.ayvaz.thetravelingsalesman.models;
 
-
-import android.view.View;
-import android.widget.TextView;
-
-import com.appers.ayvaz.thetravelingsalesman.R;
 
 import java.util.UUID;
 
@@ -22,7 +17,26 @@ public class Client {
 
     @Override
     public String toString() {
-        return firstName + " " + lastName;
+        if (!isEmpty(firstName) || !isEmpty(lastName)) {
+            return firstName +
+                    (isEmpty(firstName) ? "" : " ")
+                    + lastName;
+        }
+
+        if (!isEmpty(firstPhone)) {
+            return firstPhone;
+        }
+
+        if (!isEmpty(secondPhone)) {
+            return secondPhone;
+        }
+
+        return email;
+
+    }
+
+    private boolean isEmpty(String s) {
+        return s == null || s.equals("");
     }
 
     public byte[] getImage() {
@@ -136,12 +150,12 @@ public class Client {
         this.firstName = firstName;
     }
 
-    public void setText(View view) {
+    /*public void setText(View view) {
         TextView tv = (TextView) view.findViewById(R.id.firstName);
         tv.setText(firstName);
         tv = (TextView) view.findViewById(R.id.lastName);
         tv.setText(lastName);
-        tv = (TextView) view.findViewById(R.id.email);
+        tv = (TextView) view.findViewById(R.id.clientPhone);
         tv.setText(email);
-    }
+    }*/
 }

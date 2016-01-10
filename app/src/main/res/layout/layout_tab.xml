@@ -6,6 +6,6 @@
     style="@style/MyCustomTabLayout"
     app:tabIndicatorColor="@color/colorAccent"
     android:layout_width="match_parent"
-    android:layout_height="40dp">
+    android:layout_height="36dp">
 
 </android.support.design.widget.TabLayout>

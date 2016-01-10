@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.appers.ayvaz.thetravelingsalesman.ClientActivity;
 import com.appers.ayvaz.thetravelingsalesman.R;
-import com.appers.ayvaz.thetravelingsalesman.Model.Client;
+import com.appers.ayvaz.thetravelingsalesman.models.Client;
 
 import java.util.List;
 

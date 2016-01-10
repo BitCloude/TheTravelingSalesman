@@ -2,12 +2,14 @@ package com.appers.ayvaz.thetravelingsalesman;
 
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -19,8 +21,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.appers.ayvaz.thetravelingsalesman.dialog.PickOrTakePhotoFragment;
-import com.appers.ayvaz.thetravelingsalesman.Model.Client;
-import com.appers.ayvaz.thetravelingsalesman.Model.ClientContent;
+import com.appers.ayvaz.thetravelingsalesman.models.Client;
+import com.appers.ayvaz.thetravelingsalesman.models.ClientContent;
 
 import java.util.UUID;
 
@@ -49,9 +51,10 @@ public class ClientEditFragment extends Fragment {
     private MenuItem mStar, mDelete;
     @Bind(R.id.firstName) TextView mFirstName;
     @Bind(R.id.lastName) TextView mLastName;
-    @Bind(R.id.email) TextView mEmail;
+    @Bind(R.id.clientPhone) TextView mEmail;
     @Bind(R.id.company) TextView mCompany;
     @Bind(R.id.mobile) TextView mPhoneFirst;
+    @Bind(R.id.secondPhone) TextView mPhoneSecond;
     @Bind(R.id.note) TextView mNote;
     @Bind(R.id.address) TextView mAddress;
 
@@ -193,6 +196,19 @@ public class ClientEditFragment extends Fragment {
                     content.updateClient(mClient);
                     getActivity().setResult(Activity.RESULT_OK);
                 } else {
+                    if (!checkValid()) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(getContext())
+                                .setMessage("Must have a name or phone number or email address")
+                                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+
+
+                                    }
+                                });
+                        builder.create().show();
+                        return true;
+                    }
                     mClientId = mClient.getId();
                     content.addClient(mClient);
                 }
@@ -221,10 +237,21 @@ public class ClientEditFragment extends Fragment {
         }
     }
 
+    private boolean checkValid() {
+        return !(isEmpty(mClient.getFirstName()) && isEmpty(mClient.getLastName())
+    && isEmpty(mClient.getFirstPhone()) && isEmpty(mClient.getSecondPhone())
+                && isEmpty(mClient.getEmail()));
+    }
+
+    private boolean isEmpty(String s) {
+        return (s == null) || s.equals("");
+    }
+
     private void updateClient() {
         mClient.setFirstName(mFirstName.getText().toString());
         mClient.setLastName(mLastName.getText().toString());
         mClient.setFirstPhone(mPhoneFirst.getText().toString());
+        mClient.setSecondPhone(mPhoneSecond.getText().toString());
         mClient.setEmail(mEmail.getText().toString());
         mClient.setNote(mNote.getText().toString());
         mClient.setAddress(mAddress.getText().toString());
@@ -240,6 +267,7 @@ public class ClientEditFragment extends Fragment {
         mNote.setText(mClient.getNote());
         mAddress.setText(mClient.getAddress());
         mEmail.setText(mClient.getEmail());
+        mPhoneSecond.setText(mClient.getSecondPhone());
         // // TODO: 007 01/07 set other attributes
 
     }

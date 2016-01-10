@@ -6,9 +6,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.appers.ayvaz.thetravelingsalesman.models.Task;
 import com.appers.ayvaz.thetravelingsalesman.R;
 import com.appers.ayvaz.thetravelingsalesman.TaskListFragment;
-import com.appers.ayvaz.thetravelingsalesman.models.Task;
 import com.appers.ayvaz.thetravelingsalesman.utils.DateTimeHelper;
 
 import java.util.List;
@@ -16,11 +16,11 @@ import java.util.List;
 /**
  * Created by D on 12/15/2015.
  */
-public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
+public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder> {
     private List<Task> mTasks;
     private TaskListFragment mFragment;
 
-    public TaskAdapter(List<Task> tasks, TaskListFragment fragment) {
+    public EventAdapter(List<Task> tasks, TaskListFragment fragment) {
         mFragment = fragment;
         mTasks = tasks;
     }
@@ -31,14 +31,14 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
     }
 
     @Override
-    public TaskAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public EventAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.fragment_task_item, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(TaskAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(EventAdapter.ViewHolder holder, int position) {
         holder.mItem = mTasks.get(position);
         holder.mName.setText(holder.mItem.getName());
         holder.mNote.setText(holder.mItem.getNote());

@@ -30,7 +30,7 @@ public class TaskListWithCalendar extends AppCompatActivity {
 
         // drawer stuff
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mNavigationView = (NavigationView) findViewById(R.id.navi_menu);
+        mNavigationView = (NavigationView) findViewById(R.id.nav_menu);
 
         mNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override

@@ -1,15 +1,17 @@
-package com.appers.ayvaz.thetravelingsalesman.Model;
+package com.appers.ayvaz.thetravelingsalesman.models;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.UUID;
 
 /**
  * Created by D on 12/13/2015.
  */
 public class Task {
+
+
     private UUID mId;
+    private long mEventId;
 
 
 
@@ -32,13 +34,13 @@ public class Task {
 
     public Task() {
         mId = UUID.randomUUID();
-        beginTime = GregorianCalendar.getInstance();
-        endTime = GregorianCalendar.getInstance();
+//        beginTime = GregorianCalendar.getInstance();
+//        endTime = GregorianCalendar.getInstance();
 //        startDate.setTime(new Date());
 //        endTime.setTime(new Date());
 
-        note = mId.toString().substring(0, 3) + "Do something...........................................";
-        name = "Anthony Cashmore";
+//        note = mId.toString().substring(0, 3) + "Do something...........................................";
+//        name = "Anthony Cashmore";
     }
 
     public Calendar getBeginTime() {

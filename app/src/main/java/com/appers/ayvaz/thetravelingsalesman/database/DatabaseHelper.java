@@ -11,6 +11,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "clientBase.db";
     private static final String TYPE_INT = " INT";
     private static final String TYPE_BLOB = " BLOB";
+    private static final String PRIMARY_KEY = "_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL";
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, VERSION);
@@ -19,8 +20,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         String sql = String.format("create table %s " +
-                        "(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
+                        "( %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
                 ClientTable.NAME,
+                PRIMARY_KEY,
                 ClientTable.Cols.UUID,
                 ClientTable.Cols.STARED + TYPE_INT,
                 ClientTable.Cols.FIRST_NAME,
@@ -35,6 +37,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 ClientTable.Cols.IMAGE + TYPE_BLOB
                 );
         db.execSQL(sql);
+
+        String taskSql = String.format("create table %s " +
+        "( %s, %s, %s, FOREIGN KEY(%s) REFERENCES %s(%s))",
+                DbSchema.TaskTable.NAME,
+                PRIMARY_KEY,
+                DbSchema.TaskTable.Cols.EVENT_ID,
+                DbSchema.TaskTable.Cols.CLIENT_ID,
+                DbSchema.TaskTable.Cols.CLIENT_ID,
+                ClientTable.NAME,
+                ClientTable.Cols.UUID
+                );
+
+        db.execSQL(taskSql);
+
 
     }
 

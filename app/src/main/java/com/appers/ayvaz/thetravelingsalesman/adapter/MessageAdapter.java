@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.appers.ayvaz.thetravelingsalesman.R;
-import com.appers.ayvaz.thetravelingsalesman.Model.MyMessage;
+import com.appers.ayvaz.thetravelingsalesman.models.MyMessage;
 
 /**
  * Created by D on 030 12/30.

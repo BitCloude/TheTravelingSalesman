@@ -15,9 +15,9 @@ import android.widget.ImageView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
-import com.appers.ayvaz.thetravelingsalesman.Model.CallEntry;
-import com.appers.ayvaz.thetravelingsalesman.Model.Client;
-import com.appers.ayvaz.thetravelingsalesman.Model.MessageBox;
+import com.appers.ayvaz.thetravelingsalesman.models.CallEntry;
+import com.appers.ayvaz.thetravelingsalesman.models.Client;
+import com.appers.ayvaz.thetravelingsalesman.models.MessageBox;
 import com.appers.ayvaz.thetravelingsalesman.utils.DateTimeHelper;
 import com.appers.ayvaz.thetravelingsalesman.view.DividerItemDecoration;
 
@@ -112,70 +112,79 @@ public class ClientCallLogFragment extends Fragment implements ClientActivity.Cl
         mNumber2 = client.getSecondPhone();
         updateUI();
     }
+
+
+    /**
+     * Adapter and View Holder
+     *
+     * */
+
+
+    private class CallLogAdapter extends RecyclerView.Adapter<CallLogAdapter.ViewHolder> {
+
+        private List<CallEntry> mCallLog;
+
+        public CallLogAdapter(List<CallEntry> list) {
+            mCallLog = list;
+        }
+
+
+
+        @Override
+        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View view = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.view_call_log_item, parent, false);
+
+            return new ViewHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(ViewHolder holder, int position) {
+            CallEntry entry = mCallLog.get(position);
+            holder.callNumber.setText(entry.getNumber());
+            // // TODO: 008 01/08 format time
+            holder.callTime.setText(DateTimeHelper.formatTime(entry.getTime()));
+            int resId;
+            switch (entry.getType()) {
+
+                case CallLog.Calls.INCOMING_TYPE:
+                    resId = R.drawable.ic_call_received_blue_700_24dp;
+                    break;
+                case CallLog.Calls.MISSED_TYPE:
+                    resId = R.drawable.ic_call_missed_red_800_24dp;
+                    break;
+                case CallLog.Calls.OUTGOING_TYPE:
+                    resId = R.drawable.ic_call_made_green_700_24dp;
+                    break;
+                default:
+                    return;
+            }
+
+            holder.callType.setImageResource(resId);
+        }
+
+        @Override
+        public int getItemCount() {
+            return mCallLog.size();
+        }
+
+        public class ViewHolder extends RecyclerView.ViewHolder {
+            @Bind(R.id.callTime)    TextView callTime;
+            @Bind(R.id.callType)    ImageView callType;
+            @Bind(R.id.callNumber) TextView callNumber;
+            //// TODO: 008 01/08 number type(eg. home, work)
+            @Bind(R.id.numberType) TextView numberType;
+
+            public ViewHolder(View itemView) {
+                super(itemView);
+                ButterKnife.bind(this, itemView);
+            }
+        }
+    }
 }
 
 
-class CallLogAdapter extends RecyclerView.Adapter<CallLogAdapter.ViewHolder> {
 
-    private List<CallEntry> mCallLog;
-
-    public CallLogAdapter(List<CallEntry> list) {
-        mCallLog = list;
-    }
-
-
-
-    @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.view_call_log_item, parent, false);
-
-        return new ViewHolder(view);
-    }
-
-    @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
-        CallEntry entry = mCallLog.get(position);
-        holder.callNumber.setText(entry.getNumber());
-        // // TODO: 008 01/08 format time
-        holder.callTime.setText(DateTimeHelper.formatTime(entry.getTime()));
-        int resId;
-        switch (entry.getType()) {
-
-            case CallLog.Calls.INCOMING_TYPE:
-                resId = R.drawable.ic_call_received_blue_700_24dp;
-                break;
-            case CallLog.Calls.MISSED_TYPE:
-                resId = R.drawable.ic_call_missed_red_800_24dp;
-                break;
-            case CallLog.Calls.OUTGOING_TYPE:
-                resId = R.drawable.ic_call_made_green_700_24dp;
-                break;
-            default:
-                return;
-        }
-
-        holder.callType.setImageResource(resId);
-    }
-
-    @Override
-    public int getItemCount() {
-        return mCallLog.size();
-    }
-
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.callTime)    TextView callTime;
-        @Bind(R.id.callType)    ImageView callType;
-        @Bind(R.id.callNumber) TextView callNumber;
-        //// TODO: 008 01/08 number type(eg. home, work)
-        @Bind(R.id.numberType) TextView numberType;
-
-        public ViewHolder(View itemView) {
-            super(itemView);
-            ButterKnife.bind(this, itemView);
-        }
-    }
-}
 
 
 

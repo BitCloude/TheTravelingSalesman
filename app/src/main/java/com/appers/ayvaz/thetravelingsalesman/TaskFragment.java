@@ -19,8 +19,8 @@ import android.widget.Toast;
 
 import com.appers.ayvaz.thetravelingsalesman.dialog.DatePickerFragment;
 import com.appers.ayvaz.thetravelingsalesman.dialog.TimePickerFragment;
-import com.appers.ayvaz.thetravelingsalesman.Model.Task;
-import com.appers.ayvaz.thetravelingsalesman.Model.TaskList;
+import com.appers.ayvaz.thetravelingsalesman.models.Task;
+import com.appers.ayvaz.thetravelingsalesman.models.TaskList;
 import com.appers.ayvaz.thetravelingsalesman.utils.DateTimeHelper;
 
 import java.util.Calendar;

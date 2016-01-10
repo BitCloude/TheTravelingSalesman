@@ -33,7 +33,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 //        mTitle = mDrawerTitle = getTitle();
         //navi view implementation
-        mNavigationView = (NavigationView) findViewById(R.id.navi_menu);
+        mNavigationView = (NavigationView) findViewById(R.id.nav_menu);
 
         mNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override

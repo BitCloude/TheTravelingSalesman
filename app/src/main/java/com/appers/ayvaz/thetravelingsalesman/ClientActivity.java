@@ -6,28 +6,29 @@ import android.os.Bundle;
 import android.provider.CalendarContract;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.Toast;
+import android.widget.TextView;
 
-import com.appers.ayvaz.thetravelingsalesman.dialog.DeleteAlertDialogFragment;
-import com.appers.ayvaz.thetravelingsalesman.Model.Client;
-import com.appers.ayvaz.thetravelingsalesman.Model.ClientContent;
+import com.appers.ayvaz.thetravelingsalesman.models.TaskII;
+import com.appers.ayvaz.thetravelingsalesman.models.TaskManager;
+import com.appers.ayvaz.thetravelingsalesman.models.Client;
+import com.appers.ayvaz.thetravelingsalesman.models.ClientContent;
+import com.appers.ayvaz.thetravelingsalesman.utils.EventUtility;
 
 import java.util.UUID;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class ClientActivity extends NavigationDrawerActivity implements DeleteAlertDialogFragment
-        .NoticeDialogListener{
+public class ClientActivity extends AppCompatActivity implements ClientTaskFragment.PassClient {
 
 
 
@@ -36,21 +37,23 @@ public class ClientActivity extends NavigationDrawerActivity implements DeleteAl
     }
 
     private FragmentPagerAdapter mFragmentPagerAdapter;
-    private MenuItem mStar;
+
     private String[] tabTitles;
     private final int[] tabIcons = {};
-    private int fakeClientId = 12345;
+    private long mEventId;
+
     private UUID mClientId;
     private Client mClient;
     private static final String EXTRA_CLIENT_ID = "client_id";
-    private static final String DIALOG_DELETE = "DialogDelete";
-    private final int REQUEST_DELETE = 2;
-    private final int REQUEST_EDIT = 0;
+
     private ClientChanged[] fragments;
     @Bind (R.id.editNewTask) EditText mEditNewTask;
     @Bind (R.id.newTaskOK)  ImageButton mNewTaskOk;
     @Bind (R.id.tabLayout) TabLayout mTabLayout;
     @Bind(R.id.viewpager) ViewPager mViewPager;
+    @Bind(R.id.clientName)
+    TextView mClientName;
+
 
     public static Intent newIntent(Context packageContext, UUID clientId) {
         Intent i = new Intent(packageContext, ClientActivity.class);
@@ -61,9 +64,15 @@ public class ClientActivity extends NavigationDrawerActivity implements DeleteAl
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_client);
-        ViewGroup appbar = (ViewGroup) findViewById(R.id.appbar);
-        View view = getLayoutInflater().inflate(R.layout.activity_client_header, appbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//        ViewGroup appbar = (ViewGroup) findViewById(R.id.appbar);
+//        View view = getLayoutInflater().inflate(R.layout.view_client_header, appbar);
+
         ButterKnife.bind(this);
+
+        setTitle(R.string.title_activity_client);
         tabTitles = getResources().getStringArray(R.array.tab_titles_client);
 
         mClientId = (UUID) getIntent().getSerializableExtra(EXTRA_CLIENT_ID);
@@ -72,6 +81,8 @@ public class ClientActivity extends NavigationDrawerActivity implements DeleteAl
             @Override
             public Fragment getItem(int position) {
                 switch (position) {
+                    case 0: return ClientTaskFragment.newInstance(ClientTaskFragment.BY_CLIENT);
+
                     case 1: ClientCallLogFragment clientCallLogFragment = ClientCallLogFragment.newInstance(
                             mClient.getFirstPhone(), mClient.getSecondPhone());
                         fragments[1] = clientCallLogFragment;
@@ -125,23 +136,41 @@ public class ClientActivity extends NavigationDrawerActivity implements DeleteAl
         mNewTaskOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 createNewTask();
             }
         });
+
+
     }
 
     private void createNewTask() {
+
+        mEventId = EventUtility.getNewEventId(getApplicationContext().getContentResolver());
+
         Intent intent = new Intent(Intent.ACTION_INSERT)
                 .setData(CalendarContract.Events.CONTENT_URI)
                 .putExtra(CalendarContract.Events.TITLE, mEditNewTask.getText().toString())
                 .putExtra(Intent.EXTRA_EMAIL, mClient.getEmail());
         startActivity(intent);
+
+
     }
 
 
     @Override
     protected void onResume() {
         super.onResume();
+        long prev_id = EventUtility.getLastEventId(getContentResolver());
+        // if prev_id == mEventId, means there is new events created
+        // and we need to insert new events into local sqlite database.
+        if (prev_id == mEventId) {
+            // do database insert
+            TaskII task = new TaskII(mEventId);
+            task.setClient(mClient);
+            TaskManager.get(getApplicationContext()).addTask(task);
+        }
+
         updateUI();
     }
 
@@ -150,8 +179,8 @@ public class ClientActivity extends NavigationDrawerActivity implements DeleteAl
         if (mClient == null) {
             finish();
         }
-        setTitle(mClient.toString());
-        updateActionBar();
+        mClientName.setText(mClient.toString());
+
     }
 
     /**
@@ -166,10 +195,19 @@ public class ClientActivity extends NavigationDrawerActivity implements DeleteAl
         }
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_info) {
+            Intent intent = ClientInfoActivity.newIntent(getApplicationContext(), mClientId);
+            startActivity(intent);
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     /**
      * if user save the change
      *
-     */
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_EDIT && resultCode == RESULT_OK) {
@@ -178,61 +216,26 @@ public class ClientActivity extends NavigationDrawerActivity implements DeleteAl
         }
     }
 
+     */
 
-    @Override
-    public void onDialogPositiveClick(android.support.v4.app.DialogFragment dialog) {
-        if (ClientContent.get(getApplicationContext()).delete(mClientId)) {
-            Toast.makeText(this, "Client deleted", Toast.LENGTH_LONG).show();
-            finish();
-        }
+
+    public Client getClient() {
+        return mClient;
     }
 
-    @Override
-    public void onDialogNegativeClick(android.support.v4.app.DialogFragment dialog) {
 
-    }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch(item.getItemId()) {
-            case R.id.action_edit:
-                Intent intent = ClientEditActivity.newIntent(getApplicationContext(), mClientId);
-                startActivityForResult(intent, REQUEST_EDIT);
-                return true;
-            case R.id.action_star:
-                mClient.setStared(!mClient.isStared());
-                updateActionBar();
-                return true;
-
-            case R.id.action_delete:
-                FragmentManager manager = getSupportFragmentManager();
-                DeleteAlertDialogFragment dialog = DeleteAlertDialogFragment.newInstance("client");
-                dialog.show(manager, DIALOG_DELETE);
-                return true;
-
-            default:return super.onOptionsItemSelected(item);
-        }
-    }
-
-    private void updateActionBar() {
-        if (mStar != null) {
-            mStar.setIcon(mClient.isStared() ? R.drawable.ic_star_yellow_500_24dp :
-                    R.drawable.ic_star_outline_white_24dp);
-        }
-
-    }
 
     @Override
     protected void onPause() {
         super.onPause();
-        ClientContent.get(getApplicationContext()).updateClient(mClient);
     }
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_client, menu);
-        mStar = menu.findItem(R.id.action_star);
-        updateActionBar();
         return true;
     }
 

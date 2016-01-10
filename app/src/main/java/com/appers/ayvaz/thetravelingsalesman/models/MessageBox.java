@@ -1,4 +1,4 @@
-package com.appers.ayvaz.thetravelingsalesman.Model;
+package com.appers.ayvaz.thetravelingsalesman.models;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -83,7 +83,7 @@ public class MessageBox {
         return callEntryList;
     }
 
-    public MessageAdapterSlow query(String number1, String number2) {
+    public MessageAdapterSlow queryText(String number1, String number2) {
         mNumber1 = number1;
         mNumber2 = number2;
         messageList = new ArrayList<MyMessage>();

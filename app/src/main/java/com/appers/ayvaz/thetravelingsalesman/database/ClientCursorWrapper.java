@@ -4,7 +4,7 @@ import android.database.Cursor;
 import android.database.CursorWrapper;
 
 import com.appers.ayvaz.thetravelingsalesman.database.DbSchema.ClientTable.Cols;
-import com.appers.ayvaz.thetravelingsalesman.Model.Client;
+import com.appers.ayvaz.thetravelingsalesman.models.Client;
 
 import java.util.UUID;
 
