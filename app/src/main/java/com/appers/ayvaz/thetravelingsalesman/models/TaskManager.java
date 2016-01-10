@@ -21,11 +21,12 @@ public class TaskManager {
 
     private static String[] projections = {
             CalendarContract.Events._ID,
+            CalendarContract.Events.TITLE,
             CalendarContract.Events.DTSTART,
             CalendarContract.Events.DTEND,
             CalendarContract.Events.HAS_ALARM,
             CalendarContract.Events.HAS_ATTENDEE_DATA,
-            CalendarContract.Events.HAS_EXTENDED_PROPERTIES    };
+            CalendarContract.Events.DESCRIPTION    };
 
 
 

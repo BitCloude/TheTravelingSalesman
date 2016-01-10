@@ -189,6 +189,8 @@ public class ClientTaskFragment extends Fragment {
                 taskClient.setText(mTask.getClient().toString());
                 fromDate.setText(DateTimeHelper.formatMed(mTask.getStartTime()));
                 toDate.setText(DateTimeHelper.formatMed(mTask.getEndTime()));
+                taskDetail.setText(mTask.getTitle());
+
                 if (!mTask.hasAlarm()) {
                     buttonReminder.setImageDrawable(null);
                 }
@@ -197,11 +199,11 @@ public class ClientTaskFragment extends Fragment {
                     buttonAttendee.setImageDrawable(null);
                 }
 
-                if (!mTask.hasExtendedProperties()) {
+                if (!mTask.hasNotes()) {
                     buttonExtra.setImageDrawable(null);
                 }
 
-                //// TODO: 009 01/09 task detail
+
             }
         }
     }

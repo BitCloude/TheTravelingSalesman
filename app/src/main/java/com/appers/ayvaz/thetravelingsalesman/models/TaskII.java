@@ -23,6 +23,12 @@ public class TaskII {
     private Date startTime;
     private Date endTime;
     private boolean hasAlarm;
+    private String notes;
+    private String title;
+
+    public String getTitle() {
+        return title;
+    }
 
     public boolean hasAlarm() {
         return hasAlarm;
@@ -32,12 +38,12 @@ public class TaskII {
         return hasAttendee;
     }
 
-    public boolean hasExtendedProperties() {
-        return hasExtendedProperties;
+    public boolean hasNotes() {
+        return notes != null && !notes.equals("");
     }
 
     private boolean hasAttendee;
-    private boolean hasExtendedProperties;
+
     private Client mClient;
 
 
@@ -93,8 +99,10 @@ public class TaskII {
                 eventCursor.getColumnIndex(CalendarContract.Events.HAS_ALARM)) > 0;
         taskII.hasAttendee = eventCursor.getInt(
                 eventCursor.getColumnIndex(CalendarContract.Events.HAS_ATTENDEE_DATA)) > 0;
-        taskII.hasExtendedProperties = eventCursor.getInt(
-                eventCursor.getColumnIndex(CalendarContract.Events.HAS_EXTENDED_PROPERTIES)) > 0;
+        taskII.notes = eventCursor.getString(
+                eventCursor.getColumnIndex(CalendarContract.Events.DESCRIPTION));
+        taskII.title = eventCursor.getString(eventCursor.getColumnIndex(
+                CalendarContract.Events.TITLE));
 
         return taskII;
 
