@@ -2,7 +2,7 @@
 <android.support.design.widget.NavigationView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/navi_menu"
+    android:id="@+id/nav_menu"
     app:headerLayout="@layout/header_drawer"
     app:menu="@menu/menu_drawer"
     android:layout_width="match_parent"

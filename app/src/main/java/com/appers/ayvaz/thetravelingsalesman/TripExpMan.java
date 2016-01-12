@@ -2,36 +2,27 @@ package com.appers.ayvaz.thetravelingsalesman;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.os.Bundle;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class TripExpMan extends BaseActivity {
+public class TripExpMan extends NavigationDrawerActivity {
 
 
     LinearLayout linearLayout;
@@ -64,8 +55,11 @@ public class TripExpMan extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ViewGroup viewStub = (ViewGroup) findViewById(R.id.view_stub);
-        getLayoutInflater().inflate(R.layout.activity_trip_exp_man, viewStub);
+        setContentView(R.layout.activity_trip_exp_man);
+//        ViewGroup viewStub = (ViewGroup) findViewById(R.id.view_stub);
+//        getLayoutInflater().inflate(R.layout.activity_trip_exp_man, viewStub);
+        ViewGroup appBar = (ViewGroup) findViewById(R.id.appbar);
+        getLayoutInflater().inflate(R.layout.layout_tab, appBar);
 
         setTitle("Trips and Expenses");
        /* Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -86,7 +80,7 @@ public class TripExpMan extends BaseActivity {
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabLayout);
         tabLayout.setupWithViewPager(mViewPager);
 
 
@@ -110,7 +104,7 @@ public class TripExpMan extends BaseActivity {
         //getMenuInflater().inflate(R.menu.menu_trip_exp_man, menu);
         menu.add(1, 66, 100, "ADD");
         //menu.findItem(11).setIcon(android.R.drawable.ic_menu_save);
-        menu.findItem(66).setIcon(android.R.drawable.ic_menu_add);
+        menu.findItem(66).setIcon(R.drawable.ic_add_white_24dp);
         menu.findItem(66).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
         return true;
     }
@@ -279,7 +273,7 @@ public class TripExpMan extends BaseActivity {
 
         @Override
         public Fragment getItem(int position) {
-            // getItem is called to instantiate the fragment for the given page.
+            // getClient is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
             return PlaceholderFragment.newInstance(position + 1);
         }
@@ -300,5 +294,11 @@ public class TripExpMan extends BaseActivity {
             }
             return null;
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        checkMenu(R.id.nav_trip);
     }
 }

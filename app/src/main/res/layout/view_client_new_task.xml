@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="48dp"
+    android:padding="5dp"
+    android:background="@color/background_primary"
+    android:orientation="vertical">
+
+    <EditText
+        android:id="@+id/editNewTask"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_toStartOf="@+id/newTaskOK"
+        android:hint="Add a task"
+        android:textColor="@color/TextPrimary"
+        android:textSize="16sp"
+        android:layout_alignParentTop="true" />
+
+    <ImageButton
+        android:id="@+id/newTaskOK"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="6dp"
+        android:layout_marginRight="6dp"
+        android:background="@android:color/transparent"
+        android:src="@drawable/ic_add_circle_outline_grey_900_24dp" />
+</RelativeLayout>

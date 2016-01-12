@@ -1,19 +1,16 @@
 package com.appers.ayvaz.thetravelingsalesman;
 
-import android.app.Notification;
 import android.content.Intent;
+import android.content.res.Configuration;
+import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 public abstract class BaseActivity extends AppCompatActivity {
@@ -32,13 +29,12 @@ public abstract class BaseActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         view_stub = (LinearLayout) findViewById(R.id.view_stub);
 
-        ActionBarDrawerToggle mDrawerToggle;
         // drawer stuff
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mTitle = mDrawerTitle = getTitle();
+//        mTitle = mDrawerTitle = getTitle();
         //navi view implementation
-        mNavigationView = (NavigationView) findViewById(R.id.navi_menu);
-        setupDrawerContent(mNavigationView);
+        mNavigationView = (NavigationView) findViewById(R.id.nav_menu);
+
         mNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem item) {
@@ -54,39 +50,30 @@ public abstract class BaseActivity extends AppCompatActivity {
             @Override
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
-                setTitle(mTitle);
+//                setTitle(mTitle);
                 invalidateOptionsMenu();
             }
 
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
-                setTitle(mDrawerTitle);
+//                setTitle(mDrawerTitle);
                 invalidateOptionsMenu();
             }
         };
 
         mDrawerLayout.setDrawerListener(mDrawerToggle);
 
+
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setHomeButtonEnabled(true);
         }
 
-    }
-    private void setupDrawerContent(NavigationView navigationView) {
-        navigationView.setNavigationItemSelectedListener(
-                new NavigationView.OnNavigationItemSelectedListener() {
 
-                    @Override
-                    public boolean onNavigationItemSelected(MenuItem menuItem) {
-                        menuItem.setChecked(true);
-                        mDrawerLayout.closeDrawers();
-                        selectItem(menuItem.getItemId());
-                        return true;
-                    }
-                });
+
     }
+
 
     private void selectItem(int itemId) {
 
@@ -95,11 +82,38 @@ public abstract class BaseActivity extends AppCompatActivity {
         } else if (itemId == R.id.nav_trip) {
             startActivity(new Intent(this, TripExpMan.class));
         } else if (itemId == R.id.nav_tasks) {
-            startActivity(new Intent(this, TaskAddActivity.class));
+            startActivity(new Intent(this, TaskListActivity.class));
         } else if (itemId == R.id.nav_notifications) {
             startActivity(new Intent(this, NotificationActivity.class));
+        } else if (itemId == R.id.nav_clients) {
+            startActivity(new Intent(this, LandingActivity.class));
         }
 
+    }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        // Sync the toggle state after onRestoreInstanceState has occurred.
+        mDrawerToggle.syncState();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        mDrawerToggle.onConfigurationChanged(newConfig);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Pass the event to ActionBarDrawerToggle, if it returns
+        // true, then it has handled the app icon touch event
+        if (mDrawerToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
+        // Handle your other action bar items...
+
+        return super.onOptionsItemSelected(item);
     }
 
     /* Override all setContentView methods to put the content view to the FrameLayout view_stub
@@ -137,4 +151,5 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     */
+
 }
