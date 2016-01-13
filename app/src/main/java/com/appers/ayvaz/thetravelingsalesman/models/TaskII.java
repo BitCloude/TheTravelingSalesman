@@ -30,6 +30,10 @@ public class TaskII {
         return title;
     }
 
+    public String getNotes() {
+        return notes;
+    }
+
     public boolean hasAlarm() {
         return hasAlarm;
     }

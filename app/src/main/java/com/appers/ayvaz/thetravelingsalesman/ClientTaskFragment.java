@@ -24,6 +24,9 @@ import com.appers.ayvaz.thetravelingsalesman.models.TaskManager;
 import com.appers.ayvaz.thetravelingsalesman.utils.DateTimeHelper;
 import com.appers.ayvaz.thetravelingsalesman.view.DividerItemDecoration;
 
+
+import org.joda.time.LocalDate;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
@@ -33,28 +36,41 @@ import butterknife.ButterKnife;
  * Use the {@link ClientTaskFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ClientTaskFragment extends Fragment {
+public class ClientTaskFragment extends Fragment implements ClientActivity.ClientChanged,
+        TaskListActivity.OnDateChanged {
 
     private Client mClient;
-    private Date mDate;
+    private LocalDate mDate;
+    private UUID mClientId;
     private static final String ARG_MODE = "arg_mode";
+    private static final String ARG_CLIENT_ID = "client_id";
+    private static final String ARG_DATE_TIME = "date_time";
     public static final int BY_CLIENT = 0;
     public static final int BY_DATE = 1;
     private int mMode;
-    private PassClient mPassClient;
+//    private PassClient mPassClient;
 
-    interface PassClient{
+
+    /*interface PassClient{
         Client getClient();
-    }
+    }*/
 
     public ClientTaskFragment() {
         // Required empty public constructor
     }
 
-    public static ClientTaskFragment newInstance(int mode) {
+    public static ClientTaskFragment newInstance(UUID clientId) {
         ClientTaskFragment fragment = new ClientTaskFragment();
         Bundle args = new Bundle();
-        args.putInt(ARG_MODE, mode);
+        args.putSerializable(ARG_CLIENT_ID, clientId);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    public static ClientTaskFragment newInstance(LocalDate date) {
+        ClientTaskFragment fragment = new ClientTaskFragment();
+        Bundle args = new Bundle();
+        args.putSerializable(ARG_DATE_TIME, date);
         fragment.setArguments(args);
         return fragment;
     }
@@ -62,11 +78,19 @@ public class ClientTaskFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mMode = getArguments().getInt(ARG_MODE);
+        Bundle args = getArguments();
+
+        if ((args.getSerializable(ARG_CLIENT_ID)) != null) {
+            mClientId = (UUID) args.getSerializable(ARG_CLIENT_ID);
+            mMode = BY_CLIENT;
+        } else if (args.getSerializable(ARG_DATE_TIME) != null ) {
+            mDate = (LocalDate) args.getSerializable(ARG_DATE_TIME);
+            mMode = BY_DATE;
+        }
     }
 
     @Bind (R.id.recycler_view) RecyclerView mRecyclerView;
-    private TaskAdapter mAdapter;
+
 
 
 
@@ -76,7 +100,7 @@ public class ClientTaskFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_list, container, false);
         ButterKnife.bind(this, view);
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
+
         Context context = view.getContext();
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(context));
@@ -90,16 +114,23 @@ public class ClientTaskFragment extends Fragment {
     }
 
     private void updateUI() {
+        List<TaskII> list;
+
         if (mMode == BY_CLIENT) {
-            List<TaskII> list = TaskManager.get(getContext()).query(mClient);
-            mAdapter = new TaskAdapter(list);
-            mRecyclerView.setAdapter(mAdapter);
+            list = TaskManager.get(getContext()).query(mClientId);
+        } else {
+            list = TaskManager.get(getContext()).query(mDate);
+//            list = TaskManager.get(getContext()).queryByDate(mDate);
+
         }
+
+        TaskAdapter adapter = new TaskAdapter(list);
+        mRecyclerView.setAdapter(adapter);
 
     }
 
 
-    @Override
+   /* @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         if (context instanceof PassClient) {
@@ -116,7 +147,7 @@ public class ClientTaskFragment extends Fragment {
         super.onDetach();
         mPassClient = null;
         mClient = null;
-    }
+    }*/
 
 
 
@@ -126,8 +157,21 @@ public class ClientTaskFragment extends Fragment {
 //        updateUI();
     }
 
+    @Override
+    public void updateUI(Client client) {
+        mClient = client;
+        updateUI();
+    }
+
+    public void updateUI(LocalDate date) {
+        mDate = date;
+        updateUI();
+    }
+
     public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
 
+        private final static int TYPE_CLIENT = 0;
+        private final static int TYPE_DATE = 1;
         List<TaskII> list;
         public TaskAdapter(List<TaskII> taskList) {
             list = taskList;
@@ -137,7 +181,9 @@ public class ClientTaskFragment extends Fragment {
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.fragment_task_item, parent, false);
-
+/*            if (viewType == TYPE_DATE) {
+                return new ViewHolderDate(view);
+            }*/
             return new ViewHolder(view);
         }
 
@@ -146,7 +192,14 @@ public class ClientTaskFragment extends Fragment {
             TaskII task = list.get(position);
             holder.setTask(task);
 
+        }
 
+        @Override
+        public int getItemViewType(int position) {
+            if (list.get(position).getClient() == null) {
+                return TYPE_CLIENT;
+            }
+            return TYPE_DATE;
         }
 
         @Override
@@ -154,6 +207,8 @@ public class ClientTaskFragment extends Fragment {
             return list.size();
         }
 
+
+        // view holder for client view
         public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
             private TaskII mTask;
 
@@ -162,7 +217,7 @@ public class ClientTaskFragment extends Fragment {
                 setView();
             }
 
-            @Bind(R.id.task_client) TextView taskClient;
+            @Bind(R.id.task_title) TextView taskTitle;
             @Bind(R.id.task_detail) TextView taskDetail;
             @Bind(R.id.from_date) TextView fromDate;
             @Bind(R.id.to_date) TextView toDate;
@@ -186,7 +241,46 @@ public class ClientTaskFragment extends Fragment {
             }
 
             public void setView() {
-                taskClient.setText(mTask.getClient().toString());
+//                taskClient.setText(mTask.getClient().toString());
+                fromDate.setText(DateTimeHelper.formatMed(mTask.getStartTime()));
+                toDate.setText(DateTimeHelper.formatMed(mTask.getEndTime()));
+                taskTitle.setText(mTask.getTitle());
+
+                if (!mTask.hasAlarm()) {
+                    buttonReminder.setImageDrawable(null);
+                }
+
+                if (!mTask.hasAttendee()) {
+                    buttonAttendee.setImageDrawable(null);
+                }
+
+                if (!mTask.hasNotes()) {
+                    buttonExtra.setImageDrawable(null);
+                }
+                    taskDetail.setText(mTask.getNotes());
+
+
+
+            }
+        }
+
+        public class ViewHolderDate extends ViewHolder implements View.OnClickListener {
+            private TaskII mTask;
+
+            void setTask(TaskII task) {
+                mTask = task;
+                setView();
+            }
+
+            public ViewHolderDate(View itemView) {
+                super(itemView);
+            }
+
+
+
+
+            public void setView() {
+                taskTitle.setText(mTask.getClient().toString());
                 fromDate.setText(DateTimeHelper.formatMed(mTask.getStartTime()));
                 toDate.setText(DateTimeHelper.formatMed(mTask.getEndTime()));
                 taskDetail.setText(mTask.getTitle());

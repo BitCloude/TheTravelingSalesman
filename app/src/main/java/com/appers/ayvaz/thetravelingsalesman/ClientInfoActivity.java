@@ -2,24 +2,29 @@ package com.appers.ayvaz.thetravelingsalesman;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.appers.ayvaz.thetravelingsalesman.models.Client;
-import com.appers.ayvaz.thetravelingsalesman.models.ClientContent;
+import com.appers.ayvaz.thetravelingsalesman.models.ClientManager;
 import com.appers.ayvaz.thetravelingsalesman.dialog.DeleteAlertDialogFragment;
+import com.appers.ayvaz.thetravelingsalesman.utils.PictureUtils;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.UUID;
 
@@ -38,8 +43,8 @@ public class ClientInfoActivity extends AppCompatActivity implements DeleteAlert
     private final int REQUEST_DELETE = 2;
     private final int REQUEST_EDIT = 0;
     private LayoutInflater mInflater;
-    @Bind (R.id.infoContainer)
-    LinearLayout mContainer;
+    @Bind (R.id.infoContainer)    LinearLayout mContainer;
+    @Bind (R.id.clientPhoto)    ImageView mImageView;
 
     public static Intent newIntent(Context packageContext, UUID clientId) {
         Intent i = new Intent(packageContext, ClientInfoActivity.class);
@@ -69,23 +74,35 @@ public class ClientInfoActivity extends AppCompatActivity implements DeleteAlert
                 startActivity(intent);
             }
         });*/
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
 
 
         // setup client
         Serializable s = getIntent().getSerializableExtra(EXTRA_CLIENT_ID);
         mClientId = s == null ? null : (UUID) s;
-        updateUI();
 
+        updateUI();
 
     }
 
+    private void showPhoto() {
+        File file = ClientManager.get(this).getPhotoFile(mClient, false);
+        Bitmap bitmap = PictureUtils.getScaledBitmap(
+                file.getPath(), this);
+        mImageView.setImageBitmap(bitmap);
+    }
+
     private void updateUI() {
-        mClient = ClientContent.get(getApplicationContext()).getClient(mClientId);
+        mClient = ClientManager.get(getApplicationContext()).getClient(mClientId);
 
         if (mClient == null) {
             finish();
         }
+
+        showPhoto();
 
         updateActionBar();
 
@@ -204,6 +221,14 @@ public class ClientInfoActivity extends AppCompatActivity implements DeleteAlert
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()) {
+            case android.R.id.home:
+//                NavUtils.navigateUpFromSameTask(this);
+                Intent upIntent = ClientActivity.newIntent(getApplicationContext(), mClientId);
+                startActivity(upIntent);
+                finish();
+                Log.i("...........", "Back");
+                return true;
+
             case R.id.action_edit:
                 Intent intent = ClientEditActivity.newIntent(getApplicationContext(), mClientId);
                 startActivityForResult(intent, REQUEST_EDIT);
@@ -219,8 +244,10 @@ public class ClientInfoActivity extends AppCompatActivity implements DeleteAlert
                 dialog.show(manager, DIALOG_DELETE);
                 return true;
 
-            default:return super.onOptionsItemSelected(item);
+
         }
+
+        return super.onOptionsItemSelected(item);
     }
 
     private void updateActionBar() {
@@ -240,13 +267,13 @@ public class ClientInfoActivity extends AppCompatActivity implements DeleteAlert
 
     @Override
     protected void onPause() {
-        ClientContent.get(getApplicationContext()).updateClient(mClient);
+        ClientManager.get(getApplicationContext()).updateClient(mClient);
         super.onPause();
     }
 
     @Override
     public void onDialogPositiveClick(android.support.v4.app.DialogFragment dialog) {
-        if (ClientContent.get(getApplicationContext()).delete(mClientId)) {
+        if (ClientManager.get(getApplicationContext()).delete(mClientId)) {
             Toast.makeText(this, "Client deleted", Toast.LENGTH_LONG).show();
             finish();
         }

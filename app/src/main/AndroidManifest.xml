@@ -11,6 +11,7 @@
     <uses-permission android:name="android.permission.READ_CALENDAR"/>
 
     <application
+        android:screenOrientation="portrait"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -38,7 +39,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ClientEditActivity"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".ClientInfoActivity" />
         <activity
             android:name=".ReportsActivity"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -58,22 +59,29 @@
             android:name=".NotificationActivity"
             android:label="@string/title_activity_notification"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".ClientActivity"
-            android:parentActivityName=".LandingActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
+
         <activity
             android:name=".LandingActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
+            android:name=".ClientActivity"
+            android:parentActivityName=".LandingActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
+            android:name=".ClientInfoActivity"
+            android:label="@string/title_activity_client_info"
+            android:parentActivityName=".ClientActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
             android:name=".TaskActivity"
-            android:parentActivityName=".TaskListActivity" />
+            android:parentActivityName=".TaskListActivity"
+            android:launchMode="singleInstance"
+            />
         <activity
             android:name=".TaskListActivity"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -83,18 +91,11 @@
         <activity
             android:name=".TaskListWithCalendar"
             android:label="@string/title_activity_task_list_with_calendar"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar"/>
         <activity
             android:name=".TaskList"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".ClientInfoActivity"
-            android:label="@string/title_activity_client_info"
-            android:parentActivityName=".LandingActivity"
-            android:theme="@style/AppTheme.NoActionBar">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.appers.ayvaz.thetravelingsalesman.ClientActivity" />
+            android:theme="@style/AppTheme.NoActionBar" >
+
         </activity>
     </application>
 

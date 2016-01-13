@@ -29,7 +29,7 @@ public class ClientCursorWrapper extends CursorWrapper {
         String note = getString(getColumnIndex(Cols.NOTE));
         boolean stared = getInt(getColumnIndex(Cols.STARED)) == 1;
         String linkedIn = getString(getColumnIndex(Cols.LINKEDIN));
-        byte[] img = getBlob(getColumnIndex(Cols.IMAGE));
+//        byte[] img = getBlob(getColumnIndex(Cols.IMAGE));
 
         Client client = new Client(UUID.fromString(uuidString));
         client.setLastName(lastName);
@@ -42,7 +42,7 @@ public class ClientCursorWrapper extends CursorWrapper {
         client.setAddress(address);
         client.setStared(stared);
         client.setLinkedIn(linkedIn);
-        client.setImage(img);
+//        client.setImage(img);
 
         return client;
 

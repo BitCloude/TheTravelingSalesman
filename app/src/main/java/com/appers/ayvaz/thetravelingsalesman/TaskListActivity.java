@@ -2,7 +2,9 @@ package com.appers.ayvaz.thetravelingsalesman;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.wefika.calendar.CollapseCalendarView;
 
@@ -11,22 +13,27 @@ import org.joda.time.LocalDate;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class TaskListActivity extends SingleFragmentActivity {
+public class TaskListActivity extends NavigationDrawerActivity {
 
-    @Override
-    protected Fragment createFragment() {
-        return new TaskListFragment();
+    interface OnDateChanged {
+        void updateUI(LocalDate date);
     }
 
     private final String TAG = "debuging--------";
+    @Bind(R.id.calendar)
+    CollapseCalendarView mCalendarView;
+    private FragmentManager mFragmentManager;
+    private OnDateChanged mFragment;
 
-    @Bind (R.id.calendar) CollapseCalendarView mCalendarView;
 
+    protected Fragment createFragment(LocalDate date) {
+        return ClientTaskFragment.newInstance(date);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        setContentView(R.layout.activity_single_fragment);
         ViewGroup appbar = (ViewGroup) findViewById(R.id.appbar);
         getLayoutInflater().inflate(R.layout.layout_collapse_calenar_view, appbar);
         ButterKnife.bind(this);
@@ -34,24 +41,49 @@ public class TaskListActivity extends SingleFragmentActivity {
         setTitle(R.string.title_activity_task);
 
 //        CalendarManager manager = new CalendarManager(LocalDate.now(), CalendarManager.State.MONTH, LocalDate.now(), LocalDate.now().plusYears(1));
-
-//        mCalendarView = (CollapseCalendarView) findViewById(R.id.calendar);
 //        mCalendarView.init(manager);
         mCalendarView.init(LocalDate.now(), LocalDate.now().minusYears(3), LocalDate.now().plusYears(3));
 
 
+        mCalendarView.setListener(new CollapseCalendarView.OnDateSelect() {
+            @Override
+            public void onDateSelected(LocalDate localDate) {
+                changeRange(localDate);
+            }
+        });
 
+        mFragmentManager = getSupportFragmentManager();
+        Fragment fragment = mFragmentManager.findFragmentById(R.id.fragment_container);
 
-
-
+        if (fragment == null) {
+            fragment = createFragment(mCalendarView.getSelectedDate());
+            mFragment = (OnDateChanged) fragment;
+            mFragmentManager.beginTransaction()
+                    .add(R.id.fragment_container, fragment)
+                    .commit();
+        }
     }
 
+
+    private void changeRange(LocalDate localDate) {
+        // when user click a date, change the adapter
+        Toast.makeText(getApplicationContext(), localDate.toString(), Toast.LENGTH_SHORT).show();
+        mFragment.updateUI(localDate);
+//        Fragment fragment = createFragment(localDate);
+//        mFragmentManager.beginTransaction().replace(R.id.fragment_container, fragment)
+//                .commit();
+
+    }
 
     @Override
     protected void onResume() {
         super.onResume();
         checkMenu(R.id.nav_tasks);
     }
+
+
+
+
 /*
     private void setUpWeekTable() {
         String[] namesOfDays = DateFormatSymbols.getInstance().getShortWeekdays();

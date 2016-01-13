@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Environment;
 import android.widget.Toast;
 
 import com.appers.ayvaz.thetravelingsalesman.ClientListFragment;
@@ -11,6 +12,7 @@ import com.appers.ayvaz.thetravelingsalesman.database.ClientCursorWrapper;
 import com.appers.ayvaz.thetravelingsalesman.database.DatabaseHelper;
 import com.appers.ayvaz.thetravelingsalesman.database.DbSchema.ClientTable;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -19,7 +21,7 @@ import java.util.UUID;
 * A singleton class to provide access to Clients
 *
 * */
-public class ClientContent {
+public class ClientManager {
 /*
     private List<Client> ITEMS;
     private Random random;
@@ -27,12 +29,12 @@ public class ClientContent {
     private static final int COUNT = 25;
     */
 
-    private static ClientContent content;
+    private static ClientManager content;
 
     private Context mContext;
     private SQLiteDatabase mDatabase;
 
-    private ClientContent(Context context) {
+    private ClientManager(Context context) {
         mContext = context;
         mDatabase = new DatabaseHelper(mContext)
                 .getWritableDatabase();
@@ -48,9 +50,9 @@ public class ClientContent {
         */
     }
 
-    public static ClientContent get(Context context) {
+    public static ClientManager get(Context context) {
         if (content == null) {
-            content = new ClientContent(context);
+            content = new ClientManager(context);
         }
 
         return content;
@@ -69,7 +71,7 @@ public class ClientContent {
         values.put(ClientTable.Cols.SECOND_PHONE, client.getSecondPhone());
         values.put(ClientTable.Cols.STARED, client.isStared() ? 1 : 0);
         values.put(ClientTable.Cols.LINKEDIN, client.getLinkedIn());
-        values.put(ClientTable.Cols.IMAGE, client.getImage());
+//        values.put(ClientTable.Cols.IMAGE, client.getImage());
 
         return values;
     }
@@ -153,6 +155,16 @@ public class ClientContent {
         String whereClause = ClientTable.Cols.UUID + " = ?";
         String[] whereArgs = new String[]{uuid.toString()};
         return mDatabase.delete(ClientTable.NAME, whereClause, whereArgs) > 0;
+    }
+
+    public File getPhotoFile(Client client, boolean tmp) {
+        File externalFilesDir = mContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+
+        if (externalFilesDir == null) {
+            return null;
+        }
+
+        return new File(externalFilesDir, client.getPhotoFileName(tmp));
     }
 /*
     private String makeDetails(int position) {

@@ -12,6 +12,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.appers.ayvaz.thetravelingsalesman.adapter.TaskAdapter;
 import com.appers.ayvaz.thetravelingsalesman.models.Task;
@@ -35,7 +36,7 @@ public class TaskListFragment extends Fragment{
     private RecyclerView mRecyclerView;
     private static final int REQUEST_TASK = 1;
     public int mPosition;
-    private CollapseCalendarView mCollapseCalendarView;
+
     private int scrolledDistance = 0;
 
     private final int HIDE_THRESHOLD = 80;
@@ -56,13 +57,7 @@ public class TaskListFragment extends Fragment{
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_list, container, false);
-        mCollapseCalendarView = (CollapseCalendarView) getActivity().findViewById(R.id.calendar);
-        mCollapseCalendarView.setListener(new CollapseCalendarView.OnDateSelect() {
-            @Override
-            public void onDateSelected(LocalDate localDate) {
-                changeRange(localDate);
-            }
-        });
+
 
         //set up RecyclerView
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
@@ -118,9 +113,7 @@ public class TaskListFragment extends Fragment{
 
     }
 
-    private void changeRange(LocalDate localDate) {
-        // when user click a date, change the adapter
-    }
+
 
 
 

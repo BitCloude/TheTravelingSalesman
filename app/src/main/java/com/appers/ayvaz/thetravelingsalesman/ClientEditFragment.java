@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
@@ -19,11 +20,25 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.appers.ayvaz.thetravelingsalesman.dialog.PickOrTakePhotoFragment;
 import com.appers.ayvaz.thetravelingsalesman.models.Client;
-import com.appers.ayvaz.thetravelingsalesman.models.ClientContent;
+import com.appers.ayvaz.thetravelingsalesman.models.ClientManager;
+import com.appers.ayvaz.thetravelingsalesman.utils.PictureUtils;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.BufferedWriter;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.util.UUID;
 
 import butterknife.Bind;
@@ -47,7 +62,8 @@ public class ClientEditFragment extends Fragment {
 
     private UUID mClientId;
     private Client mClient;
-    private ImageView mImageView;
+    private File mPhotoFile, mPhotoTmp;
+
     private MenuItem mStar, mDelete;
     @Bind(R.id.firstName) TextView mFirstName;
     @Bind(R.id.lastName) TextView mLastName;
@@ -57,6 +73,7 @@ public class ClientEditFragment extends Fragment {
     @Bind(R.id.secondPhone) TextView mPhoneSecond;
     @Bind(R.id.note) TextView mNote;
     @Bind(R.id.address) TextView mAddress;
+    @Bind(R.id.imageView) ImageView mImageView;
 
 
 
@@ -87,10 +104,14 @@ public class ClientEditFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             mClientId = (UUID) getArguments().get(ARG_CLIENT_ID);
-            mClient = ClientContent.get(getActivity()).getClient(mClientId);
+            mClient = ClientManager.get(getActivity()).getClient(mClientId);
         } else {
             mClient = new Client();
         }
+
+        mPhotoFile = ClientManager.get(getActivity()).getPhotoFile(mClient, false);
+        mPhotoTmp = ClientManager.get(getActivity()).getPhotoFile(mClient, true);
+
         setHasOptionsMenu(true);
     }
 
@@ -104,8 +125,8 @@ public class ClientEditFragment extends Fragment {
 //        mStar = mMenu.findItem(R.id.action_star);
 
         updateUI();
+        updatePhotoView();
 
-        mImageView = (ImageView) view.findViewById(R.id.imageView);
         mImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -116,6 +137,16 @@ public class ClientEditFragment extends Fragment {
     }
 
 
+    private void updatePhotoView() {
+        if ((mPhotoFile == null || !mPhotoFile.exists()) && (mPhotoTmp == null || !mPhotoTmp.exists())) {
+            mImageView.setImageResource(R.drawable.avatar);
+        } else {
+            File file = (mPhotoTmp != null && mPhotoTmp.exists())? mPhotoTmp : mPhotoFile;
+            Bitmap bitmap = PictureUtils.getScaledBitmap(
+                    file.getPath(), getActivity());
+            mImageView.setImageBitmap(bitmap);
+        }
+    }
 
     private void setPhoto() {
         FragmentManager manager = getFragmentManager();
@@ -126,7 +157,9 @@ public class ClientEditFragment extends Fragment {
 
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+        if (mPhotoTmp != null && takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+            Uri uri = Uri.fromFile(mPhotoTmp);
+            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
             startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
         }
     }
@@ -157,9 +190,30 @@ public class ClientEditFragment extends Fragment {
         }
 
         if (requestCode == REQUEST_IMAGE_CAPTURE) {
-            Bundle extras = data.getExtras();
-            Bitmap imageBitmap = (Bitmap) extras.get("data");
-            mImageView.setImageBitmap(imageBitmap);
+
+            updatePhotoView();
+//            Bundle extras = data.getExtras();
+//            Bitmap imageBitmap = (Bitmap) extras.get("data");
+//            mImageView.setImageBitmap(imageBitmap);
+        }
+        if (requestCode == REQUEST_PICK_PHOTO) {
+            if (data != null) {
+                try {
+                    InputStream inputStream = getContext().getContentResolver()
+                            .openInputStream(data.getData());
+                    // // TODO: 013 01/13 save picked image 
+
+
+
+                }  catch (FileNotFoundException e) {
+
+                    e.printStackTrace();
+                } catch (IOException e) {
+
+                }
+            }
+
+
         }
 
         // // TODO: 007 01/07 Process and save image
@@ -168,7 +222,7 @@ public class ClientEditFragment extends Fragment {
 * */
         /*
         if (requestCode == REQUEST_DELETE) {
-            if (ClientContent.get(getContext()).delete(mClientId)) {
+            if (ClientManager.get(getContext()).delete(mClientId)) {
                 Toast.makeText(getActivity(), "Client deleted", Toast.LENGTH_LONG).show();
                 getActivity().finish();
             }
@@ -189,11 +243,18 @@ public class ClientEditFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case android.R.id.home:
+                Intent upIntent = ClientInfoActivity.newIntent(getActivity(), mClientId);
+                upIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(upIntent);
+                getActivity().finish();
+                return true;
             case R.id.action_done :
-                ClientContent content = ClientContent.get(getActivity());
+                ClientManager content = ClientManager.get(getActivity());
                 updateClient();
                 if (mClientId != null) {
                     content.updateClient(mClient);
+
                     getActivity().setResult(Activity.RESULT_OK);
                 } else {
                     if (!checkValid()) {
@@ -202,38 +263,32 @@ public class ClientEditFragment extends Fragment {
                                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
-
-
                                     }
                                 });
                         builder.create().show();
                         return true;
                     }
+
                     mClientId = mClient.getId();
                     content.addClient(mClient);
                 }
+
+                savePhoto();
                 getActivity().finish();
                 return true;
 
-           /* case R.id.action_star:
-                if (mClientId != null) {
-                    mClient.setStared(!mClient.isStared());
-                    updateActionBar();
-                } else {
-                    Toast.makeText(getActivity(), "You need to save this client first", Toast.LENGTH_LONG)
-                            .show();
-                }
-                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
-            case R.id.action_delete:
-                FragmentManager manager = getFragmentManager();
-                DeleteAlertDialogFragment dialog = DeleteAlertDialogFragment.newInstance("client");
-                dialog.setTargetFragment(ClientEditFragment.this, REQUEST_DELETE);
-                dialog.show(manager, DIALOG_DELETE);
-                return true;
+    private void savePhoto() {
+        if (mPhotoTmp != null && mPhotoTmp.exists()) {
+            if ((!mPhotoFile.exists() || mPhotoFile.delete()) && mPhotoTmp.renameTo(mPhotoFile)) {
+                    return;
+            }
 
-            */
-            default: return super.onOptionsItemSelected(item);
+            Toast.makeText(getContext(), "Photo not saved", Toast.LENGTH_LONG).show();
+
         }
     }
 
@@ -272,12 +327,11 @@ public class ClientEditFragment extends Fragment {
 
     }
 
-
-    private void updateActionBar() {
-        mStar.setIcon(mClient.isStared() ? R.drawable.ic_star_yellow_500_24dp :
-                R.drawable.ic_star_outline_white_24dp);
-        mDelete.setVisible(mClientId != null);
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (mPhotoTmp != null && mPhotoTmp.exists()) {
+            mPhotoTmp.delete();
+        }
     }
-
-
 }

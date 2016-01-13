@@ -71,7 +71,7 @@ public class ClientMessageFragment extends Fragment  implements ClientActivity.C
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
 //            mClientId = (UUID) getArguments().getSerializable(ARG_CLIENT_ID);
-//            mClient = ClientContent.get(getContext()).getClient(mClientId);
+//            mClient = ClientManager.get(getContext()).getClient(mClientId);
 //            mNumber1 = mClient.getFirstPhone();
 //            mNumber2 = mClient.getSecondPhone();
 

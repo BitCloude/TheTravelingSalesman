@@ -15,7 +15,7 @@ import android.view.ViewGroup;
 
 import com.appers.ayvaz.thetravelingsalesman.adapter.ClientAdapter;
 import com.appers.ayvaz.thetravelingsalesman.models.Client;
-import com.appers.ayvaz.thetravelingsalesman.models.ClientContent;
+import com.appers.ayvaz.thetravelingsalesman.models.ClientManager;
 import com.appers.ayvaz.thetravelingsalesman.view.DividerItemDecoration;
 
 import java.util.List;
@@ -102,7 +102,7 @@ public class ClientListFragment extends Fragment {
     }
 
     private void updateUI() {
-        ClientContent clientContent = ClientContent.get(getActivity());
+        ClientManager clientContent = ClientManager.get(getActivity());
         List<Client> clients = clientContent.getClients(mRange);
 
         if (mAdapter == null) {

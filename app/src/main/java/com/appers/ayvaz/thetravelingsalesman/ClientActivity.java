@@ -17,10 +17,10 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.appers.ayvaz.thetravelingsalesman.models.ClientManager;
 import com.appers.ayvaz.thetravelingsalesman.models.TaskII;
 import com.appers.ayvaz.thetravelingsalesman.models.TaskManager;
 import com.appers.ayvaz.thetravelingsalesman.models.Client;
-import com.appers.ayvaz.thetravelingsalesman.models.ClientContent;
 import com.appers.ayvaz.thetravelingsalesman.utils.EventUtility;
 
 import java.util.UUID;
@@ -28,7 +28,7 @@ import java.util.UUID;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class ClientActivity extends AppCompatActivity implements ClientTaskFragment.PassClient {
+public class ClientActivity extends AppCompatActivity {
 
 
 
@@ -81,7 +81,9 @@ public class ClientActivity extends AppCompatActivity implements ClientTaskFragm
             @Override
             public Fragment getItem(int position) {
                 switch (position) {
-                    case 0: return ClientTaskFragment.newInstance(ClientTaskFragment.BY_CLIENT);
+                    case 0: ClientTaskFragment taskFragment = ClientTaskFragment.newInstance(mClientId);
+                        fragments[0] = taskFragment;
+                        return taskFragment;
 
                     case 1: ClientCallLogFragment clientCallLogFragment = ClientCallLogFragment.newInstance(
                             mClient.getFirstPhone(), mClient.getSecondPhone());
@@ -175,11 +177,15 @@ public class ClientActivity extends AppCompatActivity implements ClientTaskFragm
     }
 
     private void updateUI() {
-        mClient = ClientContent.get(getApplicationContext()).getClient(mClientId);
+        if (mClientId == null) {
+            finish();
+        }
+        mClient = ClientManager.get(getApplicationContext()).getClient(mClientId);
         if (mClient == null) {
             finish();
         }
         mClientName.setText(mClient.toString());
+//        updateCallnText();
 
     }
 
@@ -187,7 +193,7 @@ public class ClientActivity extends AppCompatActivity implements ClientTaskFragm
     *  if the user edit the client info, reload call log and texts
     * */
     private void updateCallnText() {
-        for (int i = 1; i < 3; i++) {
+        for (int i = 0; i < 3; i++) {
             if (fragments[i] != null) {
                 fragments[i].updateUI(mClient);
             }
@@ -197,9 +203,12 @@ public class ClientActivity extends AppCompatActivity implements ClientTaskFragm
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
         if (item.getItemId() == R.id.action_info) {
             Intent intent = ClientInfoActivity.newIntent(getApplicationContext(), mClientId);
             startActivity(intent);
+
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
