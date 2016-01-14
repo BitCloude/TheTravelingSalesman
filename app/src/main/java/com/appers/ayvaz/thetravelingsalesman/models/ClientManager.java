@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Environment;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.appers.ayvaz.thetravelingsalesman.ClientListFragment;
@@ -164,6 +165,7 @@ public class ClientManager {
             return null;
         }
 
+        Log.i("......", "Path: " + externalFilesDir.getPath());
         return new File(externalFilesDir, client.getPhotoFileName(tmp));
     }
 /*
