@@ -7,12 +7,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
-import com.appers.ayvaz.thetravelingsalesman.R;
 
+import com.appers.ayvaz.thetravelingsalesman.R;
 
 
 public class DeleteAlertDialogFragment extends DialogFragment {
     private static final String ARG_OBJECT = "object";
+    // Use this instance of the interface to deliver action events
+    NoticeDialogListener mListener;
     private Activity mActivity;
 
     public static DeleteAlertDialogFragment newInstance(String object) {
@@ -22,17 +24,6 @@ public class DeleteAlertDialogFragment extends DialogFragment {
         fragment.setArguments(args);
         return fragment;
     }
-    /* The activity that creates an instance of this dialog fragment must
-         * implement this interface in order to receive event callbacks.
-         * Each method passes the DialogFragment in case the host needs to query it. */
-    public interface NoticeDialogListener {
-        public void onDialogPositiveClick(DialogFragment dialog);
-        public void onDialogNegativeClick(DialogFragment dialog);
-    }
-
-    // Use this instance of the interface to deliver action events
-    NoticeDialogListener mListener;
-
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -46,38 +37,44 @@ public class DeleteAlertDialogFragment extends DialogFragment {
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
-//                        sendResult(Activity.RESULT_OK);
-                        mListener.onDialogPositiveClick(DeleteAlertDialogFragment.this);
+                        sendResult(Activity.RESULT_OK);
 
                     }
                 })
-                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int id) {
-//                        sendResult(Activity.RESULT_CANCELED);
-                        mListener.onDialogNegativeClick(DeleteAlertDialogFragment.this);
-                    }
-                });
+                .setNegativeButton(android.R.string.cancel, null);
 
         return builder.create();
     }
 
-    /* uncomment when using in fragment
     private void sendResult(int resultCode) {
-        if (getTargetFragment() == null) {
-
+        Intent intent = new Intent();
+        if (getTargetFragment() != null) {
+            getTargetFragment().onActivityResult(getTargetRequestCode(), resultCode, intent);
             return;
         }
 
-        Intent intent = new Intent();
-        getTargetFragment().onActivityResult(getTargetRequestCode(), resultCode, intent);
-    }
-    */
+        if (getActivity() != null) {
+            getActivity().setResult(Activity.RESULT_OK);
+        }
 
-    @Override
+
+
+    }
+
+    /* The activity that creates an instance of this dialog fragment must
+         * implement this interface in order to receive event callbacks.
+         * Each method passes the DialogFragment in case the host needs to query it. */
+    public interface NoticeDialogListener {
+        public void onDialogPositiveClick(DialogFragment dialog);
+
+        public void onDialogNegativeClick(DialogFragment dialog);
+    }
+
+   /* @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         // Verify that the host activity implements the callback interface
+
         try {
             // Instantiate the NoticeDialogListener so we can send events to the host
             mListener = (NoticeDialogListener) activity;
@@ -86,4 +83,6 @@ public class DeleteAlertDialogFragment extends DialogFragment {
             throw new ClassCastException(activity.toString()
                     + " must implement NoticeDialogListener");
         }    }
+
+*/
 }

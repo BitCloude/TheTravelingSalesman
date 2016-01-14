@@ -1,10 +1,12 @@
 package com.appers.ayvaz.thetravelingsalesman;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -31,8 +33,7 @@ import java.util.UUID;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class ClientInfoActivity extends AppCompatActivity implements DeleteAlertDialogFragment
-        .NoticeDialogListener {
+public class ClientInfoActivity extends AppCompatActivity {
 
     private static final String EXTRA_CLIENT_ID = "client_id";
     private UUID mClientId;
@@ -96,7 +97,7 @@ public class ClientInfoActivity extends AppCompatActivity implements DeleteAlert
     }
 
     private void updateUI() {
-        mClient = ClientManager.get(getApplicationContext()).getClient(mClientId);
+        mClient = ClientManager.get(this).getClient(mClientId);
 
         if (mClient == null) {
             finish();
@@ -239,15 +240,36 @@ public class ClientInfoActivity extends AppCompatActivity implements DeleteAlert
                 return true;
 
             case R.id.action_delete:
-                FragmentManager manager = getSupportFragmentManager();
-                DeleteAlertDialogFragment dialog = DeleteAlertDialogFragment.newInstance("client");
-                dialog.show(manager, DIALOG_DELETE);
+                alertDelete();
+//                FragmentManager manager = getSupportFragmentManager();
+//                DeleteAlertDialogFragment dialog = DeleteAlertDialogFragment.newInstance("client");
+//
+//                dialog.show(manager, DIALOG_DELETE);
                 return true;
 
 
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void alertDelete() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(ClientInfoActivity.this);
+        builder.setMessage("Do you want to delete this client?")
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (ClientManager.get(ClientInfoActivity.this).delete(mClientId)) {
+                            Toast.makeText(ClientInfoActivity.this, "Client deleted", Toast.LENGTH_LONG).show();
+                            finish();
+                        }
+                    }
+                })
+        .setNegativeButton(android.R.string.cancel, null);
+        AlertDialog dialog = builder.create();
+
+        dialog.show();
+
     }
 
     private void updateActionBar() {
@@ -272,6 +294,20 @@ public class ClientInfoActivity extends AppCompatActivity implements DeleteAlert
     }
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode != RESULT_OK) {
+            return;
+        }
+
+        if (requestCode == REQUEST_DELETE) {
+            if (ClientManager.get(getApplicationContext()).delete(mClientId)) {
+                Toast.makeText(this, "Client deleted", Toast.LENGTH_LONG).show();
+                finish();
+            }
+        }
+    }
+
+    /*@Override
     public void onDialogPositiveClick(android.support.v4.app.DialogFragment dialog) {
         if (ClientManager.get(getApplicationContext()).delete(mClientId)) {
             Toast.makeText(this, "Client deleted", Toast.LENGTH_LONG).show();
@@ -282,6 +318,6 @@ public class ClientInfoActivity extends AppCompatActivity implements DeleteAlert
     @Override
     public void onDialogNegativeClick(android.support.v4.app.DialogFragment dialog) {
 
-    }
+    }*/
 
 }

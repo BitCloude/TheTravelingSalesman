@@ -8,9 +8,11 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
+import android.telephony.PhoneNumberFormattingTextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -18,27 +20,20 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.appers.ayvaz.thetravelingsalesman.dialog.DeleteAlertDialogFragment;
 import com.appers.ayvaz.thetravelingsalesman.dialog.PickOrTakePhotoFragment;
 import com.appers.ayvaz.thetravelingsalesman.models.Client;
 import com.appers.ayvaz.thetravelingsalesman.models.ClientManager;
 import com.appers.ayvaz.thetravelingsalesman.utils.PictureUtils;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.BufferedWriter;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.ObjectOutputStream;
-import java.io.OutputStream;
 import java.util.UUID;
 
 import butterknife.Bind;
@@ -50,31 +45,39 @@ import butterknife.ButterKnife;
  * create an instance of this fragment.
  */
 public class ClientEditFragment extends Fragment {
+    public static final String EXTRA_PICK_OR_CAPTURE = "pick_or_capture";
     // parameter arguments, choose names that match
     private static final String ARG_CLIENT_ID = "client_id";
     private static final int REQUEST_IMAGE_CAPTURE = 1;
     private static final int REQUEST_DELETE = 2;
     private static final int REQUEST_PICK_PHOTO = 3;
     private static final int REQUEST_PICK_OR_CAPTURE = 4;
-    public static final String EXTRA_PICK_OR_CAPTURE = "pick_or_capture";
     private static final String DIALOG_DELETE = "DialogDelete";
     private static final String DIALOG_PHOTO = "DialogPhoto";
-
+    @Bind(R.id.firstName)
+    TextView mFirstName;
+    @Bind(R.id.lastName)
+    TextView mLastName;
+    @Bind(R.id.clientPhone)
+    TextView mEmail;
+    @Bind(R.id.company)
+    TextView mCompany;
+    @Bind(R.id.mobile)
+    TextView mPhoneFirst;
+    @Bind(R.id.secondPhone)
+    TextView mPhoneSecond;
+    @Bind(R.id.note)
+    TextView mNote;
+    @Bind(R.id.address)
+    TextView mAddress;
+    @Bind(R.id.imageView)
+    ImageView mImageView;
+    @Bind(R.id.deletePhoto)
+    ImageButton mDelPhoto;
     private UUID mClientId;
     private Client mClient;
     private File mPhotoFile, mPhotoTmp;
-
     private MenuItem mStar, mDelete;
-    @Bind(R.id.firstName) TextView mFirstName;
-    @Bind(R.id.lastName) TextView mLastName;
-    @Bind(R.id.clientPhone) TextView mEmail;
-    @Bind(R.id.company) TextView mCompany;
-    @Bind(R.id.mobile) TextView mPhoneFirst;
-    @Bind(R.id.secondPhone) TextView mPhoneSecond;
-    @Bind(R.id.note) TextView mNote;
-    @Bind(R.id.address) TextView mAddress;
-    @Bind(R.id.imageView) ImageView mImageView;
-
 
 
     public ClientEditFragment() {
@@ -85,7 +88,6 @@ public class ClientEditFragment extends Fragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-
      * @return A new instance of fragment ClientEditFragment.
      */
     public static ClientEditFragment newInstance(UUID clientId) {
@@ -126,11 +128,22 @@ public class ClientEditFragment extends Fragment {
 
         updateUI();
         updatePhotoView();
-
+        mPhoneFirst.addTextChangedListener(new PhoneNumberFormattingTextWatcher());
+        mPhoneSecond.addTextChangedListener(new PhoneNumberFormattingTextWatcher());
         mImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 setPhoto();
+            }
+        });
+        mDelPhoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentManager manager = getFragmentManager();
+                DeleteAlertDialogFragment dialog = DeleteAlertDialogFragment.newInstance("photo");
+                dialog.setTargetFragment(ClientEditFragment.this, REQUEST_DELETE);
+                dialog.show(manager, DIALOG_DELETE);
+
             }
         });
         return view;
@@ -140,11 +153,13 @@ public class ClientEditFragment extends Fragment {
     private void updatePhotoView() {
         if ((mPhotoFile == null || !mPhotoFile.exists()) && (mPhotoTmp == null || !mPhotoTmp.exists())) {
             mImageView.setImageResource(R.drawable.avatar);
+            mDelPhoto.setVisibility(View.INVISIBLE);
         } else {
-            File file = (mPhotoTmp != null && mPhotoTmp.exists())? mPhotoTmp : mPhotoFile;
+            File file = (mPhotoTmp != null && mPhotoTmp.exists()) ? mPhotoTmp : mPhotoFile;
             Bitmap bitmap = PictureUtils.getScaledBitmap(
                     file.getPath(), getActivity());
             mImageView.setImageBitmap(bitmap);
+            mDelPhoto.setVisibility(View.VISIBLE);
         }
     }
 
@@ -164,8 +179,7 @@ public class ClientEditFragment extends Fragment {
         }
     }
 
-    private void takePictureFromGallery()
-    {
+    private void takePictureFromGallery() {
         startActivityForResult(
                 Intent.createChooser(
                         new Intent(Intent.ACTION_GET_CONTENT)
@@ -190,36 +204,38 @@ public class ClientEditFragment extends Fragment {
         }
 
         if (requestCode == REQUEST_IMAGE_CAPTURE) {
-
             updatePhotoView();
-//            Bundle extras = data.getExtras();
-//            Bitmap imageBitmap = (Bitmap) extras.get("data");
-//            mImageView.setImageBitmap(imageBitmap);
+            return;
         }
+
         if (requestCode == REQUEST_PICK_PHOTO) {
             if (data != null) {
-                try {
-                    InputStream inputStream = getContext().getContentResolver()
-                            .openInputStream(data.getData());
-                    // // TODO: 013 01/13 save picked image 
 
-
-
-                }  catch (FileNotFoundException e) {
-
-                    e.printStackTrace();
+                try(InputStream from = getContext().getContentResolver().openInputStream(data.getData())) {
+                    PictureUtils.copyFile(from, mPhotoTmp);
                 } catch (IOException e) {
-
+                    e.printStackTrace();
                 }
+
+                updatePhotoView();
+
             }
-
-
+            return;
         }
 
-        // // TODO: 007 01/07 Process and save image
+        if (requestCode == REQUEST_DELETE) {
+            deletePic(mPhotoTmp);
+            deletePic(mPhotoFile);
+            updatePhotoView();
+        }
+
+
+
+
+
 /**
-* following code moved to ClientActivity
-* */
+ * following code moved to ClientActivity
+ * */
         /*
         if (requestCode == REQUEST_DELETE) {
             if (ClientManager.get(getContext()).delete(mClientId)) {
@@ -249,25 +265,29 @@ public class ClientEditFragment extends Fragment {
                 startActivity(upIntent);
                 getActivity().finish();
                 return true;
-            case R.id.action_done :
-                ClientManager content = ClientManager.get(getActivity());
+            case R.id.action_done:
                 updateClient();
+
+                if (!checkValid()) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext())
+                            .setMessage("Must have a name or phone number or email address")
+                            .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                }
+                            });
+                    builder.create().show();
+                    return true;
+                }
+
+                ClientManager content = ClientManager.get(getActivity());
+
                 if (mClientId != null) {
                     content.updateClient(mClient);
 
                     getActivity().setResult(Activity.RESULT_OK);
                 } else {
-                    if (!checkValid()) {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(getContext())
-                                .setMessage("Must have a name or phone number or email address")
-                                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                    }
-                                });
-                        builder.create().show();
-                        return true;
-                    }
+
 
                     mClientId = mClient.getId();
                     content.addClient(mClient);
@@ -284,7 +304,7 @@ public class ClientEditFragment extends Fragment {
     private void savePhoto() {
         if (mPhotoTmp != null && mPhotoTmp.exists()) {
             if ((!mPhotoFile.exists() || mPhotoFile.delete()) && mPhotoTmp.renameTo(mPhotoFile)) {
-                    return;
+                return;
             }
 
             Toast.makeText(getContext(), "Photo not saved", Toast.LENGTH_LONG).show();
@@ -294,7 +314,7 @@ public class ClientEditFragment extends Fragment {
 
     private boolean checkValid() {
         return !(isEmpty(mClient.getFirstName()) && isEmpty(mClient.getLastName())
-    && isEmpty(mClient.getFirstPhone()) && isEmpty(mClient.getSecondPhone())
+                && isEmpty(mClient.getFirstPhone()) && isEmpty(mClient.getSecondPhone())
                 && isEmpty(mClient.getEmail()));
     }
 
@@ -330,8 +350,16 @@ public class ClientEditFragment extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
-        if (mPhotoTmp != null && mPhotoTmp.exists()) {
-            mPhotoTmp.delete();
+        deletePic(mPhotoTmp);
+    }
+
+
+
+    private void deletePic(File fileName) {
+        if (fileName != null && fileName.exists()) {
+            fileName.delete();
+
         }
     }
+
 }

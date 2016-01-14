@@ -76,6 +76,10 @@ public class ClientActivity extends AppCompatActivity {
         tabTitles = getResources().getStringArray(R.array.tab_titles_client);
 
         mClientId = (UUID) getIntent().getSerializableExtra(EXTRA_CLIENT_ID);
+        if (mClientId == null) {
+            finish();
+        }
+        mClient = ClientManager.get(getApplicationContext()).getClient(mClientId);
         fragments = new ClientChanged[tabTitles.length];
         mFragmentPagerAdapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
             @Override
@@ -163,6 +167,10 @@ public class ClientActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        if (ClientManager.get(ClientActivity.this).getClient(mClientId) == null) {
+            finish();
+        }
+
         long prev_id = EventUtility.getLastEventId(getContentResolver());
         // if prev_id == mEventId, means there is new events created
         // and we need to insert new events into local sqlite database.
@@ -177,13 +185,7 @@ public class ClientActivity extends AppCompatActivity {
     }
 
     private void updateUI() {
-        if (mClientId == null) {
-            finish();
-        }
-        mClient = ClientManager.get(getApplicationContext()).getClient(mClientId);
-        if (mClient == null) {
-            finish();
-        }
+
         mClientName.setText(mClient.toString());
 //        updateCallnText();
 
