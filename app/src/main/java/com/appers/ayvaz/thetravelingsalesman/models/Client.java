@@ -156,4 +156,13 @@ public class Client {
         return "IMG_" + getId().toString() +
                 (temp ? "_tmp" : "") + ".jpg";
     }
+
+    public String getSecondRow() {
+        String dash = "";
+        if (!isEmpty(company) && (!isEmpty(firstPhone) || !isEmpty(secondPhone))) {
+            dash = " - ";
+        }
+
+        return company + dash + (isEmpty(firstPhone) ? secondPhone : firstPhone);
+    }
 }

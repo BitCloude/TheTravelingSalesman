@@ -79,7 +79,7 @@ public class ClientActivity extends AppCompatActivity {
         if (mClientId == null) {
             finish();
         }
-        mClient = ClientManager.get(getApplicationContext()).getClient(mClientId);
+        mClient = ClientManager.get(this).getClient(mClientId);
         fragments = new ClientChanged[tabTitles.length];
         mFragmentPagerAdapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
             @Override
@@ -152,7 +152,7 @@ public class ClientActivity extends AppCompatActivity {
 
     private void createNewTask() {
 
-        mEventId = EventUtility.getNewEventId(getApplicationContext().getContentResolver());
+        mEventId = EventUtility.getNewEventId(this.getContentResolver());
 
         Intent intent = new Intent(Intent.ACTION_INSERT)
                 .setData(CalendarContract.Events.CONTENT_URI)
@@ -178,7 +178,7 @@ public class ClientActivity extends AppCompatActivity {
             // do database insert
             TaskII task = new TaskII(mEventId);
             task.setClient(mClient);
-            TaskManager.get(getApplicationContext()).addTask(task);
+            TaskManager.get(this).addTask(task);
         }
 
         updateUI();
@@ -207,7 +207,7 @@ public class ClientActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         if (item.getItemId() == R.id.action_info) {
-            Intent intent = ClientInfoActivity.newIntent(getApplicationContext(), mClientId);
+            Intent intent = ClientInfoActivity.newIntent(this, mClientId);
             startActivity(intent);
 
             return true;

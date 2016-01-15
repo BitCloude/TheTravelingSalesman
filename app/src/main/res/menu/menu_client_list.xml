@@ -4,9 +4,11 @@
     >
     <item android:id="@+id/action_search"
         android:title="@string/client_search_title"
+
         android:icon="@drawable/ic_search_white_24dp"
         app:showAsAction="collapseActionView|ifRoom"
-        android:actionViewClass="android.widget.SearchView" />
+        app:actionViewClass="android.widget.SearchView" />
+
     <item android:id="@+id/action_add_person"
         android:title="Add a client"
         android:icon="@drawable/ic_person_add_white_24dp"

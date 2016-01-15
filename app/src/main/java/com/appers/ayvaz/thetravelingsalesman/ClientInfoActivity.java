@@ -224,14 +224,14 @@ public class ClientInfoActivity extends AppCompatActivity {
         switch(item.getItemId()) {
             case android.R.id.home:
 //                NavUtils.navigateUpFromSameTask(this);
-                Intent upIntent = ClientActivity.newIntent(getApplicationContext(), mClientId);
+                Intent upIntent = ClientActivity.newIntent(this, mClientId);
                 startActivity(upIntent);
                 finish();
                 Log.i("...........", "Back");
                 return true;
 
             case R.id.action_edit:
-                Intent intent = ClientEditActivity.newIntent(getApplicationContext(), mClientId);
+                Intent intent = ClientEditActivity.newIntent(this, mClientId);
                 startActivityForResult(intent, REQUEST_EDIT);
                 return true;
             case R.id.action_star:
@@ -289,7 +289,7 @@ public class ClientInfoActivity extends AppCompatActivity {
 
     @Override
     protected void onPause() {
-        ClientManager.get(getApplicationContext()).updateClient(mClient);
+        ClientManager.get(this).updateClient(mClient);
         super.onPause();
     }
 
@@ -300,7 +300,7 @@ public class ClientInfoActivity extends AppCompatActivity {
         }
 
         if (requestCode == REQUEST_DELETE) {
-            if (ClientManager.get(getApplicationContext()).delete(mClientId)) {
+            if (ClientManager.get(this).delete(mClientId)) {
                 Toast.makeText(this, "Client deleted", Toast.LENGTH_LONG).show();
                 finish();
             }

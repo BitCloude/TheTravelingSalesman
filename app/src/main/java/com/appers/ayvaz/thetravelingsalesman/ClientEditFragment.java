@@ -211,7 +211,7 @@ public class ClientEditFragment extends Fragment {
         if (requestCode == REQUEST_PICK_PHOTO) {
             if (data != null) {
 
-                try(InputStream from = getContext().getContentResolver().openInputStream(data.getData())) {
+                try(InputStream from = getActivity().getContentResolver().openInputStream(data.getData())) {
                     PictureUtils.copyFile(from, mPhotoTmp);
                 } catch (IOException e) {
                     e.printStackTrace();
