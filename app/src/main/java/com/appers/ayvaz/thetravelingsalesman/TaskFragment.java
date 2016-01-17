@@ -22,6 +22,7 @@ import com.appers.ayvaz.thetravelingsalesman.dialog.TimePickerFragment;
 import com.appers.ayvaz.thetravelingsalesman.models.TaskOld;
 import com.appers.ayvaz.thetravelingsalesman.models.TaskList;
 import com.appers.ayvaz.thetravelingsalesman.utils.DateTimeHelper;
+import com.appers.ayvaz.thetravelingsalesman.utils.EventUtility;
 
 import java.util.Calendar;
 import java.util.UUID;
@@ -41,6 +42,8 @@ public class TaskFragment extends Fragment {
     private Button mStartDate, mEndDate, mStartTime, mEndTime;
     private EditText mNote, mLocation;
     private View.OnClickListener mDateListener, mTimeListener;
+    private long mEventId;
+
 
     public TaskFragment() {
         // Required empty public constructor
@@ -245,4 +248,20 @@ public class TaskFragment extends Fragment {
 //        mLocation.setText();
         mNote.setText(mTask.getNote());
     }
+
+
+    // // TODO: 017 01/17 add new task and select client
+    /*private void createNewTask() {
+
+
+        mEventId = EventUtility.getNewEventId(this.getContentResolver());
+
+        Intent intent = new Intent(Intent.ACTION_INSERT)
+                .setData(CalendarContract.Events.CONTENT_URI)
+                .putExtra(CalendarContract.Events.TITLE, mEditNewTask.getText().toString())
+                .putExtra(Intent.EXTRA_EMAIL, mClient.getEmail());
+        startActivity(intent);
+
+
+    }*/
 }
