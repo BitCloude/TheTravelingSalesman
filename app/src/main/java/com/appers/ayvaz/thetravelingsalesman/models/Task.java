@@ -1,8 +1,12 @@
 package com.appers.ayvaz.thetravelingsalesman.models;
 
+import android.database.Cursor;
+import android.provider.CalendarContract;
+
+import com.appers.ayvaz.thetravelingsalesman.utils.DateTimeHelper;
+
 import java.util.Calendar;
 import java.util.Date;
-import java.util.UUID;
 
 /**
  * Created by D on 12/13/2015.
@@ -10,69 +14,90 @@ import java.util.UUID;
 public class Task {
 
 
-    private UUID mId;
-    private long mEventId;
+
+    private long mId;
 
 
 
-    private Calendar beginTime;
-    private Calendar endTime;
 
-    public void setLocation(String location) {
-        this.location = location;
+    private Date startTime;
+    private Date endTime;
+    private boolean hasAlarm;
+    private String notes;
+    private String title;
+
+    public String getTitle() {
+        return title;
     }
 
-    public String getLocation() {
-        return location;
+    public String getNotes() {
+        return notes;
     }
 
-    private String name;
-    private String note;
-    private String location;
-//    public String fromDate;
-//    public String toDate;
+    public boolean hasAlarm() {
+        return hasAlarm;
+    }
+
+    public boolean hasAttendee() {
+        return hasAttendee;
+    }
+
+    public boolean hasNotes() {
+        return notes != null && !notes.equals("");
+    }
+
+    private boolean hasAttendee;
+
+    private Client mClient;
+
+
 
     public Task() {
-        mId = UUID.randomUUID();
-//        beginTime = GregorianCalendar.getInstance();
-//        endTime = GregorianCalendar.getInstance();
-//        startDate.setTime(new Date());
-//        endTime.setTime(new Date());
 
-//        note = mId.toString().substring(0, 3) + "Do something...........................................";
-//        name = "Anthony Cashmore";
     }
 
-    public Calendar getBeginTime() {
-        return beginTime;
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setStartTime(Date startTime) {
+        this.startTime = startTime;
     }
 
-    public String getName() {
-        return name;
+    public void setStartTime(long millis) {
+        this.startTime = DateTimeHelper.fromMillis(millis);
     }
 
-    public UUID getId() {
+    public void setEndTime(long millis) {
+        this.endTime = DateTimeHelper.fromMillis(millis);
+    }
+
+    public Task(long eventId) {
+        mId = eventId;
+    }
+
+    public Client getClient() {
+        return mClient;
+    }
+
+    public long getId() {
         return mId;
     }
 
-    public Calendar getEndTime() {
+    public Date getStartTime() {
+        return startTime;
+    }
+
+
+    public Date getEndTime() {
         return endTime;
     }
 
-    public String getNote() {
-        return note;
-    }
-    public void setStartDate(Calendar startDate) {
-        this.beginTime = startDate;
+    public void setClient(Client client) {
+        mClient = client;
     }
 
-    public void setStartDate(Date date) {
-        setByDate(date, beginTime);
-    }
+
 
     private void setByDate(Date date, Calendar target) {
         Calendar cal = Calendar.getInstance();
@@ -82,25 +107,29 @@ public class Task {
         target.set(Calendar.DAY_OF_MONTH, cal.get(Calendar.DAY_OF_MONTH));
     }
 
-    public void setEndTime(Calendar endTime) {
-        this.endTime = endTime;
+    public static Task fromCursor(Cursor eventCursor) {
+        Task task = new Task();
+
+        task.mId = eventCursor.getLong(eventCursor.getColumnIndex(CalendarContract.Events._ID));
+        task.startTime = DateTimeHelper.fromContentResolver(eventCursor.getString(
+                eventCursor.getColumnIndex(CalendarContract.Events.DTSTART)));
+        task.endTime = DateTimeHelper.fromContentResolver(eventCursor.getString(
+                eventCursor.getColumnIndex(CalendarContract.Events.DTEND)));
+        task.hasAlarm = eventCursor.getInt(
+                eventCursor.getColumnIndex(CalendarContract.Events.HAS_ALARM)) > 0;
+        task.hasAttendee = eventCursor.getInt(
+                eventCursor.getColumnIndex(CalendarContract.Events.HAS_ATTENDEE_DATA)) > 0;
+        task.notes = eventCursor.getString(
+                eventCursor.getColumnIndex(CalendarContract.Events.DESCRIPTION));
+        task.title = eventCursor.getString(eventCursor.getColumnIndex(
+                CalendarContract.Events.TITLE));
+
+        return task;
+
     }
 
-    public void setEndDate(Date date) {
-        setByDate(date, endTime);
-    }
 
-    public void setNote(String note) {
-        this.note = note;
-    }
 
-/*
-    public Task(String fromDate, String toDate) {
-        this.name = "Anthony Cashmore";
-        this.fromDate = fromDate;
-        this.toDate = toDate;
-        this.note = "Do something...........................................";
-    }
-*/
+
 
 }

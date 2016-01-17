@@ -43,7 +43,7 @@ public class MessageAdapter extends
         public ViewHolder(View view) {
             super(view);
             mBody = (TextView) view.findViewById(R.id.body);
-            mTime = (TextView) view.findViewById(R.id.time);
+            mTime = (TextView) view.findViewById(R.id.address);
         }
     }
 

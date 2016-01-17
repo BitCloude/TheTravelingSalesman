@@ -43,10 +43,20 @@ public class DateTimeHelper {
 
 
     public static Date fromContentResolver(String date) {
-
+        if (date == null || date.equals("")) {
+            return null;
+        }
         Long timestamp = Long.parseLong(date);
+        return fromMillis(timestamp);
+
+    }
+
+    public static Date fromMillis(long millis) {
+        if (millis == 0) {
+            return null;
+        }
         Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(timestamp);
+        calendar.setTimeInMillis(millis);
         return calendar.getTime();
     }
 }

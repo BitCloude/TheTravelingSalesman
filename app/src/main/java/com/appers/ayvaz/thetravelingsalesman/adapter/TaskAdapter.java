@@ -1,83 +1,144 @@
 package com.appers.ayvaz.thetravelingsalesman.adapter;
 
+import android.content.ContentUris;
+import android.content.Intent;
+import android.net.Uri;
+import android.provider.CalendarContract;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.appers.ayvaz.thetravelingsalesman.R;
-import com.appers.ayvaz.thetravelingsalesman.TaskListFragment;
 import com.appers.ayvaz.thetravelingsalesman.models.Task;
 import com.appers.ayvaz.thetravelingsalesman.utils.DateTimeHelper;
 
+import java.util.Calendar;
 import java.util.List;
 
-/**
- * Created by D on 12/15/2015.
- */
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
-    private List<Task> mTasks;
-    private TaskListFragment mFragment;
 
-    public TaskAdapter(List<Task> tasks, TaskListFragment fragment) {
-        mFragment = fragment;
-        mTasks = tasks;
+    private final static int TYPE_CLIENT = 0;
+    private final static int TYPE_DATE = 1;
+    List<Task> list;
+    public TaskAdapter(List<Task> taskList) {
+        list = taskList;
     }
 
     @Override
-    public int getItemCount() {
-        return mTasks.size();
-    }
-
-    @Override
-    public TaskAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.fragment_task_item, parent, false);
+/*            if (viewType == TYPE_DATE) {
+                return new ViewHolderDate(view);
+            }*/
         return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(TaskAdapter.ViewHolder holder, int position) {
-        holder.mItem = mTasks.get(position);
-        holder.mName.setText(holder.mItem.getName());
-        holder.mNote.setText(holder.mItem.getNote());
-
-        holder.mToDate.setText(DateTimeHelper.formatMed(holder.mItem.getEndTime().getTime()));
-        holder.mFromDate.setText(DateTimeHelper.formatMed(holder.mItem.getBeginTime().getTime()));
-
+    public void onBindViewHolder(ViewHolder holder, int position) {
+        Task task = list.get(position);
+        holder.setTask(task);
 
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements
-    View.OnClickListener{
-        public final View mView;
-        public final TextView mName;
-        public final TextView mFromDate;
-        public final TextView mToDate;
-        public final TextView mNote;
-        public Task mItem;
+    @Override
+    public int getItemViewType(int position) {
+        if (list.get(position).getClient() == null) {
+            return TYPE_CLIENT;
+        }
+        return TYPE_DATE;
+    }
 
-        public ViewHolder(View view) {
-            super(view);
-            view.setOnClickListener(this);
-            mView = view;
-            mName = (TextView) view.findViewById(R.id.task_client);
-            mFromDate = (TextView) view.findViewById(R.id.from_date);
-            mToDate = (TextView) view.findViewById(R.id.to_date);
-            mNote = (TextView) view.findViewById(R.id.task_detail);
+    @Override
+    public int getItemCount() {
+        return list.size();
+    }
+
+
+    // view holder for client view
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+        private Task mTask;
+
+        void setTask(Task task) {
+            mTask = task;
+            setView();
         }
 
-        @Override
-        public String toString() {
-            return super.toString() + " '" + mName.getText() + "'";
+        @Bind(R.id.task_title) TextView taskTitle;
+        @Bind(R.id.task_detail) TextView taskDetail;
+        @Bind(R.id.from_date) TextView fromDate;
+        @Bind(R.id.to_date) TextView toDate;
+        @Bind(R.id.buttonAttendee)ImageView buttonAttendee;
+        @Bind(R.id.buttonReminder) ImageView buttonReminder;
+        @Bind(R.id.buttonExtra) ImageView buttonExtra;
+
+        public ViewHolder(View itemView) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
+            itemView.setOnClickListener(this);
+
         }
 
         @Override
         public void onClick(View v) {
-//            Intent intent = TaskPagerActivity.newIntent(mFragment.getActivity(), mItem.getId());
-//            mFragment.mPosition = getAdapterPosition();
-//            mFragment.startActivity(intent);
+            Uri uri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, mTask.getId());
+            Calendar start = Calendar.getInstance();
+            start.setTime(mTask.getStartTime());
+            long startMillis = start.getTimeInMillis();
+
+
+            Intent intent = new Intent(Intent.ACTION_VIEW)
+                    .setData(uri)
+                    .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, startMillis);
+
+            if (mTask.getEndTime() != null) {
+                Calendar end = Calendar.getInstance();
+                end.setTime(mTask.getEndTime());
+                long endMillis = end.getTimeInMillis();
+                intent.putExtra(CalendarContract.EXTRA_EVENT_END_TIME, endMillis);
+            }
+
+
+            v.getContext().startActivity(intent);
+        }
+
+        public void setView() {
+//                taskClient.setText(mTask.getClient().toString());
+            fromDate.setText(DateTimeHelper.formatMed(mTask.getStartTime()));
+            if (mTask.getEndTime() == null) {
+                toDate.setText("");
+            } else {
+                toDate.setText(DateTimeHelper.formatMed(mTask.getEndTime()));
+            }
+
+
+
+            taskTitle.setText(mTask.getTitle());
+
+            if (!mTask.hasAlarm()) {
+                buttonReminder.setImageDrawable(null);
+            }
+
+            if (!mTask.hasAttendee()) {
+                buttonAttendee.setImageDrawable(null);
+            }
+
+            if (!mTask.hasNotes()) {
+                buttonExtra.setImageDrawable(null);
+            }
+            taskDetail.setText(mTask.getNotes());
+
+
+
         }
     }
+
+
 }
+

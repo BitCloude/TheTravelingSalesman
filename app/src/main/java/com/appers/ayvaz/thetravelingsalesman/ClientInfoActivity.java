@@ -4,11 +4,14 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -24,6 +27,7 @@ import android.widget.Toast;
 import com.appers.ayvaz.thetravelingsalesman.models.Client;
 import com.appers.ayvaz.thetravelingsalesman.models.ClientManager;
 import com.appers.ayvaz.thetravelingsalesman.dialog.DeleteAlertDialogFragment;
+import com.appers.ayvaz.thetravelingsalesman.utils.CommUtils;
 import com.appers.ayvaz.thetravelingsalesman.utils.PictureUtils;
 
 import java.io.File;
@@ -35,6 +39,7 @@ import butterknife.ButterKnife;
 
 public class ClientInfoActivity extends AppCompatActivity {
 
+    private final String DEBUG_TAG = "ClientInfoActivity: ";
     private static final String EXTRA_CLIENT_ID = "client_id";
     private UUID mClientId;
     private Client mClient;
@@ -46,6 +51,7 @@ public class ClientInfoActivity extends AppCompatActivity {
     private LayoutInflater mInflater;
     @Bind (R.id.infoContainer)    LinearLayout mContainer;
     @Bind (R.id.clientPhoto)    ImageView mImageView;
+    @Bind (R.id.toolbar_layout) CollapsingToolbarLayout mToolbarLayout;
 
     public static Intent newIntent(Context packageContext, UUID clientId) {
         Intent i = new Intent(packageContext, ClientInfoActivity.class);
@@ -62,8 +68,6 @@ public class ClientInfoActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ButterKnife.bind(this);
-
-
 
         /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -98,6 +102,7 @@ public class ClientInfoActivity extends AppCompatActivity {
 
     private void updateUI() {
         mClient = ClientManager.get(this).getClient(mClientId);
+        Log.i(DEBUG_TAG, "Client name: " + mClient.toString());
 
         if (mClient == null) {
             finish();
@@ -107,7 +112,9 @@ public class ClientInfoActivity extends AppCompatActivity {
 
         updateActionBar();
 
-        setTitle(mClient.toString());
+
+        mToolbarLayout.setTitle(mClient.toString());
+
 
         mInflater = getLayoutInflater();
 
@@ -133,15 +140,20 @@ public class ClientInfoActivity extends AppCompatActivity {
         }
 
 
-
         if (mClient.getCompany() != null && !mClient.getCompany().equals("")) {
-           addToView(R.layout.view_client_other_info, 1);
+            addToView(R.layout.view_client_other_info, 1);
             bindOtherInfo(mOtherContainer, getResources().getString(R.string.company), mClient.getCompany());
         }
 
         if (mClient.getNote() != null && !mClient.getNote().equals("")) {
             addToView(R.layout.view_client_other_info, 1);
             bindOtherInfo(mOtherContainer, getResources().getString(R.string.note), mClient.getNote());
+        }
+
+
+        if (!TextUtils.isEmpty(mClient.getAddress())) {
+            addToView(R.layout.view_client_other_info, 1);
+            bindOtherInfo(mOtherContainer, getResources().getString(R.string.address), mClient.getAddress());
         }
 
         //// TODO: 009 01/09 other fields
@@ -160,35 +172,39 @@ public class ClientInfoActivity extends AppCompatActivity {
     private void bindEmail(ViewGroup parent) {
         View v = parent.getChildAt(parent.getChildCount()-1);
         TextView email = (TextView) v.findViewById(R.id.clientEmail);
-        email.setText(mClient.getEmail());
+        final String emailAddress = mClient.getEmail();
+        email.setText(emailAddress);
+
 
         ImageButton sendEmail = (ImageButton) v.findViewById(R.id.emailButton);
         sendEmail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //// TODO: 008 01/08 send email
+                CommUtils.sendEmail(ClientInfoActivity.this, emailAddress);
+
             }
         });
     }
 
     private void bindPhone(ViewGroup parent, String number) {
         View view = parent.getChildAt(parent.getChildCount()-1);
-        TextView num = (TextView) view.findViewById(R.id.clientPhone);
+        final TextView num = (TextView) view.findViewById(R.id.clientPhone);
         num.setText(number);
         ImageButton call = (ImageButton) view.findViewById(R.id.callButton);
         ImageButton text = (ImageButton) view.findViewById(R.id.textButton);
+        final String number1 = number;
+
         call.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //// TODO: 008 01/08 call
+                CommUtils.dial(ClientInfoActivity.this, number1);
             }
         });
 
         text.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // // TODO: 008 01/08 text
-            }
+                CommUtils.sendText(ClientInfoActivity.this, number1);     }
         });
     }
 
@@ -277,6 +293,8 @@ public class ClientInfoActivity extends AppCompatActivity {
             mStar.setIcon(mClient.isStared() ? R.drawable.ic_star_yellow_500_24dp :
                     R.drawable.ic_star_outline_white_24dp);
         }
+
+
 
     }
     @Override

@@ -27,6 +27,7 @@ public class DbSchema {
     public static final class TaskTable {
         public static final String NAME = "tasks";
         public static final class Cols {
+            public static final String _ID = "_id";
             public static final String EVENT_ID = "event_id";
             public static final String CLIENT_ID = "client_id";
         }

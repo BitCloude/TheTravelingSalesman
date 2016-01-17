@@ -59,6 +59,7 @@ public class MessageAdapterSlow extends RecyclerView.Adapter<MessageAdapterSlow.
         MyMessage msg = messageList.get(position);
         holder.mBody.setText(msg.getBody());
         holder.mTime.setText(DateTimeHelper.formatMed(msg.getTime()));
+        holder.mAddress.setText(msg.getAddress());
     }
 
     @Override
@@ -72,7 +73,8 @@ public class MessageAdapterSlow extends RecyclerView.Adapter<MessageAdapterSlow.
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         @Bind (R.id.body) TextView mBody;
-        @Bind (R.id.time) TextView mTime;
+        @Bind (R.id.address) TextView mAddress;
+        @Bind(R.id.time) TextView mTime;
 
     public ViewHolder(View itemView) {
         super(itemView);

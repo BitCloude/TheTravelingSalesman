@@ -19,7 +19,7 @@ import android.widget.Toast;
 
 import com.appers.ayvaz.thetravelingsalesman.dialog.DatePickerFragment;
 import com.appers.ayvaz.thetravelingsalesman.dialog.TimePickerFragment;
-import com.appers.ayvaz.thetravelingsalesman.models.Task;
+import com.appers.ayvaz.thetravelingsalesman.models.TaskOld;
 import com.appers.ayvaz.thetravelingsalesman.models.TaskList;
 import com.appers.ayvaz.thetravelingsalesman.utils.DateTimeHelper;
 
@@ -37,7 +37,7 @@ public class TaskFragment extends Fragment {
     private static final int REQUEST_TIME_START = 2;
     private static final int REQUEST_TIME_END = 3;
 
-    private Task mTask;
+    private TaskOld mTask;
     private Button mStartDate, mEndDate, mStartTime, mEndTime;
     private EditText mNote, mLocation;
     private View.OnClickListener mDateListener, mTimeListener;

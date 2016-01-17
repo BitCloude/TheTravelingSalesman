@@ -12,15 +12,15 @@ import java.util.UUID;
  * Created by D on 12/18/2015.
  */
 public class TaskList {
-    private List<Task> mList;
+    private List<TaskOld> mList;
     private static TaskList taskList;
-    private Map<UUID, Task> map;
+    private Map<UUID, TaskOld> map;
 
     private TaskList(Context context) {
         mList = new ArrayList<>();
         map = new HashMap<>();
         for (int i = 0; i < 10; i++) {
-            Task task = new Task();
+            TaskOld task = new TaskOld();
             addTask(task);
         }
     }
@@ -34,21 +34,21 @@ public class TaskList {
 
     }
 
-    public Task getTask(UUID taskId) {
+    public TaskOld getTask(UUID taskId) {
         return map.get(taskId);
     }
 
-    public List<Task> getTasks() {
+    public List<TaskOld> getTasks() {
         return mList;
     }
 
-    public void addTask(Task task) {
+    public void addTask(TaskOld task) {
         mList.add(task);
         map.put(task.getId(), task);
     }
 
     public boolean deleteTask(UUID id) {
-        Task task = map.get(id);
+        TaskOld task = map.get(id);
         if (task != null) {
             map.remove(id);
             mList.remove(task);

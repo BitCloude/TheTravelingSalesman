@@ -21,7 +21,13 @@ public class MyMessage implements Comparable<MyMessage> {
     public final static int INBOX = 0;
     public final static int SENT = 1;
 
-    private String body, address;
+    private String body;
+
+    public String getAddress() {
+        return address;
+    }
+
+    private String address;
     private Date time;
     private int type;
     public class Cols {

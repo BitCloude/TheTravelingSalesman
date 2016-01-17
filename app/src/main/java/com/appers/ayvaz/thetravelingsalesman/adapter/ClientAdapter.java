@@ -2,6 +2,7 @@ package com.appers.ayvaz.thetravelingsalesman.adapter;
 
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,8 @@ import android.widget.TextView;
 import com.appers.ayvaz.thetravelingsalesman.ClientActivity;
 import com.appers.ayvaz.thetravelingsalesman.R;
 import com.appers.ayvaz.thetravelingsalesman.models.Client;
+
+import org.w3c.dom.Text;
 
 import java.util.List;
 
@@ -55,6 +58,7 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ViewHolder
         public final TextView mEmail;
         public Client mItem;
         public final ImageButton mStar;
+        public ImageButton mLinkedIn;
 
         public ViewHolder(View view) {
             super(view);
@@ -63,6 +67,7 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ViewHolder
             mCompanyPhone = (TextView) view.findViewById(R.id.client_company);
             mEmail = (TextView) view.findViewById(R.id.client_email);
             mStar = (ImageButton) view.findViewById(R.id.favorite);
+            mLinkedIn = (ImageButton) view.findViewById(R.id.linkedInButt);
         }
 
         @Override
@@ -85,6 +90,9 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ViewHolder
             mEmail.setText(mItem.getEmail());
             mStar.setImageResource(mItem.isStared() ? R.drawable.ic_star_yellow_500_24dp :
                     R.drawable.ic_star_outline_grey_500_18dp);
+            if (TextUtils.isEmpty(item.getLinkedIn())) {
+                mLinkedIn.setVisibility(View.INVISIBLE);
+            }
             mView.setOnClickListener(this);
         }
     }

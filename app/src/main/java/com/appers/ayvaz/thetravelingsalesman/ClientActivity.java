@@ -1,7 +1,10 @@
 package com.appers.ayvaz.thetravelingsalesman;
 
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.CalendarContract;
 import android.support.design.widget.TabLayout;
@@ -10,6 +13,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,11 +22,13 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.appers.ayvaz.thetravelingsalesman.models.ClientManager;
-import com.appers.ayvaz.thetravelingsalesman.models.TaskII;
+import com.appers.ayvaz.thetravelingsalesman.models.Task;
 import com.appers.ayvaz.thetravelingsalesman.models.TaskManager;
 import com.appers.ayvaz.thetravelingsalesman.models.Client;
 import com.appers.ayvaz.thetravelingsalesman.utils.EventUtility;
 
+import java.util.Calendar;
+import java.util.TimeZone;
 import java.util.UUID;
 
 import butterknife.Bind;
@@ -51,8 +57,6 @@ public class ClientActivity extends AppCompatActivity {
     @Bind (R.id.newTaskOK)  ImageButton mNewTaskOk;
     @Bind (R.id.tabLayout) TabLayout mTabLayout;
     @Bind(R.id.viewpager) ViewPager mViewPager;
-    @Bind(R.id.clientName)
-    TextView mClientName;
 
 
     public static Intent newIntent(Context packageContext, UUID clientId) {
@@ -79,7 +83,7 @@ public class ClientActivity extends AppCompatActivity {
         if (mClientId == null) {
             finish();
         }
-        mClient = ClientManager.get(this).getClient(mClientId);
+
         fragments = new ClientChanged[tabTitles.length];
         mFragmentPagerAdapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
             @Override
@@ -96,8 +100,9 @@ public class ClientActivity extends AppCompatActivity {
 
                     case 2: ClientMessageFragment fragment = ClientMessageFragment
                             .newInstance(mClient.getFirstPhone(), mClient.getSecondPhone());
-                        fragments[position] = fragment;
+                        fragments[2] = fragment;
                         return fragment;
+
                     default: return new NotificationFragment();
                 }
 
@@ -152,6 +157,7 @@ public class ClientActivity extends AppCompatActivity {
 
     private void createNewTask() {
 
+
         mEventId = EventUtility.getNewEventId(this.getContentResolver());
 
         Intent intent = new Intent(Intent.ACTION_INSERT)
@@ -172,29 +178,31 @@ public class ClientActivity extends AppCompatActivity {
         }
 
         long prev_id = EventUtility.getLastEventId(getContentResolver());
-        // if prev_id == mEventId, means there is new events created
-        // and we need to insert new events into local sqlite database.
+//         if prev_id == mEventId, means there is new events created
+//         and we need to insert new events into local sqlite database.
         if (prev_id == mEventId) {
             // do database insert
-            TaskII task = new TaskII(mEventId);
+            Log.i("Task", "inserting");
+            Task task = new Task(mEventId);
             task.setClient(mClient);
             TaskManager.get(this).addTask(task);
+            mEventId = -1;
         }
 
         updateUI();
     }
 
     private void updateUI() {
-
-        mClientName.setText(mClient.toString());
-//        updateCallnText();
+        mClient = ClientManager.get(this).getClient(mClientId);
+        setTitle(mClient.toString());
+        updateFragments();
 
     }
 
     /**
     *  if the user edit the client info, reload call log and texts
     * */
-    private void updateCallnText() {
+    private void updateFragments() {
         for (int i = 0; i < 3; i++) {
             if (fragments[i] != null) {
                 fragments[i].updateUI(mClient);

@@ -14,7 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.appers.ayvaz.thetravelingsalesman.R;
-import com.appers.ayvaz.thetravelingsalesman.models.TaskII;
+import com.appers.ayvaz.thetravelingsalesman.models.Task;
 import com.appers.ayvaz.thetravelingsalesman.utils.DateTimeHelper;
 
 import java.util.List;
@@ -29,7 +29,7 @@ public class TaskCursorAdapter extends CursorRecyclerViewAdapter<TaskCursorAdapt
 
     private final static int TYPE_CLIENT = 0;
     private final static int TYPE_DATE = 1;
-    List<TaskII> list;
+    List<Task> list;
 
     public TaskCursorAdapter(Context context, Cursor cursor) {
         super(context, cursor);
@@ -48,7 +48,7 @@ public class TaskCursorAdapter extends CursorRecyclerViewAdapter<TaskCursorAdapt
     @Override
     public void onBindViewHolder(ViewHolder holder, Cursor cursor) {
         // // TODO: 011 01/11 to something with cursor
-        TaskII task = TaskII.fromCursor(cursor);
+        Task task = Task.fromCursor(cursor);
         holder.setTask(task);
 
     }
@@ -69,9 +69,9 @@ public class TaskCursorAdapter extends CursorRecyclerViewAdapter<TaskCursorAdapt
 
     // view holder for client view
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
-        private TaskII mTask;
+        private Task mTask;
 
-        void setTask(TaskII task) {
+        void setTask(Task task) {
             mTask = task;
             setView();
         }

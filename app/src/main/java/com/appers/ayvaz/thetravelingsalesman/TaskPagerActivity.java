@@ -9,7 +9,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 
-import com.appers.ayvaz.thetravelingsalesman.models.Task;
+import com.appers.ayvaz.thetravelingsalesman.models.TaskOld;
 import com.appers.ayvaz.thetravelingsalesman.models.TaskList;
 
 import java.util.List;
@@ -19,7 +19,7 @@ public class TaskPagerActivity extends AppCompatActivity {
 
     private static final String EXTRA_TASK_ID = "com.appers.ayvaz.thetravelingsalesman.task_id";
     private ViewPager mViewPager;
-    private List<Task> mTasks;
+    private List<TaskOld> mTasks;
 
 
 
@@ -42,7 +42,7 @@ public class TaskPagerActivity extends AppCompatActivity {
         mViewPager.setAdapter(new FragmentPagerAdapter(fragmentManager) {
             @Override
             public Fragment getItem(int position) {
-                Task task = mTasks.get(position);
+                TaskOld task = mTasks.get(position);
                 return TaskFragment.newInstance(task.getId());
             }
 
