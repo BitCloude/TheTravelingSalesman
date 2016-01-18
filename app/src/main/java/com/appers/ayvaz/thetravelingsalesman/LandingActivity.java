@@ -24,8 +24,10 @@ public class LandingActivity extends NavigationDrawerActivity {
         setContentView(R.layout.activity_landing);
 
 
-        ViewGroup appBar = (ViewGroup) findViewById(R.id.appbar);
-        getLayoutInflater().inflate(R.layout.view_tab, appBar);
+        ViewGroup container = (ViewGroup) findViewById(R.id.tabContainer);
+        View viewTab = getLayoutInflater().inflate(R.layout.view_tab, container);
+
+
         setTitle(R.string.title_activity_landing);
 
         mViewPager = (ViewPager) findViewById(R.id.viewpager);

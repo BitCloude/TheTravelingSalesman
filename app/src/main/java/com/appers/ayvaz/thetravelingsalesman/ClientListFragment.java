@@ -1,22 +1,30 @@
 package com.appers.ayvaz.thetravelingsalesman;
 
-import android.app.SearchManager;
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.GestureDetectorCompat;
 import android.support.v4.view.MenuItemCompat;
+
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ActionMode;
 import android.widget.SearchView;
+
 
 import com.appers.ayvaz.thetravelingsalesman.adapter.ClientAdapter;
 import com.appers.ayvaz.thetravelingsalesman.adapter.ClientSearchAdapter;
@@ -31,7 +39,9 @@ import java.util.List;
  * <p/>
 
  */
-public class ClientListFragment extends Fragment {
+public class ClientListFragment extends Fragment
+        implements ActionMode.Callback,
+        RecyclerView.OnItemTouchListener{
 
     public static final int RANGE_RECENT = 0;
     public static final int RANGE_ALL = 1;
@@ -42,6 +52,10 @@ public class ClientListFragment extends Fragment {
     private ClientSearchAdapter mSearchAdapter;
     private RecyclerView mRecyclerView;
     boolean mSearchOpen;
+    private ActionMode actionMode;
+    GestureDetectorCompat gestureDetector;
+    private AppBarLayout appBarLayout;
+    private final String DEBUG_TAG = "ClientListFragmetn: ";
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -50,7 +64,6 @@ public class ClientListFragment extends Fragment {
     public ClientListFragment() {
     }
 
-    // TODO: Customize parameter initialization
     public static ClientListFragment newInstance(int arg) {
         ClientListFragment fragment = new ClientListFragment();
         Bundle args = new Bundle();
@@ -66,12 +79,16 @@ public class ClientListFragment extends Fragment {
         if (getArguments() != null) {
             mRange = getArguments().getInt(ARG_RANGE);
         }
+
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_list, container, false);
+
+        appBarLayout = (AppBarLayout) getActivity().findViewById(R.id.appbar);
 
         // Set the adapter
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
@@ -82,7 +99,12 @@ public class ClientListFragment extends Fragment {
         mRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(),
                 DividerItemDecoration.VERTICAL_LIST));
         mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.addOnItemTouchListener(this);
+        gestureDetector =
+                new GestureDetectorCompat(getContext(), new ClientListGestureListener());
+
         updateUI();
+
 
 
         return view;
@@ -163,27 +185,27 @@ public class ClientListFragment extends Fragment {
 
             MenuItemCompat.setOnActionExpandListener(menu.findItem(R.id.action_search),
                     new MenuItemCompat.OnActionExpandListener() {
-                @Override
-                public boolean onMenuItemActionExpand(MenuItem item) {
-                    if (getActivity() instanceof LandingActivity) {
-                        ((LandingActivity) getActivity()).hideTab();
-                        addPerson.setVisible(false);
-                        mSearchOpen = true;
-                    }
-                    return true;
-                }
+                        @Override
+                        public boolean onMenuItemActionExpand(MenuItem item) {
+                            if (getActivity() instanceof LandingActivity) {
+                                ((LandingActivity) getActivity()).hideTab();
+                                addPerson.setVisible(false);
+                                mSearchOpen = true;
+                            }
+                            return true;
+                        }
 
-                @Override
-                public boolean onMenuItemActionCollapse(MenuItem item) {
-                    if (getActivity() instanceof LandingActivity) {
-                        ((LandingActivity) getActivity()).showTab();
-                        addPerson.setVisible(true);
-                        mRecyclerView.setAdapter(mAdapter);
-                        mSearchOpen = false;
-                    }
-                    return true;
-                }
-            });
+                        @Override
+                        public boolean onMenuItemActionCollapse(MenuItem item) {
+                            if (getActivity() instanceof LandingActivity) {
+                                ((LandingActivity) getActivity()).showTab();
+                                addPerson.setVisible(true);
+                                mRecyclerView.setAdapter(mAdapter);
+                                mSearchOpen = false;
+                            }
+                            return true;
+                        }
+                    });
 
             searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                 @Override
@@ -207,4 +229,108 @@ public class ClientListFragment extends Fragment {
     }
 
 
+
+    private void myToggleSelection(int idx) {
+        mAdapter.toggleSelection(idx);
+        String title = getString(
+                R.string.selected_count,
+                mAdapter.getSelectedItemCount());
+        Log.i(DEBUG_TAG, mAdapter.getSelectedItemCount() + " selected");
+        actionMode.setTitle(title);
+    }
+
+
+    @Override
+    public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
+        // Inflate a menu resource providing context menu items
+        MenuInflater inflater = actionMode.getMenuInflater();
+        inflater.inflate(R.menu.menu_client_context, menu);
+
+        appBarLayout.setVisibility(View.GONE);
+
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareActionMode(ActionMode actionMode, Menu menu) {
+        return false;
+    }
+
+    @Override
+    public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
+        switch (menuItem.getItemId()) {
+            case R.id.action_delete:
+                List<Integer> selectedItemPositions = mAdapter.getSelectedItems();
+                int currPos;
+                for (int i = selectedItemPositions.size() - 1; i >= 0; i--) {
+                    currPos = selectedItemPositions.get(i);
+
+                    mAdapter.removeData(currPos);
+                }
+                actionMode.finish();
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    @Override
+    public void onDestroyActionMode(ActionMode actionMode) {
+        this.actionMode = null;
+        mAdapter.clearSelections();
+        appBarLayout.setVisibility(View.VISIBLE);
+
+    }
+
+    @Override
+    public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
+        gestureDetector.onTouchEvent(e);
+        return false;
+    }
+
+    @Override
+    public void onTouchEvent(RecyclerView rv, MotionEvent e) {
+
+    }
+
+    @Override
+    public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+
+    }
+
+
+    private class ClientListGestureListener extends GestureDetector.SimpleOnGestureListener {
+        @Override
+        public boolean onSingleTapConfirmed(MotionEvent e) {
+            View view = mRecyclerView.findChildViewUnder(e.getX(), e.getY());
+            int idx =  mRecyclerView.getChildAdapterPosition(view);
+            ClientAdapter.ViewHolder vh = (ClientAdapter.ViewHolder) mRecyclerView
+                    .findViewHolderForAdapterPosition(idx);
+            if (actionMode != null) {
+                myToggleSelection(idx);
+            } else {
+                vh.onClick(view);
+            }
+
+
+            return super.onSingleTapConfirmed(e);
+        }
+
+        public void onLongPress(MotionEvent e) {
+            View view = mRecyclerView.findChildViewUnder(e.getX(), e.getY());
+            if (actionMode != null) {
+                return;
+            }
+            // Start the CAB using the ActionMode.Callback defined above
+            Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
+            actionMode = toolbar.startActionMode(
+                    ClientListFragment.this);
+
+
+
+            int idx = mRecyclerView.getChildAdapterPosition(view);
+            myToggleSelection(idx);
+            super.onLongPress(e);
+        }
+    }
 }

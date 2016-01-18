@@ -1,9 +1,15 @@
 package com.appers.ayvaz.thetravelingsalesman.adapter;
 
 import android.content.Intent;
+
+
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
+
+
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -13,8 +19,9 @@ import com.appers.ayvaz.thetravelingsalesman.ClientActivity;
 import com.appers.ayvaz.thetravelingsalesman.R;
 import com.appers.ayvaz.thetravelingsalesman.models.Client;
 
-import org.w3c.dom.Text;
 
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,9 +32,49 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ViewHolder
 
     List<Client> mClients;
 
+/** For action mode **/
+    private SparseBooleanArray selectedItems = new SparseBooleanArray();
+
+    public void toggleSelection(int pos) {
+        if (selectedItems.get(pos, false)) {
+            selectedItems.delete(pos);
+        }
+        else {
+            selectedItems.put(pos, true);
+        }
+        notifyItemChanged(pos);
+    }
+
+    public void clearSelections() {
+        selectedItems.clear();
+        notifyDataSetChanged();
+    }
+
+    public int getSelectedItemCount() {
+        return selectedItems.size();
+    }
+
+    public List<Integer> getSelectedItems() {
+        List<Integer> items =
+                new ArrayList<>(selectedItems.size());
+        for (int i = 0; i < selectedItems.size(); i++) {
+            items.add(selectedItems.keyAt(i));
+        }
+        return items;
+    }
+
+    public boolean removeData(int position) {
+        //// TODO: 018 01 18 remove item
+        return true;
+    }
+
+    /** End of action mode **/
 
     public ClientAdapter(List<Client> items) {
         mClients = items;
+
+
+
     }
 
     public void setClients(List<Client> clients) {
@@ -44,6 +91,7 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ViewHolder
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.setView(mClients.get(position));
+        holder.mItemView.setActivated(selectedItems.get(position, false));
     }
 
     @Override
@@ -51,8 +99,10 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ViewHolder
         return mClients.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
-        public final View mView;
+    public class ViewHolder extends RecyclerView.ViewHolder
+     {
+
+        public final View mItemView;
         public final TextView mName;
         public final TextView mCompanyPhone;
         public final TextView mEmail;
@@ -60,14 +110,18 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ViewHolder
         public final ImageButton mStar;
         public ImageButton mLinkedIn;
 
+
         public ViewHolder(View view) {
             super(view);
-            mView = view;
+            mItemView = view;
             mName = (TextView) view.findViewById(R.id.client_name);
             mCompanyPhone = (TextView) view.findViewById(R.id.client_company);
             mEmail = (TextView) view.findViewById(R.id.client_email);
             mStar = (ImageButton) view.findViewById(R.id.favorite);
             mLinkedIn = (ImageButton) view.findViewById(R.id.linkedInButt);
+
+//            mItemView.setOnClickListener(this);
+
         }
 
         @Override
@@ -76,11 +130,16 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ViewHolder
         }
 
 
-        @Override
+
         public void onClick(View v) {
 //            Intent intent = ClientEditActivity.newIntent(v.getContext(), mItem.getId());
-            Intent intent = ClientActivity.newIntent(v.getContext(), mItem.getId());
-            v.getContext().startActivity(intent);
+
+                // start an instance of CrimePagerActivity
+                Intent intent = ClientActivity.newIntent(v.getContext(), mItem.getId());
+                v.getContext().startActivity(intent);
+
+
+
         }
 
         public void setView(Client item) {
@@ -93,7 +152,15 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ViewHolder
             if (TextUtils.isEmpty(item.getLinkedIn())) {
                 mLinkedIn.setVisibility(View.INVISIBLE);
             }
-            mView.setOnClickListener(this);
+
+
+
+
         }
+
+
+
     }
+
+
 }

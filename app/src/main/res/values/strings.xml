@@ -108,4 +108,6 @@
     <string name="title_activity_task_list_with_calendar">TaskListWithCalendar</string>
     <string name="search_hint_client">Search client</string>
     <string name="title_activity_client_info">ClientInfoActivity</string>
+    
+    <string name="selected_count">%1$s selected</string>
 </resources>

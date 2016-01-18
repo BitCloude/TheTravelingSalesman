@@ -21,8 +21,14 @@ public class EventUtility {
 
     public static long getLastEventId(ContentResolver cr) {
         Cursor cursor = cr.query(CalendarContract.Events.CONTENT_URI, new String[]{"MAX(_id) as max_id"}, null, null, "_id");
+        if (cursor == null || cursor.getCount() == 0) {
+            return -1;
+        }
+
         cursor.moveToFirst();
         long max_val = cursor.getLong(cursor.getColumnIndex("max_id"));
+        cursor.close();
+
         return max_val;
     }
 }
