@@ -140,7 +140,7 @@ public class ClientEditFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 FragmentManager manager = getFragmentManager();
-                DeleteAlertDialogFragment dialog = DeleteAlertDialogFragment.newInstance("photo");
+                DeleteAlertDialogFragment dialog = DeleteAlertDialogFragment.newInstance("One photo");
                 dialog.setTargetFragment(ClientEditFragment.this, REQUEST_DELETE);
                 dialog.show(manager, DIALOG_DELETE);
 

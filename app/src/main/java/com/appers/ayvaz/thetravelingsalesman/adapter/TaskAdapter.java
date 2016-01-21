@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.appers.ayvaz.thetravelingsalesman.R;
+import com.appers.ayvaz.thetravelingsalesman.models.Client;
 import com.appers.ayvaz.thetravelingsalesman.models.Task;
 import com.appers.ayvaz.thetravelingsalesman.utils.DateTimeHelper;
 
@@ -25,31 +26,32 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
 
     private final static int TYPE_CLIENT = 0;
     private final static int TYPE_DATE = 1;
-    List<Task> list;
+    List<Task> mTasks;
     public TaskAdapter(List<Task> taskList) {
-        list = taskList;
+        mTasks = taskList;
     }
 
+    public void setData(List<Task> list) {
+        mTasks = list;
+    }
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.fragment_task_item, parent, false);
-/*            if (viewType == TYPE_DATE) {
-                return new ViewHolderDate(view);
-            }*/
+
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        Task task = list.get(position);
+        Task task = mTasks.get(position);
         holder.setTask(task);
 
     }
 
     @Override
     public int getItemViewType(int position) {
-        if (list.get(position).getClient() == null) {
+        if (mTasks.get(position).getClient() == null) {
             return TYPE_CLIENT;
         }
         return TYPE_DATE;
@@ -57,7 +59,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
 
     @Override
     public int getItemCount() {
-        return list.size();
+        return mTasks.size();
     }
 
 
@@ -109,7 +111,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
         }
 
         public void setView() {
-//                taskClient.setText(mTask.getClient().toString());
+
             fromDate.setText(DateTimeHelper.formatMed(mTask.getStartTime()));
             if (mTask.getEndTime() == null) {
                 toDate.setText("");
@@ -119,7 +121,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
 
 
 
-            taskTitle.setText(mTask.getTitle());
+
 
             if (!mTask.hasAlarm()) {
                 buttonReminder.setImageDrawable(null);
@@ -132,10 +134,17 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
             if (!mTask.hasNotes()) {
                 buttonExtra.setImageDrawable(null);
             }
-            taskDetail.setText(mTask.getNotes());
+//            taskDetail.setText(mTask.getNotes());
+            setTitleDetail();
 
 
+        }
 
+        protected void setTitleDetail() {
+            Client client = mTask.getClient();
+            String title = (client == null ? "" : client.toString() + ": ") + mTask.getTitle();
+            taskTitle.setText(title);
+            taskDetail.setText(mTask.getLocation());
         }
     }
 

@@ -44,6 +44,7 @@ public class ClientTaskFragment extends Fragment implements ClientActivity.Clien
     public static final int BY_DATE = 1;
     private static final String TAG = "ClientTaskFragment";
     private int mMode;
+    private TaskAdapter mAdapter;
 
     public ClientTaskFragment() {
         // Required empty public constructor
@@ -114,8 +115,14 @@ public class ClientTaskFragment extends Fragment implements ClientActivity.Clien
 
         }
 
-        TaskAdapter adapter = new TaskAdapter(list);
-        mRecyclerView.setAdapter(adapter);
+        if (mAdapter == null) {
+            mAdapter = new TaskAdapter(list);
+            mRecyclerView.setAdapter(mAdapter);
+        } else {
+            mAdapter.setData(list);
+            mAdapter.notifyDataSetChanged();
+        }
+
 
     }
 

@@ -34,7 +34,8 @@ import java.util.UUID;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class ClientActivity extends AppCompatActivity {
+public class ClientActivity extends AppCompatActivity
+        {
 
 
 
@@ -126,6 +127,7 @@ public class ClientActivity extends AppCompatActivity {
         mTabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(mTabLayout));
+        mViewPager.setOffscreenPageLimit(tabTitles.length);
         mTabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -173,9 +175,8 @@ public class ClientActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (ClientManager.get(ClientActivity.this).getClient(mClientId) == null) {
-            finish();
-        }
+
+
 
         long prev_id = EventUtility.getLastEventId(getContentResolver());
 //         if prev_id == mEventId, means there is new events created
@@ -187,13 +188,20 @@ public class ClientActivity extends AppCompatActivity {
             task.setClient(mClient);
             TaskManager.get(this).addTask(task);
             mEventId = -1;
+            mEditNewTask.setText("");
         }
 
         updateUI();
+
     }
 
     private void updateUI() {
         mClient = ClientManager.get(this).getClient(mClientId);
+        if (mClient == null) {
+            finish();
+            return;
+        }
+
         setTitle(mClient.toString());
         updateFragments();
 
@@ -202,8 +210,8 @@ public class ClientActivity extends AppCompatActivity {
     /**
     *  if the user edit the client info, reload call log and texts
     * */
-    private void updateFragments() {
-        for (int i = 0; i < 3; i++) {
+    public void updateFragments() {
+        for (int i = 0; i < tabTitles.length; i++) {
             if (fragments[i] != null) {
                 fragments[i].updateUI(mClient);
             }

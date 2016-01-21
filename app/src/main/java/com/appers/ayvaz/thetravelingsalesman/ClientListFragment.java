@@ -1,12 +1,13 @@
 package com.appers.ayvaz.thetravelingsalesman;
 
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GestureDetectorCompat;
 import android.support.v4.view.MenuItemCompat;
 
@@ -28,6 +29,7 @@ import android.widget.SearchView;
 
 import com.appers.ayvaz.thetravelingsalesman.adapter.ClientAdapter;
 import com.appers.ayvaz.thetravelingsalesman.adapter.ClientSearchAdapter;
+import com.appers.ayvaz.thetravelingsalesman.dialog.DeleteAlertDialogFragment;
 import com.appers.ayvaz.thetravelingsalesman.models.Client;
 import com.appers.ayvaz.thetravelingsalesman.models.ClientManager;
 import com.appers.ayvaz.thetravelingsalesman.view.DividerItemDecoration;
@@ -43,8 +45,9 @@ public class ClientListFragment extends Fragment
         implements ActionMode.Callback,
         RecyclerView.OnItemTouchListener{
 
-    public static final int RANGE_RECENT = 0;
-    public static final int RANGE_ALL = 1;
+
+    public static final int RANGE_ALL = 0;
+    public static final int RANGE_RECENT = 1;
     public static final int RANGE_FAVORITE = 2;
     private static final String ARG_RANGE = "list_range";
     private int mRange = 1;
@@ -56,12 +59,18 @@ public class ClientListFragment extends Fragment
     GestureDetectorCompat gestureDetector;
     private AppBarLayout appBarLayout;
     private final String DEBUG_TAG = "ClientListFragmetn: ";
+    private static final int REQUEST_DELETE = 3;
+    private OnFragmentInteractionListener mListener;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
     public ClientListFragment() {
+    }
+
+    interface OnFragmentInteractionListener {
+        void updateFragments(int range);
     }
 
     public static ClientListFragment newInstance(int arg) {
@@ -113,6 +122,9 @@ public class ClientListFragment extends Fragment
 
     @Override
     public void onAttach(Context context) {
+        if (context instanceof OnFragmentInteractionListener) {
+            mListener = (OnFragmentInteractionListener) context;
+        }
 
         super.onAttach(context);
 
@@ -120,6 +132,7 @@ public class ClientListFragment extends Fragment
 
     @Override
     public void onDetach() {
+        mListener = null;
         super.onDetach();
     }
 
@@ -130,7 +143,7 @@ public class ClientListFragment extends Fragment
         updateUI();
     }
 
-    private void updateUI() {
+    public void updateUI() {
         ClientManager clientContent = ClientManager.get(getActivity());
         List<Client> clients = clientContent.getClients(mRange);
 
@@ -145,8 +158,8 @@ public class ClientListFragment extends Fragment
         } else {
             mAdapter.setClients(clients);
             mAdapter.notifyDataSetChanged();
-            // following line necessary in the case of FragmentViewPager.. don't exactly know why
-            mRecyclerView.setAdapter(mAdapter);
+            // fixed after setting ViewPager's offScreenLimit
+//            mRecyclerView.setAdapter(mAdapter);
         }
     }
 
@@ -260,14 +273,14 @@ public class ClientListFragment extends Fragment
     public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
         switch (menuItem.getItemId()) {
             case R.id.action_delete:
-                List<Integer> selectedItemPositions = mAdapter.getSelectedItems();
-                int currPos;
-                for (int i = selectedItemPositions.size() - 1; i >= 0; i--) {
-                    currPos = selectedItemPositions.get(i);
+                int cnt = mAdapter.getSelectedItemCount();
+                String s = cnt > 1 ? " client" : " clients";
+                FragmentManager manager = getFragmentManager();
+                DeleteAlertDialogFragment dialog = DeleteAlertDialogFragment.newInstance(cnt + s);
+                dialog.setTargetFragment(ClientListFragment.this, REQUEST_DELETE);
+                dialog.show(manager, null);
 
-                    mAdapter.removeData(currPos);
-                }
-                actionMode.finish();
+
                 return true;
             default:
                 return false;
@@ -304,6 +317,10 @@ public class ClientListFragment extends Fragment
         public boolean onSingleTapConfirmed(MotionEvent e) {
             View view = mRecyclerView.findChildViewUnder(e.getX(), e.getY());
             int idx =  mRecyclerView.getChildAdapterPosition(view);
+            if (idx < 0) {
+                return super.onSingleTapConfirmed(e);
+            }
+            Log.i(DEBUG_TAG, "idx: " + idx);
             ClientAdapter.ViewHolder vh = (ClientAdapter.ViewHolder) mRecyclerView
                     .findViewHolderForAdapterPosition(idx);
             if (actionMode != null) {
@@ -332,5 +349,26 @@ public class ClientListFragment extends Fragment
             myToggleSelection(idx);
             super.onLongPress(e);
         }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode != Activity.RESULT_OK) {
+            return;
+        }
+
+        switch (requestCode) {
+            case REQUEST_DELETE:
+
+                List<Integer> selectedItemPositions = mAdapter.getSelectedItems();
+                for (int i = selectedItemPositions.size() - 1; i >= 0; i--) {
+                    int currPos = selectedItemPositions.get(i);
+                    mAdapter.removeData(currPos, getContext());
+                    mAdapter.notifyItemChanged(currPos);
+                }
+                actionMode.finish();
+                mListener.updateFragments(mRange);
+        }
+
     }
 }

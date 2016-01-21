@@ -2,6 +2,7 @@ package com.appers.ayvaz.thetravelingsalesman.models;
 
 import android.database.Cursor;
 import android.provider.CalendarContract;
+import android.provider.CalendarContract.Events;
 
 import com.appers.ayvaz.thetravelingsalesman.utils.DateTimeHelper;
 
@@ -25,6 +26,7 @@ public class Task {
     private boolean hasAlarm;
     private String notes;
     private String title;
+    private String location;
 
     public String getTitle() {
         return title;
@@ -97,6 +99,8 @@ public class Task {
         mClient = client;
     }
 
+    public String getLocation() {return location;}
+
 
 
     private void setByDate(Date date, Calendar target) {
@@ -110,19 +114,22 @@ public class Task {
     public static Task fromCursor(Cursor eventCursor) {
         Task task = new Task();
 
-        task.mId = eventCursor.getLong(eventCursor.getColumnIndex(CalendarContract.Events._ID));
+        task.mId = eventCursor.getLong(eventCursor.getColumnIndex(
+                Events._ID));
         task.startTime = DateTimeHelper.fromContentResolver(eventCursor.getString(
-                eventCursor.getColumnIndex(CalendarContract.Events.DTSTART)));
+                eventCursor.getColumnIndex(Events.DTSTART)));
         task.endTime = DateTimeHelper.fromContentResolver(eventCursor.getString(
-                eventCursor.getColumnIndex(CalendarContract.Events.DTEND)));
-        task.hasAlarm = eventCursor.getInt(
-                eventCursor.getColumnIndex(CalendarContract.Events.HAS_ALARM)) > 0;
-        task.hasAttendee = eventCursor.getInt(
-                eventCursor.getColumnIndex(CalendarContract.Events.HAS_ATTENDEE_DATA)) > 0;
-        task.notes = eventCursor.getString(
-                eventCursor.getColumnIndex(CalendarContract.Events.DESCRIPTION));
+                eventCursor.getColumnIndex(Events.DTEND)));
+        task.hasAlarm = eventCursor.getInt(eventCursor.getColumnIndex(
+                Events.HAS_ALARM)) > 0;
+        task.hasAttendee = eventCursor.getInt(eventCursor.getColumnIndex(
+                Events.HAS_ATTENDEE_DATA)) > 0;
+        task.notes = eventCursor.getString(eventCursor.getColumnIndex(
+                Events.DESCRIPTION));
         task.title = eventCursor.getString(eventCursor.getColumnIndex(
-                CalendarContract.Events.TITLE));
+                Events.TITLE));
+        task.location = eventCursor.getString(eventCursor.getColumnIndex(
+                Events.EVENT_LOCATION));
 
         return task;
 

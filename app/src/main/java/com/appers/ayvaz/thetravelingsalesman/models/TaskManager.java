@@ -14,7 +14,6 @@ import android.util.Log;
 import com.appers.ayvaz.thetravelingsalesman.database.DatabaseHelper;
 import com.appers.ayvaz.thetravelingsalesman.database.DbSchema;
 import com.appers.ayvaz.thetravelingsalesman.database.DbSchema.TaskTable.Cols;
-import com.appers.ayvaz.thetravelingsalesman.utils.DateTimeHelper;
 
 import org.joda.time.LocalDate;
 
@@ -30,14 +29,16 @@ import java.util.UUID;
 public class TaskManager {
     private static TaskManager mTaskManager;
 
-    private static String[] projections = {
+    private static String[] projections = new String[]{
             CalendarContract.Events._ID,
             CalendarContract.Events.TITLE,
             CalendarContract.Events.DTSTART,
             CalendarContract.Events.DTEND,
             CalendarContract.Events.HAS_ALARM,
             CalendarContract.Events.HAS_ATTENDEE_DATA,
-            CalendarContract.Events.DESCRIPTION};
+            CalendarContract.Events.DESCRIPTION,
+            CalendarContract.Events.EVENT_LOCATION
+    };
 
     private final String DEBUG_TAG = "TaskManager debug:";
     private Context mContext;
@@ -51,7 +52,7 @@ public class TaskManager {
                 .getWritableDatabase();
     }
 
-    ;
+
 
     public static TaskManager get(Context context) {
         if (mTaskManager == null) {
@@ -64,6 +65,21 @@ public class TaskManager {
     public void addTask(Task item) {
         ContentValues values = getContentValues(item);
         mDatabase.insert(DbSchema.TaskTable.NAME, null, values);
+    }
+
+    private boolean deleteEvent(long eventId) {
+        String selection = Cols.EVENT_ID + " = " + eventId;
+        int deleteResult = mDatabase.delete(DbSchema.TaskTable.NAME, selection, null);
+        return deleteResult > 0;
+    }
+
+    private Cursor queryEvent(long eventId) {
+
+        String selection = CalendarContract.Events._ID + " = ?";
+        String[] selectionARgs = new String[]{Long.toString(eventId)};
+        return mContext.getContentResolver().query(CalendarContract.Events.CONTENT_URI, projections,
+                selection, selectionARgs, null);
+
     }
 
     private ContentValues getContentValues(Task item) {
@@ -106,11 +122,11 @@ public class TaskManager {
 
             List<Task> result = queryInstance(now, end, eventId);
 
-            if (result.size() == 0) {
-                Log.i(DEBUG_TAG, "Event to be deleted: " + eventId);
-                Log.i(DEBUG_TAG, "client: " + clientId);
-                deleteList.add(eventId);
-            }
+//            if (result.size() == 0) {
+//                Log.i(DEBUG_TAG, "Event to be deleted: " + eventId);
+//                Log.i(DEBUG_TAG, "client: " + clientId);
+//                deleteList.add(eventId);
+//            }
             taskList.addAll(result);
 
         }
@@ -119,28 +135,49 @@ public class TaskManager {
 
 
         for (long delEvent : deleteList) {
-            if (deleteRow(delEvent)) {
+            if (deleteEvent(delEvent)) {
                 Log.i(DEBUG_TAG, "Event " + delEvent + " deleted.");
             }
         }
         return taskList;
     }
 
-    private boolean deleteRow(long eventId) {
-        String selection = Cols.EVENT_ID + " = " + eventId;
-        int deleteResult = mDatabase.delete(DbSchema.TaskTable.NAME, selection, null);
-        return deleteResult > 0;
+
+    public List<Task> search(CharSequence userInput) {
+        String selection = CalendarContract.Events.TITLE + " LIKE ?";
+        String[] selectionArgs = new String[]{"%" + userInput + "%"};
+        String order = null;
+
+        List<Task> result = new ArrayList<>();
+        Cursor cursor = mContext.getContentResolver().query(CalendarContract.Events.CONTENT_URI,
+                projections, selection, selectionArgs, order);
+
+        if (cursor == null) {
+            return result;
+        }
+
+        Client client;
+
+        while (cursor.moveToNext()) {
+            Task task = Task.fromCursor(cursor);
+            result.add(task);
+
+        }
+
+        cursor.close();
+
+        for (Task t : result) {
+            if ((client = getClient(t)) != null) {
+                t.setClient(client);
+            }
+        }
+
+        return result;
     }
 
 
-    private Cursor queryEvent(long eventId) {
 
-        String selection = CalendarContract.Events._ID + " = ?";
-        String[] selectionARgs = new String[]{Long.toString(eventId)};
-        return mContext.getContentResolver().query(CalendarContract.Events.CONTENT_URI, projections,
-                selection, selectionARgs, null);
 
-    }
 
     public static final String[] INSTANCE_PROJECTION = new String[] {
             CalendarContract.Instances.EVENT_ID,      // 0
@@ -160,26 +197,35 @@ public class TaskManager {
         Calendar endTime = Calendar.getInstance();
         endTime.set(date.getYear(), date.getMonthOfYear() - 1, date.getDayOfMonth(), 23, 59);
         List<Task> list =  queryInstance(beginTime, endTime, null);
+        Client client;
 
         for (int i = 0; i < list.size(); i++) {
             Task t = list.get(i);
-            Cursor c = mDatabase.query(DbSchema.TaskTable.NAME, new String[]{Cols.EVENT_ID},
-                    Cols.EVENT_ID + " = ?",
-                    new String[]{Long.toString(t.getId())}, null, null, null);
-
-
-            if (c == null || c.getCount() == 0) {
-                list.remove(i);
+            if ((client = getClient(t)) != null) {
+                t.setClient(client);
             }
 
-            if (c != null) {
-                c.close();
-            }
         }
 
         return list;
     }
 
+    private Client getClient(Task t) {
+        Cursor c = mDatabase.query(DbSchema.TaskTable.NAME,
+                null,
+                Cols.EVENT_ID + " = " + t.getId(),
+                null, null, null, null);
+        if (c == null || c.getCount() == 0) {
+            return null;
+        }
+
+        c.moveToFirst();
+        String id = c.getString(c.getColumnIndex(Cols.CLIENT_ID));
+        Client client = ClientManager.get(mContext).getClient(UUID.fromString(id));
+        c.close();
+
+        return client;
+    }
     public List<Task> queryInstance(Calendar beginTime, Calendar endTime, Long eventId) {
 
         List<Task> taskList = new ArrayList<>();

@@ -1,5 +1,6 @@
 package com.appers.ayvaz.thetravelingsalesman.adapter;
 
+import android.content.Context;
 import android.content.Intent;
 
 
@@ -18,11 +19,12 @@ import android.widget.TextView;
 import com.appers.ayvaz.thetravelingsalesman.ClientActivity;
 import com.appers.ayvaz.thetravelingsalesman.R;
 import com.appers.ayvaz.thetravelingsalesman.models.Client;
-
+import com.appers.ayvaz.thetravelingsalesman.models.ClientManager;
 
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link Client}
@@ -63,9 +65,10 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ViewHolder
         return items;
     }
 
-    public boolean removeData(int position) {
-        //// TODO: 018 01 18 remove item
-        return true;
+    public boolean removeData(int position, Context context) {
+        UUID uuid = mClients.get(position).getId();
+        mClients.remove(position);
+        return  ClientManager.get(context).delete(uuid);
     }
 
     /** End of action mode **/

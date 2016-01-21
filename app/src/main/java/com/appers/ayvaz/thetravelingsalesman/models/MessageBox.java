@@ -29,8 +29,6 @@ public class MessageBox {
     String sortOrder = MyMessage.Cols.DATE + " desc";
     private Context mContext;
     private String mNumber1, mNumber2;
-    private boolean msgChanged = false;
-    private MessageAdapterSlow mAdapter;
     private List<MyMessage> messageList;
 
     private MessageBox(Context context) {
@@ -47,22 +45,13 @@ public class MessageBox {
         return mMessageBox;
     }
 
-    public List<CallEntry> queryCallLog(String num1, String num2) {
+    public List<CallEntry> getCallLog(String num1, String num2) {
         List<CallEntry> callEntryList = new ArrayList<>();
 
-//        String mSelectionClause = CallLog.Calls.NUMBER+ " >= ?";
-        String mSelectionClause = null;
-        String[] mSelectionArgs = null;
+        Cursor cursor = mContext.getContentResolver()
+                .query(CallLog.Calls.CONTENT_URI, callLogCols, null, null, null);
 
-        Cursor mCallCursor = mContext.getContentResolver().query(
-                android.provider.CallLog.Calls.CONTENT_URI,
-                callLogCols,
-                mSelectionClause,
-                mSelectionArgs,
-                android.provider.CallLog.Calls.DATE + " DESC"
-                );
 
-        Cursor cursor = mContext.getContentResolver().query(CallLog.Calls.CONTENT_URI, callLogCols, null, null, null);
         if (cursor == null) {
             return callEntryList;
         }
@@ -83,16 +72,16 @@ public class MessageBox {
         return callEntryList;
     }
 
-    public MessageAdapterSlow queryText(String number1, String number2) {
+    public List<MyMessage> getMessages(String number1, String number2) {
         mNumber1 = number1;
         mNumber2 = number2;
-        messageList = new ArrayList<MyMessage>();
+        messageList = new ArrayList<>();
 
         readMessage(MyMessage.INBOX);
         readMessage(MyMessage.SENT);
 
         Collections.sort(messageList);
-        return new MessageAdapterSlow(mContext, messageList);
+        return messageList;
 
     }
 

@@ -81,7 +81,6 @@
         <item>Tasks</item>
         <item>Call</item>
         <item>Text</item>
-        <item>Mail</item>
     </string-array>
     <string-array name="tab_titles_task">
         <item>Time</item>
@@ -104,10 +103,10 @@
     <string name="last_name">Last Name</string>
     <string name="client_search_title">Search client</string>
 
-    <string name="r_u_sure">Are you sure you want to delete this %s ?</string>
+    <string name="r_u_sure">%s will be deleted.</string>
     <string name="title_activity_task_list_with_calendar">TaskListWithCalendar</string>
     <string name="search_hint_client">Search client</string>
     <string name="title_activity_client_info">ClientInfoActivity</string>
-    
+    <string name="search_hint_task">Search tasks</string>
     <string name="selected_count">%1$s selected</string>
 </resources>

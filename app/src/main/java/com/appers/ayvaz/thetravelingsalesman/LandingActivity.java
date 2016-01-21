@@ -9,14 +9,18 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class LandingActivity extends NavigationDrawerActivity {
+public class LandingActivity extends NavigationDrawerActivity
+        implements ClientListFragment.OnFragmentInteractionListener{
 
     private ViewPager mViewPager;
     private String[] tabTitles;
     private TabLayout mTablayout;
     private FragmentPagerAdapter mFragmentPagerAdapter;
-    private int[] rangeArg = {ClientListFragment.RANGE_ALL, ClientListFragment.RANGE_RECENT,  ClientListFragment.RANGE_FAVORITE};
-//    private ClientListFragment[] mFragments = new ClientListFragment[3];
+    private int[] rangeArg = {
+            ClientListFragment.RANGE_ALL,
+            ClientListFragment.RANGE_RECENT,
+            ClientListFragment.RANGE_FAVORITE};
+    private ClientListFragment[] mFragments = new ClientListFragment[3];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,8 +40,9 @@ public class LandingActivity extends NavigationDrawerActivity {
         mFragmentPagerAdapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
             @Override
             public Fragment getItem(int position) {
-                Log.i(".............", "getItem()");
-                return ClientListFragment.newInstance(rangeArg[position]);
+//                Log.i(".............", "getItem()");
+                mFragments[position] = ClientListFragment.newInstance(rangeArg[position]);
+                return mFragments[position];
             }
 
             @Override
@@ -47,7 +52,7 @@ public class LandingActivity extends NavigationDrawerActivity {
         };
 
         mViewPager.setAdapter(mFragmentPagerAdapter);
-
+        mViewPager.setOffscreenPageLimit(3);
 
         // Add tabs, specifying the tab's text and TabListener
         for (int i = 0; i < tabTitles.length; i++) {
@@ -100,6 +105,15 @@ public class LandingActivity extends NavigationDrawerActivity {
     }
 
 
+    public void updateFragments(int caller) {
+        for (int i = 0; i < tabTitles.length; i++) {
+            if (i == caller || mFragments[i] == null) {
+                continue;
+            }
+
+            mFragments[i].updateUI();
+        }
+    }
 
 
 }

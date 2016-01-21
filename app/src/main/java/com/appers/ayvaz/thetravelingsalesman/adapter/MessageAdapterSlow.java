@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.appers.ayvaz.thetravelingsalesman.R;
 import com.appers.ayvaz.thetravelingsalesman.models.MyMessage;
+import com.appers.ayvaz.thetravelingsalesman.utils.CommUtils;
 import com.appers.ayvaz.thetravelingsalesman.utils.DateTimeHelper;
 
 import java.util.List;
@@ -26,6 +27,10 @@ public class MessageAdapterSlow extends RecyclerView.Adapter<MessageAdapterSlow.
     public MessageAdapterSlow(Context context, List<MyMessage> messageList) {
         this.messageList = messageList;
         mContext = context;
+    }
+
+    public void setMessages(List<MyMessage> messages) {
+        messageList = messages;
     }
 
 
@@ -49,6 +54,7 @@ public class MessageAdapterSlow extends RecyclerView.Adapter<MessageAdapterSlow.
             default:
                 resId = R.layout.sms_item_sent;
         }
+
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(resId, parent, false);
         return new ViewHolder(itemView);
@@ -57,6 +63,7 @@ public class MessageAdapterSlow extends RecyclerView.Adapter<MessageAdapterSlow.
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         MyMessage msg = messageList.get(position);
+        holder.mItem = msg;
         holder.mBody.setText(msg.getBody());
         holder.mTime.setText(DateTimeHelper.formatMed(msg.getTime()));
         holder.mAddress.setText(msg.getAddress());
@@ -75,6 +82,7 @@ public class MessageAdapterSlow extends RecyclerView.Adapter<MessageAdapterSlow.
         @Bind (R.id.body) TextView mBody;
         @Bind (R.id.address) TextView mAddress;
         @Bind(R.id.time) TextView mTime;
+        MyMessage mItem;
 
     public ViewHolder(View itemView) {
         super(itemView);
@@ -83,7 +91,7 @@ public class MessageAdapterSlow extends RecyclerView.Adapter<MessageAdapterSlow.
 
         @Override
         public void onClick(View v) {
-            //// TODO: 007 01/07 open message app
+            CommUtils.sendText(v.getContext(), mItem.getAddress());
         }
     }
 

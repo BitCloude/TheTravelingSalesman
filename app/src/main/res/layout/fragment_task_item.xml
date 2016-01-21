@@ -6,7 +6,7 @@
     android:layout_margin="8dp"
     android:orientation="horizontal"
     android:weightSum="8"
-    android:padding="4dp">
+    >
 
     <LinearLayout
         android:layout_width="0dp"

@@ -10,7 +10,7 @@
     <uses-permission android:name="android.permission.READ_CALL_LOG" />
     <uses-permission android:name="android.permission.READ_CALENDAR" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_CALENDAR"/>
+    <uses-permission android:name="android.permission.WRITE_CALENDAR" />
 
     <application
         android:allowBackup="true"
@@ -66,12 +66,13 @@
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
             <meta-data
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
-
         </activity>
         <activity
             android:name=".ClientActivity"
@@ -82,20 +83,30 @@
             android:label="@string/title_activity_client_info"
             android:parentActivityName=".ClientActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity
+        <!--activity
             android:name=".TaskActivity"
             android:launchMode="singleInstance"
             android:parentActivityName=".TaskListActivity" />
-        <activity
-            android:name=".TaskListActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+
         <activity
             android:name=".TaskPagerActivity"
-            android:parentActivityName=".TaskListActivity" />
-        <activity android:name=".ClientSearchActivity"
+            android:parentActivityName=".TaskListActivity" /-->
+
+        <activity
+            android:name=".TaskListActivity"
             android:theme="@style/AppTheme.NoActionBar">
 
         </activity>
-    </application>
 
+        <activity
+            android:name=".TaskSearchResultActivity"
+            android:theme="@style/AppTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+            <meta-data android:name="android.app.searchable"
+                android:resource="@xml/task_searchable"/>
+        </activity>
+
+    </application>
 </manifest>
