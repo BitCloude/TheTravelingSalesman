@@ -14,8 +14,7 @@
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary" />
 
-    <include layout="@layout/view_client_header"
+    <include layout="@layout/view_client_header"        />
 
-        />
 
 </android.support.design.widget.AppBarLayout>

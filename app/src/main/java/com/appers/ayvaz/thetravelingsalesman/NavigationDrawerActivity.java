@@ -84,7 +84,7 @@ public abstract class NavigationDrawerActivity extends AppCompatActivity {
             startActivity(new Intent(this, TripExpMan.class));
         } else if (itemId == R.id.nav_tasks) {
             startActivity(new Intent(this, TaskListActivity.class));
-        } else if (itemId == R.id.nav_notifications) {
+        } else if (itemId == R.id.nav_reminders) {
             startActivity(new Intent(this, NotificationActivity.class));
         } else if (itemId == R.id.nav_clients) {
             startActivity(new Intent(this, LandingActivity.class));

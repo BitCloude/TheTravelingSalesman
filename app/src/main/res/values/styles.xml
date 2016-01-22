@@ -6,6 +6,10 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorPrimary</item>
+
+        <!-- for action mode -->
+        <item name="windowActionModeOverlay">true</item>
+        <item name="actionModeBackground">@color/colorPrimary</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -41,7 +45,12 @@
     </style>
 
     <style name="LabelStyleSmall" parent="@android:style/TextAppearance.Small">
+        <item name="android:textColor">@color/TextPrimary</item>
+    </style>
 
+    <style name="TextBody" parent="TextAppearance.AppCompat.Medium">
+        <item name="android:textColor">@color/TextPrimary</item>
+        <item name="android:textSize">16sp</item>
     </style>
 
     <style name="ItemTextStylePrimary" parent="TextAppearance.AppCompat.Medium">

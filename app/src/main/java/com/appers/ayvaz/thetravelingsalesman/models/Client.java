@@ -7,7 +7,7 @@ public class Client {
     private final UUID id;
     private String firstName, lastName, email, company, firstPhone, secondPhone,
             designation, note, group, address, linkedIn;
-    private byte[] image;
+
     private boolean stared;
 
     public Client() {
@@ -39,13 +39,6 @@ public class Client {
         return s == null || s.equals("");
     }
 
-    public byte[] getImage() {
-        return image;
-    }
-
-    public void setImage(byte[] image) {
-        this.image = image;
-    }
 
     public String getLinkedIn() {
         return linkedIn;
@@ -158,4 +151,18 @@ public class Client {
         tv = (TextView) view.findViewById(R.id.clientPhone);
         tv.setText(email);
     }*/
+
+    public String getPhotoFileName(boolean temp) {
+        return "IMG_" + getId().toString() +
+                (temp ? "_tmp" : "") + ".jpg";
+    }
+
+    public String getSecondRow() {
+        String dash = "";
+        if (!isEmpty(company) && (!isEmpty(firstPhone) || !isEmpty(secondPhone))) {
+            dash = " - ";
+        }
+
+        return company + dash + (isEmpty(firstPhone) ? secondPhone : firstPhone);
+    }
 }

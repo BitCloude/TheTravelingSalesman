@@ -20,7 +20,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         String sql = String.format("create table %s " +
-                        "( %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
+                        "( %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
                 ClientTable.NAME,
                 PRIMARY_KEY,
                 ClientTable.Cols.UUID,
@@ -33,8 +33,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 ClientTable.Cols.ADDRESS,
                 ClientTable.Cols.COMPANY,
                 ClientTable.Cols.LINKEDIN,
-                ClientTable.Cols.NOTE,
-                ClientTable.Cols.IMAGE + TYPE_BLOB
+                ClientTable.Cols.NOTE
                 );
         db.execSQL(sql);
 
@@ -58,4 +57,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
     }
+
+
 }

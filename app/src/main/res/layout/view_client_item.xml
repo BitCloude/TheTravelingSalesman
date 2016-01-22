@@ -3,7 +3,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="8dp">
+    android:background="@drawable/statelist_item_background"
+    android:padding="8dp">
 
     <TextView
         android:id="@+id/client_name"
@@ -11,8 +12,9 @@
         android:layout_height="wrap_content"
         android:text="First Last"
         android:textColor="@android:color/primary_text_light"
-        android:textSize="15sp"
-        android:textStyle="bold" />
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:layout_toStartOf="@+id/linearLayout" />
 
     <TextView
         android:id="@+id/client_company"
@@ -21,7 +23,8 @@
         android:layout_alignParentStart="true"
         android:layout_below="@+id/client_name"
         android:text="Company name - 98222"
-        android:textColor="@android:color/secondary_text_light" />
+        android:textColor="@android:color/secondary_text_light"
+        android:layout_alignEnd="@+id/client_name" />
 
     <TextView
         android:id="@+id/client_email"
@@ -29,7 +32,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_below="@+id/client_company"
-        android:text="email" />
+        android:text="email"
+        android:layout_toStartOf="@+id/linearLayout" />
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -37,7 +41,8 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentTop="true"
         android:orientation="vertical"
-        android:weightSum="2">
+        android:weightSum="2"
+        android:id="@+id/linearLayout">
 
         <ImageButton
             android:id="@+id/linkedInButt"

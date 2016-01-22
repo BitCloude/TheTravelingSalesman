@@ -64,7 +64,7 @@ public class TripExpMan extends NavigationDrawerActivity {
 //        ViewGroup viewStub = (ViewGroup) findViewById(R.id.view_stub);
 //        getLayoutInflater().inflate(R.layout.activity_trip_exp_man, viewStub);
         ViewGroup appBar = (ViewGroup) findViewById(R.id.appbar);
-        getLayoutInflater().inflate(R.layout.layout_tab, appBar);
+        getLayoutInflater().inflate(R.layout.view_tab, appBar);
 
         setTitle("Trips and Expenses");
        /* Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);

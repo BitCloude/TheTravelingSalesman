@@ -3,13 +3,24 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     >
     <item android:id="@+id/action_search"
-        android:title="@string/client_search_title"
+        android:title="Search all tasks"
         android:icon="@drawable/ic_search_white_24dp"
         app:showAsAction="collapseActionView|ifRoom"
-        android:actionViewClass="android.widget.SearchView" />
+        app:actionViewClass="android.widget.SearchView" />
+
+
     <item
-        android:id="@+id/action_new_task"
-        android:title="add_person"
-        android:icon="@drawable/ic_add_white_24dp"
-        app:showAsAction="collapseActionView|ifRoom"/>
+        android:id="@+id/action_reset_date"
+        android:title="today"
+        android:icon="@drawable/ic_update_white_24dp"
+        app:showAsAction="ifRoom"
+        />
+
+    <item
+        android:id="@+id/action_switch_view"
+        android:title="Switch Mode"
+        app:showAsAction="ifRoom"
+        android:icon="@drawable/ic_date_range_white_24dp"
+        />
+
 </menu>

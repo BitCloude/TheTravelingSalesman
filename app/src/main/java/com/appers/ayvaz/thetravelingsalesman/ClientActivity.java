@@ -1,7 +1,10 @@
 package com.appers.ayvaz.thetravelingsalesman;
 
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.CalendarContract;
 import android.support.design.widget.TabLayout;
@@ -10,6 +13,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,18 +21,21 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.appers.ayvaz.thetravelingsalesman.models.TaskII;
+import com.appers.ayvaz.thetravelingsalesman.models.ClientManager;
+import com.appers.ayvaz.thetravelingsalesman.models.Task;
 import com.appers.ayvaz.thetravelingsalesman.models.TaskManager;
 import com.appers.ayvaz.thetravelingsalesman.models.Client;
-import com.appers.ayvaz.thetravelingsalesman.models.ClientContent;
 import com.appers.ayvaz.thetravelingsalesman.utils.EventUtility;
 
+import java.util.Calendar;
+import java.util.TimeZone;
 import java.util.UUID;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class ClientActivity extends AppCompatActivity implements ClientTaskFragment.PassClient {
+public class ClientActivity extends AppCompatActivity
+        {
 
 
 
@@ -51,8 +58,6 @@ public class ClientActivity extends AppCompatActivity implements ClientTaskFragm
     @Bind (R.id.newTaskOK)  ImageButton mNewTaskOk;
     @Bind (R.id.tabLayout) TabLayout mTabLayout;
     @Bind(R.id.viewpager) ViewPager mViewPager;
-    @Bind(R.id.clientName)
-    TextView mClientName;
 
 
     public static Intent newIntent(Context packageContext, UUID clientId) {
@@ -76,12 +81,18 @@ public class ClientActivity extends AppCompatActivity implements ClientTaskFragm
         tabTitles = getResources().getStringArray(R.array.tab_titles_client);
 
         mClientId = (UUID) getIntent().getSerializableExtra(EXTRA_CLIENT_ID);
+        if (mClientId == null) {
+            finish();
+        }
+
         fragments = new ClientChanged[tabTitles.length];
         mFragmentPagerAdapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
             @Override
             public Fragment getItem(int position) {
                 switch (position) {
-                    case 0: return ClientTaskFragment.newInstance(ClientTaskFragment.BY_CLIENT);
+                    case 0: ClientTaskFragment taskFragment = ClientTaskFragment.newInstance(mClientId);
+                        fragments[0] = taskFragment;
+                        return taskFragment;
 
                     case 1: ClientCallLogFragment clientCallLogFragment = ClientCallLogFragment.newInstance(
                             mClient.getFirstPhone(), mClient.getSecondPhone());
@@ -90,8 +101,9 @@ public class ClientActivity extends AppCompatActivity implements ClientTaskFragm
 
                     case 2: ClientMessageFragment fragment = ClientMessageFragment
                             .newInstance(mClient.getFirstPhone(), mClient.getSecondPhone());
-                        fragments[position] = fragment;
+                        fragments[2] = fragment;
                         return fragment;
+
                     default: return new NotificationFragment();
                 }
 
@@ -115,6 +127,7 @@ public class ClientActivity extends AppCompatActivity implements ClientTaskFragm
         mTabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(mTabLayout));
+        mViewPager.setOffscreenPageLimit(tabTitles.length);
         mTabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -146,7 +159,8 @@ public class ClientActivity extends AppCompatActivity implements ClientTaskFragm
 
     private void createNewTask() {
 
-        mEventId = EventUtility.getNewEventId(getApplicationContext().getContentResolver());
+
+        mEventId = EventUtility.getNewEventId(this.getContentResolver());
 
         Intent intent = new Intent(Intent.ACTION_INSERT)
                 .setData(CalendarContract.Events.CONTENT_URI)
@@ -161,33 +175,43 @@ public class ClientActivity extends AppCompatActivity implements ClientTaskFragm
     @Override
     protected void onResume() {
         super.onResume();
+
+
+
         long prev_id = EventUtility.getLastEventId(getContentResolver());
-        // if prev_id == mEventId, means there is new events created
-        // and we need to insert new events into local sqlite database.
+//         if prev_id == mEventId, means there is new events created
+//         and we need to insert new events into local sqlite database.
         if (prev_id == mEventId) {
             // do database insert
-            TaskII task = new TaskII(mEventId);
+            Log.i("Task", "inserting");
+            Task task = new Task(mEventId);
             task.setClient(mClient);
-            TaskManager.get(getApplicationContext()).addTask(task);
+            TaskManager.get(this).addTask(task);
+            mEventId = -1;
+            mEditNewTask.setText("");
         }
 
         updateUI();
+
     }
 
     private void updateUI() {
-        mClient = ClientContent.get(getApplicationContext()).getClient(mClientId);
+        mClient = ClientManager.get(this).getClient(mClientId);
         if (mClient == null) {
             finish();
+            return;
         }
-        mClientName.setText(mClient.toString());
+
+        setTitle(mClient.toString());
+        updateFragments();
 
     }
 
     /**
     *  if the user edit the client info, reload call log and texts
     * */
-    private void updateCallnText() {
-        for (int i = 1; i < 3; i++) {
+    public void updateFragments() {
+        for (int i = 0; i < tabTitles.length; i++) {
             if (fragments[i] != null) {
                 fragments[i].updateUI(mClient);
             }
@@ -197,9 +221,12 @@ public class ClientActivity extends AppCompatActivity implements ClientTaskFragm
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
         if (item.getItemId() == R.id.action_info) {
-            Intent intent = ClientInfoActivity.newIntent(getApplicationContext(), mClientId);
+            Intent intent = ClientInfoActivity.newIntent(this, mClientId);
             startActivity(intent);
+
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }

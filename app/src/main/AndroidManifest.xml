@@ -9,11 +9,14 @@
     <uses-permission android:name="android.permission.READ_SMS" />
     <uses-permission android:name="android.permission.READ_CALL_LOG" />
     <uses-permission android:name="android.permission.READ_CALENDAR" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_CALENDAR" />
 
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:screenOrientation="portrait"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
@@ -38,7 +41,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ClientEditActivity"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".ClientInfoActivity" />
         <activity
             android:name=".ReportsActivity"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -59,10 +62,6 @@
             android:label="@string/title_activity_notification"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".ClientActivity"
-            android:parentActivityName=".LandingActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
             android:name=".LandingActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -70,31 +69,45 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable" />
         </activity>
         <activity
-            android:name=".TaskActivity"
-            android:parentActivityName=".TaskListActivity" />
-        <activity
-            android:name=".TaskListActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".TaskPagerActivity"
-            android:parentActivityName=".TaskListActivity" />
-        <activity
-            android:name=".TaskListWithCalendar"
-            android:label="@string/title_activity_task_list_with_calendar"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".TaskList"
+            android:name=".ClientActivity"
+            android:parentActivityName=".LandingActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ClientInfoActivity"
             android:label="@string/title_activity_client_info"
-            android:parentActivityName=".LandingActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:parentActivityName=".ClientActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <!--
+        activity
+            android:name=".TaskActivity"
+            android:launchMode="singleInstance"
+            android:parentActivityName=".TaskListActivity" />
+
+        <activity
+            android:name=".TaskPagerActivity"
+            android:parentActivityName=".TaskListActivity" /
+        -->
+
+        <activity
+            android:name=".TaskListWithCalendar"
+            android:label="@string/title_activity_task_list_with_calendar"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name=".TaskSearchResultActivity"
+            android:theme="@style/AppTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+
             <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.appers.ayvaz.thetravelingsalesman.ClientActivity" />
+                android:name="android.app.searchable"
+                android:resource="@xml/task_searchable" />
         </activity>
         <activity android:name=".database.DatabaseTravExp" />
         <activity android:name=".database.DbSchemaTravExp" />
@@ -105,6 +118,8 @@
         <activity android:name=".models.Trip" />
         <activity android:name=".models.ExpenseContent" />
         <activity android:name=".models.TripContent"></activity>
+        <activity android:name=".view.ClientPickActivity"
+            android:launchMode="singleTop"></activity>
     </application>
 
 </manifest>

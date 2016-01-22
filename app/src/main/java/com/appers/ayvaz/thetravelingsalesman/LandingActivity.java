@@ -6,15 +6,21 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
+import android.view.View;
 import android.view.ViewGroup;
 
-public class LandingActivity extends NavigationDrawerActivity {
+public class LandingActivity extends NavigationDrawerActivity
+        implements ClientListFragment.OnFragmentInteractionListener{
 
     private ViewPager mViewPager;
     private String[] tabTitles;
+    private TabLayout mTablayout;
     private FragmentPagerAdapter mFragmentPagerAdapter;
-    private int[] rangeArg = {ClientListFragment.RECENT, ClientListFragment.ALL, ClientListFragment.FAVORITE};
-//    private ClientListFragment[] mFragments = new ClientListFragment[3];
+    private int[] rangeArg = {
+            ClientListFragment.RANGE_ALL,
+            ClientListFragment.RANGE_RECENT,
+            ClientListFragment.RANGE_FAVORITE};
+    private ClientListFragment[] mFragments = new ClientListFragment[3];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,18 +28,21 @@ public class LandingActivity extends NavigationDrawerActivity {
         setContentView(R.layout.activity_landing);
 
 
-        ViewGroup appBar = (ViewGroup) findViewById(R.id.appbar);
-        getLayoutInflater().inflate(R.layout.layout_tab, appBar);
+        ViewGroup container = (ViewGroup) findViewById(R.id.tabContainer);
+        View viewTab = getLayoutInflater().inflate(R.layout.view_tab, container);
+
+
         setTitle(R.string.title_activity_landing);
 
         mViewPager = (ViewPager) findViewById(R.id.viewpager);
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabLayout);
+        mTablayout = (TabLayout) findViewById(R.id.tabLayout);
         tabTitles = getResources().getStringArray(R.array.tab_titles_landing);
         mFragmentPagerAdapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
             @Override
             public Fragment getItem(int position) {
-                Log.i(".............", "getItem()");
-                return ClientListFragment.newInstance(rangeArg[position]);
+//                Log.i(".............", "getItem()");
+                mFragments[position] = ClientListFragment.newInstance(rangeArg[position]);
+                return mFragments[position];
             }
 
             @Override
@@ -43,21 +52,21 @@ public class LandingActivity extends NavigationDrawerActivity {
         };
 
         mViewPager.setAdapter(mFragmentPagerAdapter);
-
+        mViewPager.setOffscreenPageLimit(3);
 
         // Add tabs, specifying the tab's text and TabListener
         for (int i = 0; i < tabTitles.length; i++) {
-            TabLayout.Tab tab = tabLayout.newTab();
+            TabLayout.Tab tab = mTablayout.newTab();
             tab.setText(tabTitles[i]);
 //            tab.setIcon(tabIcons[i]);
-            tabLayout.addTab(tab);
+            mTablayout.addTab(tab);
         }
 
-        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+        mTablayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
 
-        mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+        mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(mTablayout));
+        mTablayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 mViewPager.setCurrentItem(tab.getPosition());
@@ -75,26 +84,35 @@ public class LandingActivity extends NavigationDrawerActivity {
             }
         });
     }
-/*
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_client_list, menu);
 
-        // Get the SearchView and set the searchable configuration
-        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        SearchView searchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
-        // Assumes current activity is the searchable activity
-        //// TODO: 12/09/2015 search widget 
-        //searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-        //searchView.setIconifiedByDefault(false); // Do not iconify the widget; expand it by default
-
-        return true;
-    }*/
 
     @Override
     protected void onResume() {
         super.onResume();
         checkMenu(R.id.nav_clients);
+    }
+
+    public void hideTab() {
+        if (mTablayout != null) {
+            mTablayout.setVisibility(View.GONE);
+        }
+    }
+
+    public void showTab() {
+        if (mTablayout != null) {
+            mTablayout.setVisibility(View.VISIBLE);
+        }
+    }
+
+
+    public void updateFragments(int caller) {
+        for (int i = 0; i < tabTitles.length; i++) {
+            if (i == caller || mFragments[i] == null) {
+                continue;
+            }
+
+            mFragments[i].updateUI();
+        }
     }
 
 

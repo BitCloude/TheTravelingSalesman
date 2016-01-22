@@ -1,73 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:baselineAligned="true"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_margin="8dp"
+    android:layout_height="62dp"
+    android:padding="8dp"
     android:orientation="horizontal"
-    android:weightSum="8">
+    android:weightSum="8"
+    android:background="@drawable/statelist_item_background"
+    >
 
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="1.2"
+        android:layout_weight="1.6"
         android:orientation="vertical"
         android:weightSum="2">
 
 
         <TextView
             android:id="@+id/from_date"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
             android:text="fromdate"
-            android:textAppearance="?android:attr/textAppearanceSmall" />
+            android:textSize="13sp" />
 
         <TextView
             android:id="@+id/to_date"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
             android:text="to date"
-            android:textAppearance="?android:attr/textAppearanceSmall" />
+            android:textSize="13sp" />
 
     </LinearLayout>
 
-    <View
-        android:layout_width="2px"
+    <!--View
+        android:layout_width="1dp"
         android:layout_height="match_parent"
-        android:background="@android:color/darker_gray" />
+        android:background="@android:color/darker_gray" /-->
 
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_marginEnd="4dp"
         android:layout_marginStart="4dp"
-        android:layout_weight="6"
+        android:layout_weight="5.6"
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/task_client"
+            android:id="@+id/task_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Large Text"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="@color/TextPrimary" />
+            android:textColor="@color/TextPrimary"
+            android:maxLines="1" />
 
         <TextView
             android:id="@+id/task_detail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:maxLines="2"
-            android:text="Medium Text"
+            android:text="task detail"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="@color/TextSecondary" />
     </LinearLayout>
 
-    <View
-        android:layout_width="2px"
+    <!--View
+        android:layout_width="1dp"
         android:layout_height="match_parent"
-        android:background="@android:color/darker_gray" />
+        android:background="@android:color/darker_gray" /-->
 
     <LinearLayout
         android:layout_width="0dp"

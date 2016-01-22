@@ -2,11 +2,13 @@ package com.appers.ayvaz.thetravelingsalesman;
 
 
 import android.app.Activity;
+import android.app.SearchManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.CalendarContract;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -19,9 +21,10 @@ import android.widget.Toast;
 
 import com.appers.ayvaz.thetravelingsalesman.dialog.DatePickerFragment;
 import com.appers.ayvaz.thetravelingsalesman.dialog.TimePickerFragment;
-import com.appers.ayvaz.thetravelingsalesman.models.Task;
+import com.appers.ayvaz.thetravelingsalesman.models.TaskOld;
 import com.appers.ayvaz.thetravelingsalesman.models.TaskList;
 import com.appers.ayvaz.thetravelingsalesman.utils.DateTimeHelper;
+import com.appers.ayvaz.thetravelingsalesman.utils.EventUtility;
 
 import java.util.Calendar;
 import java.util.UUID;
@@ -37,10 +40,12 @@ public class TaskFragment extends Fragment {
     private static final int REQUEST_TIME_START = 2;
     private static final int REQUEST_TIME_END = 3;
 
-    private Task mTask;
+    private TaskOld mTask;
     private Button mStartDate, mEndDate, mStartTime, mEndTime;
     private EditText mNote, mLocation;
     private View.OnClickListener mDateListener, mTimeListener;
+    private long mEventId;
+
 
     public TaskFragment() {
         // Required empty public constructor
@@ -219,6 +224,11 @@ public class TaskFragment extends Fragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu_task, menu);
+
+
+
+
+
     }
 
     @Override
@@ -245,4 +255,20 @@ public class TaskFragment extends Fragment {
 //        mLocation.setText();
         mNote.setText(mTask.getNote());
     }
+
+
+    // // TODO: 017 01/17 add new task and select client
+    /*private void createNewTask() {
+
+
+        mEventId = EventUtility.getNewEventId(this.getContentResolver());
+
+        Intent intent = new Intent(Intent.ACTION_INSERT)
+                .setData(CalendarContract.Events.CONTENT_URI)
+                .putExtra(CalendarContract.Events.TITLE, mEditNewTask.getText().toString())
+                .putExtra(Intent.EXTRA_EMAIL, mClient.getEmail());
+        startActivity(intent);
+
+
+    }*/
 }

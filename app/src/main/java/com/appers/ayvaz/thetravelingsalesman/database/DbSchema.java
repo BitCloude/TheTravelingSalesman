@@ -19,7 +19,7 @@ public class DbSchema {
             public static final String NOTE = "note";
             public static final String STARED = "stared";
             public static final String LINKEDIN = "linkedin";
-            public static final String IMAGE = "img";
+//            public static final String IMAGE = "img";
 
         }
     }
@@ -27,6 +27,7 @@ public class DbSchema {
     public static final class TaskTable {
         public static final String NAME = "tasks";
         public static final class Cols {
+            public static final String _ID = "_id";
             public static final String EVENT_ID = "event_id";
             public static final String CLIENT_ID = "client_id";
         }

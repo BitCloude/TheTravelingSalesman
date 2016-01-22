@@ -12,8 +12,13 @@ import android.view.ViewGroup;
 import com.appers.ayvaz.thetravelingsalesman.adapter.MessageAdapterSlow;
 import com.appers.ayvaz.thetravelingsalesman.models.Client;
 import com.appers.ayvaz.thetravelingsalesman.models.MessageBox;
+import com.appers.ayvaz.thetravelingsalesman.models.MyMessage;
 
+import java.util.List;
 import java.util.UUID;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
 
 
 /**
@@ -25,16 +30,15 @@ public class ClientMessageFragment extends Fragment  implements ClientActivity.C
 
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_CLIENT_ID = "clientId";
-    private static final String ARG_NUMBER2 = "param2";
-    private static final String ARG_NUMBER1 = "param1";
-    //    @Bind(R.id.recycler_view) RecyclerView mRecyclerView;
-    RecyclerView mRecyclerView;
+    private static final String ARG_NUMBER2 = "number1";
+    private static final String ARG_NUMBER1 = "number2";
+    @Bind(R.id.recycler_view) RecyclerView mRecyclerView;
+
     //    int[] toViews = {0, R.id.sms_contact, R.id.sms_body};
     int[] toViews = {0, android.R.id.text1, android.R.id.text2};
     private String mNumber1 = "10086";
     private String mNumber2 = "7535";
-    private UUID mClientId;
-    private Client mClient;
+
     private MessageAdapterSlow mAdapter;
 
 
@@ -71,7 +75,7 @@ public class ClientMessageFragment extends Fragment  implements ClientActivity.C
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
 //            mClientId = (UUID) getArguments().getSerializable(ARG_CLIENT_ID);
-//            mClient = ClientContent.get(getContext()).getClient(mClientId);
+//            mClient = ClientManager.get(getContext()).getClient(mClientId);
 //            mNumber1 = mClient.getFirstPhone();
 //            mNumber2 = mClient.getSecondPhone();
 
@@ -87,8 +91,8 @@ public class ClientMessageFragment extends Fragment  implements ClientActivity.C
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_list, container, false);
-//        ButterKnife.bind(this, view);
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
+        ButterKnife.bind(this, view);
+
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mRecyclerView.setHasFixedSize(true);
         updateUI();
@@ -104,13 +108,18 @@ public class ClientMessageFragment extends Fragment  implements ClientActivity.C
     }
 
     private void updateUI() {
-//        if (mAdapter == null) {
-        mAdapter = MessageBox.get(getContext()).queryText(mNumber1, mNumber2);
-//        } else {
-//            mAdapter.notifyDataSetChanged();
-//        }
 
-        mRecyclerView.setAdapter(mAdapter);
+        List<MyMessage> messages= MessageBox.get(getContext()).getMessages(mNumber1, mNumber2);
+
+        if (mAdapter == null) {
+            mAdapter = new MessageAdapterSlow(getContext(), messages);
+            mRecyclerView.setAdapter(mAdapter);
+        } else {
+            mAdapter.setMessages(messages);
+            mAdapter.notifyDataSetChanged();
+        }
+
+
     }
 
     public void updateUI(Client client) {
