@@ -53,7 +53,7 @@ public class DbSchema {
 
     //A trip does not include expense id since a trip can have many expenses
     public static final class TripTable {
-        public static final String NAME = "tasks";
+        public static final String NAME = "trip";
         public static final class Cols {
             public static final String TRIP_ID ="trip_id";                  //Primary Key
             public static final String TRIP_CLIENT_ID ="client_id";         //Foreign Key
