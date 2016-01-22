@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GestureDetectorCompat;
@@ -36,6 +37,9 @@ import com.appers.ayvaz.thetravelingsalesman.view.DividerItemDecoration;
 
 import java.util.List;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
 /**
  * A fragment representing a list of Items.
  * <p/>
@@ -45,7 +49,7 @@ public class ClientListFragment extends Fragment
         implements ActionMode.Callback,
         RecyclerView.OnItemTouchListener{
 
-
+    private final String DEBUG_TAG = "ClientListFragment: ";
     public static final int RANGE_ALL = 0;
     public static final int RANGE_RECENT = 1;
     public static final int RANGE_FAVORITE = 2;
@@ -53,14 +57,17 @@ public class ClientListFragment extends Fragment
     private int mRange = 1;
     private ClientAdapter mAdapter;
     private ClientSearchAdapter mSearchAdapter;
-    private RecyclerView mRecyclerView;
     boolean mSearchOpen;
     private ActionMode actionMode;
     GestureDetectorCompat gestureDetector;
-    private AppBarLayout appBarLayout;
-    private final String DEBUG_TAG = "ClientListFragmetn: ";
+
     private static final int REQUEST_DELETE = 3;
     private OnFragmentInteractionListener mListener;
+    private TabLayout mTablayout;
+    private AppBarLayout appBarLayout;
+    private View mShadow;
+    @Bind(R.id.recycler_view) RecyclerView mRecyclerView;
+
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -97,10 +104,14 @@ public class ClientListFragment extends Fragment
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_list, container, false);
 
+        ButterKnife.bind(this, view);
+
         appBarLayout = (AppBarLayout) getActivity().findViewById(R.id.appbar);
+        mTablayout = (TabLayout) getActivity().findViewById(R.id.tabLayout);
+        mShadow = getActivity().findViewById(R.id.appbar_shadow);
 
         // Set the adapter
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
+
         Context context = view.getContext();
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(context));
@@ -241,7 +252,7 @@ public class ClientListFragment extends Fragment
 
     }
 
-
+/** action mode */
 
     private void myToggleSelection(int idx) {
         mAdapter.toggleSelection(idx);
@@ -259,9 +270,23 @@ public class ClientListFragment extends Fragment
         MenuInflater inflater = actionMode.getMenuInflater();
         inflater.inflate(R.menu.menu_client_context, menu);
 
-        appBarLayout.setVisibility(View.GONE);
+        hideAppBar();
+
 
         return true;
+    }
+
+    private void hideAppBar() {
+//        appBarLayout.setVisibility(View.GONE);
+        mTablayout.setVisibility(View.GONE);
+        mShadow.setVisibility(View.GONE);
+
+    }
+
+    public void showAppBar() {
+//        appBarLayout.setVisibility(View.VISIBLE);
+        mTablayout.setVisibility(View.VISIBLE);
+        mShadow.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -291,7 +316,7 @@ public class ClientListFragment extends Fragment
     public void onDestroyActionMode(ActionMode actionMode) {
         this.actionMode = null;
         mAdapter.clearSelections();
-        appBarLayout.setVisibility(View.VISIBLE);
+        showAppBar();
 
     }
 

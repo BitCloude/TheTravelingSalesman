@@ -76,8 +76,6 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ViewHolder
     public ClientAdapter(List<Client> items) {
         mClients = items;
 
-
-
     }
 
     public void setClients(List<Client> clients) {
@@ -87,7 +85,7 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ViewHolder
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.layout_client_card, parent, false);
+                .inflate(R.layout.view_client_item, parent, false);
         return new ViewHolder(view);
     }
 

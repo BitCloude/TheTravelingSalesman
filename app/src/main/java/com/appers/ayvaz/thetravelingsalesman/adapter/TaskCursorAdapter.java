@@ -40,7 +40,7 @@ public class TaskCursorAdapter extends CursorRecyclerViewAdapter<TaskCursorAdapt
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.fragment_task_item, parent, false);
+                .inflate(R.layout.view_task_item, parent, false);
 
         return new ViewHolder(view);
     }

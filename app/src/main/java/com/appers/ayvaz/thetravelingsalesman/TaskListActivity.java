@@ -1,18 +1,29 @@
 package com.appers.ayvaz.thetravelingsalesman;
 
-import android.app.SearchManager;
+
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.view.GestureDetectorCompat;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.view.ActionMode;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
+import android.view.GestureDetector;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SearchView;
 
+
 import com.appers.ayvaz.thetravelingsalesman.adapter.TaskAdapter;
+import com.appers.ayvaz.thetravelingsalesman.dialog.DeleteAlertDialogFragment;
 import com.appers.ayvaz.thetravelingsalesman.models.Task;
 import com.appers.ayvaz.thetravelingsalesman.models.TaskManager;
 import com.appers.ayvaz.thetravelingsalesman.view.DividerItemDecoration;
@@ -21,27 +32,40 @@ import com.wefika.calendar.CollapseCalendarView;
 import org.joda.time.LocalDate;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
-import java.util.Locale;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class TaskListActivity extends NavigationDrawerActivity {
+public class TaskListActivity extends NavigationDrawerActivity
+        implements ActionMode.Callback {
 
     private final String TAG = "debuging--------";
-    @Bind(R.id.calendar)
-    CollapseCalendarView mCalendarView;
-    @Bind(R.id.recycler_view)
-    RecyclerView mRecyclerView;
+    @Bind(R.id.calendar)    CollapseCalendarView mCalendarView;
+    @Bind(R.id.recycler_view)    RecyclerView mRecyclerView;
+    @Bind(R.id.toolbar)    Toolbar mToolbar;
+    @Bind(R.id.appbar_shadow) View mShadow;
     //    private FragmentManager mFragmentManager;
 //    private OnDateChanged mFragment;
     private TaskManager mTaskManager;
     private TaskAdapter mAdapter;
     private TaskAdapter mSearchAdapter;
+    private ActionMode mActionMode;
+    private GestureDetectorCompat mGestureDetector;
+    private RecyclerView.OnItemTouchListener mOnItemTouchListener;
+    private Menu mOptionsMenu;
+    private boolean mCalendarMode = true;
+
+    private final int calendarIcon = R.drawable.ic_date_range_white_24dp;
+    private final int listIcon = calendarIcon; // R.drawable.ic_list_white_18dp;
 
     protected Fragment createFragment(LocalDate date) {
         return ClientTaskFragment.newInstance(date);
+    }
+
+    interface OnDateChanged {
+        void updateUI(LocalDate date);
     }
 
     @Override
@@ -60,7 +84,6 @@ public class TaskListActivity extends NavigationDrawerActivity {
 //        mCalendarView.init(manager);
         mCalendarView.init(LocalDate.now(), LocalDate.now().minusYears(3), LocalDate.now().plusYears(3));
 
-        changeRange(LocalDate.now());
 
         mCalendarView.setListener(new CollapseCalendarView.OnDateSelect() {
             @Override
@@ -86,8 +109,15 @@ public class TaskListActivity extends NavigationDrawerActivity {
                 DividerItemDecoration.VERTICAL_LIST));
         mRecyclerView.setHasFixedSize(true);
 
+        setUpActionMode();
+
+
+        updateUI();
+
 
     }
+
+
 
     private void doMySearch(CharSequence query) {
 
@@ -126,32 +156,94 @@ public class TaskListActivity extends NavigationDrawerActivity {
     protected void onResume() {
         super.onResume();
         checkMenu(R.id.nav_tasks);
+        updateUI();
+
     }
+
+
+
+    private void updateUI() {
+
+        if (mCalendarMode) {
+            mCalendarView.setVisibility(View.VISIBLE);
+            changeRange(mCalendarView.getSelectedDate());
+
+        } else {
+            mCalendarView.setVisibility(View.GONE);
+            showAll();
+
+        }
+    }
+
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_reset_date:
-                mCalendarView.getManager().selectDay(LocalDate.now());
-                mCalendarView.populateLayout();
+                selectToday();
+
+                return true;
+            case R.id.action_switch_view:
+                MenuItem resetDate = mOptionsMenu.findItem(R.id.action_reset_date);
+                MenuItem search = mOptionsMenu.findItem(R.id.action_search);
+                MenuItem toggleMode = mOptionsMenu.findItem(R.id.action_switch_view);
+
+                if (mCalendarMode) {
+                    mCalendarView.setVisibility(View.GONE);
+                    showAll();
+                } else {
+                    mCalendarView.setVisibility(View.VISIBLE);
+                    changeRange(mCalendarView.getSelectedDate());
+                }
+
+                mCalendarMode = !mCalendarMode;
+                resetDate.setVisible(mCalendarMode);
+//                search.setVisible(!mCalendarMode);
+                toggleMode.setIcon(mCalendarMode? listIcon : calendarIcon);
+
+                return true;
+
 
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
+    private void showAll() {
+        Calendar begin = Calendar.getInstance();
+        begin.set(2000, Calendar.JANUARY, 1);
+        Calendar end = Calendar.getInstance();
+        end.set(2030, Calendar.DECEMBER, 31);
+
+        List<Task> result = TaskManager.get(this).queryInstance(begin, end, null);
+        if (mAdapter == null) {
+            mAdapter = new TaskAdapter(result);
+            mRecyclerView.setAdapter(mAdapter);
+        } else {
+            mAdapter.setData(result);
+            mAdapter.notifyDataSetChanged();
+        }
+    }
+
+    private void selectToday() {
+        mCalendarView.getManager().selectDay(LocalDate.now());
+        mCalendarView.populateLayout();
+        changeRange(LocalDate.now());
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_tasks, menu);
 
-        // Get the SearchView and set the searchable configuration
-        SearchManager searchManager = (SearchManager) getSystemService(
-                SEARCH_SERVICE);
+        mOptionsMenu = menu;
 
+        /** search view **/
         MenuItem item = menu.findItem(R.id.action_search);
-
         SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
-        // Assumes current activity is the searchable activity
+// Get the SearchView and set the searchable configuration
+//        SearchManager searchManager = (SearchManager) getSystemService(
+//                SEARCH_SERVICE);
 //        searchView.setSearchableInfo(searchManager.getSearchableInfo(new ComponentName(
 //                        this, TaskSearchResultActivity.class)));
         searchView.setIconifiedByDefault(false); // Do not iconify the widget; expand it by default
@@ -164,13 +256,18 @@ public class TaskListActivity extends NavigationDrawerActivity {
                             mSearchAdapter = new TaskAdapter(new ArrayList<Task>(0));
                         }
                         mRecyclerView.setAdapter(mSearchAdapter);
-                        mCalendarView.setVisibility(View.GONE);
+                        if (mCalendarMode) {
+                            mCalendarView.setVisibility(View.GONE);
+                        }
                         return true;
                     }
 
                     @Override
                     public boolean onMenuItemActionCollapse(MenuItem item) {
-                        mCalendarView.setVisibility(View.VISIBLE);
+                        if (mCalendarMode) {
+                            mCalendarView.setVisibility(View.VISIBLE);
+                        }
+
                         mRecyclerView.setAdapter(mAdapter);
                         return true;
                     }
@@ -189,11 +286,140 @@ public class TaskListActivity extends NavigationDrawerActivity {
             }
         });
 
+        menu.findItem(R.id.action_reset_date).setVisible(mCalendarMode);
+//        menu.findItem(R.id.action_search).setVisible(!mCalendarMode);
+        menu.findItem(R.id.action_switch_view).setIcon(mCalendarMode ? listIcon : calendarIcon);
+
         return true;
     }
 
-    interface OnDateChanged {
-        void updateUI(LocalDate date);
+    /** action mode */
+
+    private void setUpActionMode() {
+        mGestureDetector =
+                new GestureDetectorCompat(this, new TaskListGestureListener());
+
+        mOnItemTouchListener = new RecyclerView.OnItemTouchListener() {
+            @Override
+            public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
+                return mGestureDetector.onTouchEvent(e);
+            }
+
+            @Override
+            public void onTouchEvent(RecyclerView rv, MotionEvent e) {
+
+            }
+
+            @Override
+            public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+
+            }
+        };
+
+        mRecyclerView.addOnItemTouchListener(mOnItemTouchListener);
+    }
+
+    private void myToggleSelection(int idx) {
+        mAdapter.toggleSelection(idx);
+
+        int cnt = mAdapter.getSelectedItemCount();
+        String title = getString(
+                R.string.selected_count,
+                cnt);
+
+        // hide button when multiple tasks are selected
+        mActionMode.getMenu().findItem(R.id.action_change_client)
+                .setVisible(cnt == 1);
+        mActionMode.setTitle(title);
+    }
+
+
+    @Override
+    public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+        MenuInflater inflater = mode.getMenuInflater();
+        inflater.inflate(R.menu.menu_task_context, menu);
+        mCalendarView.setVisibility(View.GONE);
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+        return false;
+    }
+
+    @Override
+    public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_delete:
+                int cnt = mAdapter.getSelectedItemCount();
+                String s = cnt > 1 ? " task" : " tasks";
+                AlertDialog.Builder builder = new AlertDialog.Builder(this)
+                        .setMessage(getString(R.string.r_u_sure, s))
+                        .setCancelable(true)
+                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                // todo:delete tasks
+                            }
+                        })
+                        .setNegativeButton(android.R.string.cancel, null);
+
+                builder.create().show();
+
+
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    @Override
+    public void onDestroyActionMode(ActionMode mode) {
+        mActionMode = null;
+        mAdapter.clearSelections();
+        mCalendarView.setVisibility(View.VISIBLE);
+    }
+
+
+
+    private class TaskListGestureListener extends GestureDetector.SimpleOnGestureListener {
+        @Override
+        public boolean onSingleTapConfirmed(MotionEvent e) {
+            View view = mRecyclerView.findChildViewUnder(e.getX(), e.getY());
+            int idx =  mRecyclerView.getChildAdapterPosition(view);
+            if (idx < 0) {
+                return super.onSingleTapConfirmed(e);
+            }
+
+            TaskAdapter.ViewHolder vh = (TaskAdapter.ViewHolder) mRecyclerView
+                    .findViewHolderForAdapterPosition(idx);
+
+            if (mActionMode != null) {
+                myToggleSelection(idx);
+            } else {
+                vh.onClick(view);
+            }
+
+
+            return super.onSingleTapConfirmed(e);
+        }
+
+        public void onLongPress(MotionEvent e) {
+            View view = mRecyclerView.findChildViewUnder(e.getX(), e.getY());
+            if (mActionMode != null) {
+                return;
+            }
+            // Start the CAB using the ActionMode.Callback defined above
+
+            mActionMode = startSupportActionMode(TaskListActivity.this);
+
+            int pos = mRecyclerView.getChildAdapterPosition(view);
+//                Toast.makeText(TaskListActivity.this, "pos: " + pos, Toast.LENGTH_SHORT).show();
+            myToggleSelection(pos);
+
+
+            super.onLongPress(e);
+        }
     }
 
     /*
