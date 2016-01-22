@@ -4,11 +4,10 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 
+import com.appers.ayvaz.thetravelingsalesman.database.DatabaseHelper;
 import com.appers.ayvaz.thetravelingsalesman.database.DatabaseHelperTravExp;
-import com.appers.ayvaz.thetravelingsalesman.database.DbSchemaTravExp;
+import com.appers.ayvaz.thetravelingsalesman.database.DbSchema;
 import com.appers.ayvaz.thetravelingsalesman.database.TripCursorWrapper;
 
 import java.util.ArrayList;
@@ -23,7 +22,7 @@ public class TripContent {
 
     private TripContent(Context context) {
         mContext = context;
-        mDatabase = new DatabaseHelperTravExp(mContext).getWritableDatabase();
+        mDatabase = new DatabaseHelper(mContext).getWritableDatabase();
 
     }
 
@@ -37,22 +36,22 @@ public class TripContent {
 
     private static ContentValues getContentValues(Trip trip) {
         ContentValues values = new ContentValues();
-        values.put(DbSchemaTravExp.TripTable.Cols.TRIP_ID, Integer.toString(trip.getId()));
-        values.put(DbSchemaTravExp.TripTable.Cols.TRIP_CLIENT_ID, Integer.toString(trip.getClient_id()));
-        values.put(DbSchemaTravExp.TripTable.Cols.TRIP_TYPE, trip.getType());
-        values.put(DbSchemaTravExp.TripTable.Cols.TRIP_FROM, trip.getTrip_from());
-        values.put(DbSchemaTravExp.TripTable.Cols.TRIP_TO, trip.getTrip_to());
-        values.put(DbSchemaTravExp.TripTable.Cols.TRIP_DATE_FROM, trip.getDate_from());
-        values.put(DbSchemaTravExp.TripTable.Cols.TRIP_DATE_TO, trip.getDate_to());
-        values.put(DbSchemaTravExp.TripTable.Cols.TRIP_DESCRIPTION, trip.getDescription());
-        values.put(DbSchemaTravExp.TripTable.Cols.TRIP_IMAGE, trip.getImage());
+        values.put(DbSchema.TripTable.Cols.TRIP_ID, Integer.toString(trip.getId()));
+        values.put(DbSchema.TripTable.Cols.TRIP_CLIENT_ID, Integer.toString(trip.getClient_id()));
+        values.put(DbSchema.TripTable.Cols.TRIP_TYPE, trip.getType());
+        values.put(DbSchema.TripTable.Cols.TRIP_FROM, trip.getTrip_from());
+        values.put(DbSchema.TripTable.Cols.TRIP_TO, trip.getTrip_to());
+        values.put(DbSchema.TripTable.Cols.TRIP_DATE_FROM, trip.getDate_from());
+        values.put(DbSchema.TripTable.Cols.TRIP_DATE_TO, trip.getDate_to());
+        values.put(DbSchema.TripTable.Cols.TRIP_DESCRIPTION, trip.getDescription());
+        values.put(DbSchema.TripTable.Cols.TRIP_IMAGE, trip.getImage());
 
         return values;
     }
 
     public Trip getTrip(int id) {
         TripCursorWrapper cursor = queryTrips(
-                DbSchemaTravExp.TripTable.Cols.TRIP_ID + " = ?",
+                DbSchema.TripTable.Cols.TRIP_ID + " = ?",
                 new String[]{Integer.toString(id)}, null
         );
 
@@ -71,7 +70,7 @@ public class TripContent {
         List<Trip> trips = new ArrayList<>();
         String whereClause = null;
         String[] whereArgs = null;
-        String sortOrder = DbSchemaTravExp.TripTable.Cols.TRIP_ID;
+        String sortOrder = DbSchema.TripTable.Cols.TRIP_ID;
 
 
         try (TripCursorWrapper cursor = queryTrips(whereClause, whereArgs,
@@ -89,22 +88,22 @@ public class TripContent {
 
     public void addTrip(Trip item) {
         ContentValues values = getContentValues(item);
-        mDatabase.insert(DbSchemaTravExp.TripTable.NAME, null, values);
+        mDatabase.insert(DbSchema.TripTable.NAME, null, values);
     }
 
     public void updateTrip(Trip trip ) {
         String id = Integer.toString(trip.getId());
         ContentValues values = getContentValues(trip);
 
-        mDatabase.update(DbSchemaTravExp.TripTable.NAME, values,
-                DbSchemaTravExp.TripTable.Cols.TRIP_ID + " =  ?",
+        mDatabase.update(DbSchema.TripTable.NAME, values,
+                DbSchema.TripTable.Cols.TRIP_ID + " =  ?",
                 new String[]{id});
     }
 
     private TripCursorWrapper queryTrips(String whereClause, String[] whereArgs,
                                                String sortOrder) {
         Cursor cursor = mDatabase.query(
-                DbSchemaTravExp.TripTable.NAME, null, whereClause, whereArgs, null, null, sortOrder
+                DbSchema.TripTable.NAME, null, whereClause, whereArgs, null, null, sortOrder
         );
 
         return new TripCursorWrapper(cursor);
@@ -112,8 +111,8 @@ public class TripContent {
 
 
     public boolean delete(int id) {
-        String whereClause = DbSchemaTravExp.TripTable.Cols.TRIP_ID + " = ?";
+        String whereClause = DbSchema.TripTable.Cols.TRIP_ID + " = ?";
         String[] whereArgs = new String[]{Integer.toString(id)};
-        return mDatabase.delete(DbSchemaTravExp.TripTable.NAME, whereClause, whereArgs) > 0;
+        return mDatabase.delete(DbSchema.TripTable.NAME, whereClause, whereArgs) > 0;
     }
 }
