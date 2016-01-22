@@ -1,8 +1,6 @@
 package com.appers.ayvaz.thetravelingsalesman;
 
 
-import android.content.ContentResolver;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.CallLog;
 import android.support.v4.app.Fragment;
@@ -12,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
 import com.appers.ayvaz.thetravelingsalesman.models.CallEntry;
@@ -45,10 +42,9 @@ public class ClientCallLogFragment extends Fragment implements ClientActivity.Cl
 //    RecyclerView mRecyclerView;
 
     //    int[] toViews = {0, R.id.sms_contact, R.id.sms_body};
-    int[] toViews = {0, android.R.id.text1, android.R.id.text2 };
-    ContentResolver cr;
-    Cursor cursor;
-    SimpleCursorAdapter adapter;
+
+    CallLogAdapter mAdapter;
+
 
     public ClientCallLogFragment() {
         // Required empty public constructor
@@ -100,9 +96,15 @@ public class ClientCallLogFragment extends Fragment implements ClientActivity.Cl
     }
 
     public void updateUI() {
-        CallLogAdapter adapter = new CallLogAdapter(
-                MessageBox.get(getContext()).queryCallLog(mNumber1, mNumber2));
-        mRecyclerView.setAdapter(adapter);
+        List<CallEntry> callLog = MessageBox.get(getContext()).getCallLog(mNumber1, mNumber2);
+        if (mAdapter == null) {
+            mAdapter = new CallLogAdapter(callLog);
+            mRecyclerView.setAdapter(mAdapter);
+        } else {
+            mAdapter.setData(callLog);
+            mAdapter.notifyDataSetChanged();
+        }
+
     }
 
 
@@ -120,7 +122,7 @@ public class ClientCallLogFragment extends Fragment implements ClientActivity.Cl
      * */
 
 
-     class CallLogAdapter extends RecyclerView.Adapter<CallLogAdapter.ViewHolder> {
+    class CallLogAdapter extends RecyclerView.Adapter<CallLogAdapter.ViewHolder> {
 
         private List<CallEntry> mCallLog;
 
@@ -129,6 +131,9 @@ public class ClientCallLogFragment extends Fragment implements ClientActivity.Cl
         }
 
 
+        public void setData(List<CallEntry> log) {
+            mCallLog = log;
+        }
 
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -142,7 +147,6 @@ public class ClientCallLogFragment extends Fragment implements ClientActivity.Cl
         public void onBindViewHolder(ViewHolder holder, int position) {
             CallEntry entry = mCallLog.get(position);
             holder.callNumber.setText(entry.getNumber());
-            // // TODO: 008 01/08 format time
             holder.callTime.setText(DateTimeHelper.formatTime(entry.getTime()));
             int resId;
             switch (entry.getType()) {
