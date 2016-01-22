@@ -120,7 +120,7 @@ public class ClientCallLogFragment extends Fragment implements ClientActivity.Cl
      * */
 
 
-    private class CallLogAdapter extends RecyclerView.Adapter<CallLogAdapter.ViewHolder> {
+     class CallLogAdapter extends RecyclerView.Adapter<CallLogAdapter.ViewHolder> {
 
         private List<CallEntry> mCallLog;
 

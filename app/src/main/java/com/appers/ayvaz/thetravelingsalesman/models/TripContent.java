@@ -1,0 +1,119 @@
+package com.appers.ayvaz.thetravelingsalesman.models;
+
+import android.content.ContentValues;
+import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+
+import com.appers.ayvaz.thetravelingsalesman.database.DatabaseHelperTravExp;
+import com.appers.ayvaz.thetravelingsalesman.database.DbSchemaTravExp;
+import com.appers.ayvaz.thetravelingsalesman.database.TripCursorWrapper;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class TripContent {
+
+    private static TripContent content;
+
+    private Context mContext;
+    private SQLiteDatabase mDatabase;
+
+    private TripContent(Context context) {
+        mContext = context;
+        mDatabase = new DatabaseHelperTravExp(mContext).getWritableDatabase();
+
+    }
+
+    public static TripContent get(Context context) {
+        if (content == null) {
+            content = new TripContent(context);
+        }
+
+        return content;
+    }
+
+    private static ContentValues getContentValues(Trip trip) {
+        ContentValues values = new ContentValues();
+        values.put(DbSchemaTravExp.TripTable.Cols.TRIP_ID, Integer.toString(trip.getId()));
+        values.put(DbSchemaTravExp.TripTable.Cols.TRIP_CLIENT_ID, Integer.toString(trip.getClient_id()));
+        values.put(DbSchemaTravExp.TripTable.Cols.TRIP_TYPE, trip.getType());
+        values.put(DbSchemaTravExp.TripTable.Cols.TRIP_FROM, trip.getTrip_from());
+        values.put(DbSchemaTravExp.TripTable.Cols.TRIP_TO, trip.getTrip_to());
+        values.put(DbSchemaTravExp.TripTable.Cols.TRIP_DATE_FROM, trip.getDate_from());
+        values.put(DbSchemaTravExp.TripTable.Cols.TRIP_DATE_TO, trip.getDate_to());
+        values.put(DbSchemaTravExp.TripTable.Cols.TRIP_DESCRIPTION, trip.getDescription());
+        values.put(DbSchemaTravExp.TripTable.Cols.TRIP_IMAGE, trip.getImage());
+
+        return values;
+    }
+
+    public Trip getTrip(int id) {
+        TripCursorWrapper cursor = queryTrips(
+                DbSchemaTravExp.TripTable.Cols.TRIP_ID + " = ?",
+                new String[]{Integer.toString(id)}, null
+        );
+
+        try {
+            if (cursor.getCount() == 0) {
+                return null;
+            }
+            cursor.moveToFirst();
+            return cursor.getTrip();
+        } finally {
+            cursor.close();
+        }
+    }
+
+    public List<Trip> getTrips() {
+        List<Trip> trips = new ArrayList<>();
+        String whereClause = null;
+        String[] whereArgs = null;
+        String sortOrder = DbSchemaTravExp.TripTable.Cols.TRIP_ID;
+
+
+        try (TripCursorWrapper cursor = queryTrips(whereClause, whereArgs,
+                sortOrder)) {
+            cursor.moveToFirst();
+            while (!cursor.isAfterLast()) {
+                trips.add(cursor.getTrip());
+                cursor.moveToNext();
+            }
+        }
+
+        return trips;
+    }
+
+
+    public void addTrip(Trip item) {
+        ContentValues values = getContentValues(item);
+        mDatabase.insert(DbSchemaTravExp.TripTable.NAME, null, values);
+    }
+
+    public void updateTrip(Trip trip ) {
+        String id = Integer.toString(trip.getId());
+        ContentValues values = getContentValues(trip);
+
+        mDatabase.update(DbSchemaTravExp.TripTable.NAME, values,
+                DbSchemaTravExp.TripTable.Cols.TRIP_ID + " =  ?",
+                new String[]{id});
+    }
+
+    private TripCursorWrapper queryTrips(String whereClause, String[] whereArgs,
+                                               String sortOrder) {
+        Cursor cursor = mDatabase.query(
+                DbSchemaTravExp.TripTable.NAME, null, whereClause, whereArgs, null, null, sortOrder
+        );
+
+        return new TripCursorWrapper(cursor);
+    }
+
+
+    public boolean delete(int id) {
+        String whereClause = DbSchemaTravExp.TripTable.Cols.TRIP_ID + " = ?";
+        String[] whereArgs = new String[]{Integer.toString(id)};
+        return mDatabase.delete(DbSchemaTravExp.TripTable.NAME, whereClause, whereArgs) > 0;
+    }
+}

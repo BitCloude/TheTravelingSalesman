@@ -22,6 +22,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.appers.ayvaz.thetravelingsalesman.models.Expense;
+import com.appers.ayvaz.thetravelingsalesman.models.ExpenseContent;
+import com.appers.ayvaz.thetravelingsalesman.models.Trip;
+import com.appers.ayvaz.thetravelingsalesman.models.TripContent;
+
 public class TripExpMan extends NavigationDrawerActivity {
 
 
@@ -200,6 +205,19 @@ public class TripExpMan extends NavigationDrawerActivity {
 
                 linearLayout = (LinearLayout) rootView.findViewById(R.id.fragmentLinearLayout);
 
+            Expense mExpense = new Expense(1);
+                    mExpense.setDescription("Hotel bill from database");
+                    mExpense.setAmount("50");
+            Trip mTrip = new Trip(1);
+                    mTrip.setTrip_from("from los Angeles");
+                    mTrip.setTrip_to(" to NEW York");
+
+            ExpenseContent expenseContent = ExpenseContent.get(getActivity());
+            expenseContent.addExpense(mExpense);
+
+            TripContent tripContent = TripContent.get(getActivity());
+            tripContent.addTrip(mTrip);
+
                 for (int i = 0; i < 12; i++) {
                     childLayout = new RelativeLayout(getActivity());
                     RelativeLayout.LayoutParams layoutParamsCost = new RelativeLayout.LayoutParams(
@@ -216,12 +234,12 @@ public class TripExpMan extends NavigationDrawerActivity {
                     textcost.setLines(1);
 
                     if(getArguments().getInt(ARG_SECTION_NUMBER) == 1) {
-                        textdata.setText(data);
-                        textcost.setText(cost);
+                        textdata.setText(tripContent.getTrip(1).getTrip_from());
+                        textcost.setText(tripContent.getTrip(1).getTrip_to());
                     }
                     else {
-                        textdata.setText(dataExp);
-                        textcost.setText(costExp);
+                        textdata.setText(expenseContent.getExpense(1).getDescription());
+                        textcost.setText(expenseContent.getExpense(1).getAmount());
                     }
 
 

@@ -8,7 +8,7 @@
 
     <uses-permission android:name="android.permission.READ_SMS" />
     <uses-permission android:name="android.permission.READ_CALL_LOG" />
-    <uses-permission android:name="android.permission.READ_CALENDAR"/>
+    <uses-permission android:name="android.permission.READ_CALENDAR" />
 
     <application
         android:allowBackup="true"
@@ -61,7 +61,7 @@
         <activity
             android:name=".ClientActivity"
             android:parentActivityName=".LandingActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".LandingActivity"
             android:theme="@style/AppTheme.NoActionBar">
@@ -83,7 +83,7 @@
         <activity
             android:name=".TaskListWithCalendar"
             android:label="@string/title_activity_task_list_with_calendar"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".TaskList"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -96,6 +96,15 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.appers.ayvaz.thetravelingsalesman.ClientActivity" />
         </activity>
+        <activity android:name=".database.DatabaseTravExp" />
+        <activity android:name=".database.DbSchemaTravExp" />
+        <activity android:name=".database.DatabaseHelperTravExp" />
+        <activity android:name=".database.ExpenseCursorWrapper" />
+        <activity android:name=".database.TripCursorWrapper" />
+        <activity android:name=".models.Expense" />
+        <activity android:name=".models.Trip" />
+        <activity android:name=".models.ExpenseContent" />
+        <activity android:name=".models.TripContent"></activity>
     </application>
 
 </manifest>

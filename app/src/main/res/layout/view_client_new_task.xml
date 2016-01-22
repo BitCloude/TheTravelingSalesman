@@ -27,5 +27,6 @@
         android:layout_marginLeft="6dp"
         android:layout_marginRight="6dp"
         android:background="@android:color/transparent"
-        android:src="@drawable/ic_add_circle_outline_grey_900_24dp" />
+        />
 </RelativeLayout>
+    <!--android:src="@drawable/ic_add_circle_outline_grey_900_24dp"-->
