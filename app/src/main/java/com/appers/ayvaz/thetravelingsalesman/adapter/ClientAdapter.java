@@ -17,6 +17,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.appers.ayvaz.thetravelingsalesman.ClientActivity;
+import com.appers.ayvaz.thetravelingsalesman.ClientEditActivity;
 import com.appers.ayvaz.thetravelingsalesman.R;
 import com.appers.ayvaz.thetravelingsalesman.models.Client;
 import com.appers.ayvaz.thetravelingsalesman.models.ClientManager;
@@ -71,6 +72,13 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ViewHolder
         return  ClientManager.get(context).delete(uuid);
     }
 
+    public void selectAll() {
+        for (int i = 0; i < getItemCount(); i++) {
+            selectedItems.put(i, true);
+        }
+        notifyDataSetChanged();
+    }
+
     /** End of action mode **/
 
     public ClientAdapter(List<Client> items) {
@@ -98,6 +106,20 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ViewHolder
     @Override
     public int getItemCount() {
         return mClients.size();
+    }
+
+    public void editSelected(Context context) {
+        if (getSelectedItemCount() != 1) {
+            return;
+        }
+
+        for (int i = 0; i < getItemCount(); i++) {
+            if (selectedItems.get(i)) {
+                UUID id = mClients.get(i).getId();
+                Intent intent = ClientEditActivity.newIntent(context, id);
+                context.startActivity(intent);
+            }
+        }
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder

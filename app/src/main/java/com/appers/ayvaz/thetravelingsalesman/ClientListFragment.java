@@ -25,7 +25,10 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ActionMode;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.SearchView;
+import android.widget.TextView;
 
 
 import com.appers.ayvaz.thetravelingsalesman.adapter.ClientAdapter;
@@ -36,6 +39,7 @@ import com.appers.ayvaz.thetravelingsalesman.models.ClientManager;
 import com.appers.ayvaz.thetravelingsalesman.view.DividerItemDecoration;
 
 import java.util.List;
+import java.util.UUID;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -66,6 +70,8 @@ public class ClientListFragment extends Fragment
     private TabLayout mTablayout;
     private AppBarLayout appBarLayout;
     private View mShadow;
+    private MenuItem mEditClient;
+    private TextView mActionTitle;
     @Bind(R.id.recycler_view) RecyclerView mRecyclerView;
 
 
@@ -256,24 +262,69 @@ public class ClientListFragment extends Fragment
 
     private void myToggleSelection(int idx) {
         mAdapter.toggleSelection(idx);
-        String title = getString(
-                R.string.selected_count,
-                mAdapter.getSelectedItemCount());
+        int cnt = mAdapter.getSelectedItemCount();
+        setActionTitle(cnt);
         Log.i(DEBUG_TAG, mAdapter.getSelectedItemCount() + " selected");
-        actionMode.setTitle(title);
+        mEditClient.setVisible(cnt == 1);
+
+
     }
 
 
     @Override
     public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
+        hideAppBar();
         // Inflate a menu resource providing context menu items
         MenuInflater inflater = actionMode.getMenuInflater();
         inflater.inflate(R.menu.menu_client_context, menu);
 
-        hideAppBar();
+        actionMode.setCustomView(getActivity().getLayoutInflater()
+                .inflate(R.layout.action_mode, null));
+
+        mActionTitle = (TextView) actionMode.getCustomView().findViewById(R.id.textView);
+        mEditClient = menu.findItem(R.id.action_edit);
+        CheckBox checkBox = (CheckBox) actionMode.getCustomView().findViewById(R.id.checkBox);
+        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    selectAll();
+                } else {
+                    clearSelections();
+                }
+            }
+        });
+
+
+
+
 
 
         return true;
+    }
+
+    private void selectAll() {
+        mAdapter.selectAll();
+        int cnt = mAdapter.getSelectedItemCount();
+        setActionTitle(cnt);
+        mEditClient.setVisible(cnt == 1);
+    }
+
+    private void clearSelections() {
+        mAdapter.clearSelections();
+        setActionTitle(0);
+        mEditClient.setVisible(false);
+    }
+
+    private void setActionTitle(int cnt) {
+        if (mActionTitle != null) {
+            String title = getString(
+                    R.string.selected_count,
+                    cnt);
+            //        mActionMode.setTitle(title);
+
+            mActionTitle.setText(title);
+        }
     }
 
     private void hideAppBar() {
@@ -304,9 +355,12 @@ public class ClientListFragment extends Fragment
                 DeleteAlertDialogFragment dialog = DeleteAlertDialogFragment.newInstance(cnt + s);
                 dialog.setTargetFragment(ClientListFragment.this, REQUEST_DELETE);
                 dialog.show(manager, null);
-
-
                 return true;
+
+            case R.id.action_edit:
+                mAdapter.editSelected(getContext());
+                return true;
+
             default:
                 return false;
         }

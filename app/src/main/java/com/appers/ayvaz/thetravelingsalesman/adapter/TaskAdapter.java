@@ -52,6 +52,13 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
         notifyDataSetChanged();
     }
 
+    public void selectAll() {
+        for (int i = 0; i < getItemCount(); i++) {
+            selectedItems.put(i, true);
+        }
+        notifyDataSetChanged();
+    }
+
     public int getSelectedItemCount() {
         return selectedItems.size();
     }

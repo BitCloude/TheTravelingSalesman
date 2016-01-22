@@ -4,7 +4,6 @@ package com.appers.ayvaz.thetravelingsalesman;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GestureDetectorCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AlertDialog;
@@ -19,11 +18,13 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.SearchView;
+import android.widget.TextView;
 
 
 import com.appers.ayvaz.thetravelingsalesman.adapter.TaskAdapter;
-import com.appers.ayvaz.thetravelingsalesman.dialog.DeleteAlertDialogFragment;
 import com.appers.ayvaz.thetravelingsalesman.models.Task;
 import com.appers.ayvaz.thetravelingsalesman.models.TaskManager;
 import com.appers.ayvaz.thetravelingsalesman.view.DividerItemDecoration;
@@ -56,6 +57,8 @@ public class TaskListActivity extends NavigationDrawerActivity
     private RecyclerView.OnItemTouchListener mOnItemTouchListener;
     private Menu mOptionsMenu;
     private boolean mCalendarMode = true;
+    private TextView mActionTitle;
+    private MenuItem mChangeClient;
 
     private final int calendarIcon = R.drawable.ic_date_range_white_24dp;
     private final int listIcon = calendarIcon; // R.drawable.ic_list_white_18dp;
@@ -165,7 +168,12 @@ public class TaskListActivity extends NavigationDrawerActivity
     private void updateUI() {
 
         if (mCalendarMode) {
-            mCalendarView.setVisibility(View.VISIBLE);
+            if (mActionMode == null) {
+                mCalendarView.setVisibility(View.VISIBLE);
+            } else {
+                mCalendarView.setVisibility(View.GONE);
+            }
+
             changeRange(mCalendarView.getSelectedDate());
 
         } else {
@@ -321,16 +329,35 @@ public class TaskListActivity extends NavigationDrawerActivity
 
     private void myToggleSelection(int idx) {
         mAdapter.toggleSelection(idx);
-
         int cnt = mAdapter.getSelectedItemCount();
-        String title = getString(
-                R.string.selected_count,
-                cnt);
+        setActionTitle(cnt);
 
         // hide button when multiple tasks are selected
-        mActionMode.getMenu().findItem(R.id.action_change_client)
-                .setVisible(cnt == 1);
-        mActionMode.setTitle(title);
+        mChangeClient.setVisible(cnt == 1);
+    }
+
+    private void selectAll() {
+        mAdapter.selectAll();
+        int cnt = mAdapter.getSelectedItemCount();
+        setActionTitle(cnt);
+        mChangeClient.setVisible(cnt == 1);
+    }
+
+    private void clearSelections() {
+        mAdapter.clearSelections();
+        setActionTitle(0);
+        mChangeClient.setVisible(false);
+    }
+
+    private void setActionTitle(int cnt) {
+        if (mActionTitle != null) {
+            String title = getString(
+                    R.string.selected_count,
+                    cnt);
+            //        mActionMode.setTitle(title);
+
+            mActionTitle.setText(title);
+        }
     }
 
 
@@ -339,6 +366,23 @@ public class TaskListActivity extends NavigationDrawerActivity
         MenuInflater inflater = mode.getMenuInflater();
         inflater.inflate(R.menu.menu_task_context, menu);
         mCalendarView.setVisibility(View.GONE);
+        mode.setCustomView(getLayoutInflater().inflate(R.layout.action_mode, null));
+
+        mActionTitle = (TextView) mode.getCustomView().findViewById(R.id.textView);
+        mChangeClient = menu.findItem(R.id.action_change_client);
+        CheckBox checkBox = (CheckBox) mode.getCustomView().findViewById(R.id.checkBox);
+        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    selectAll();
+                } else {
+                    clearSelections();
+                }
+            }
+        });
+
+
         return true;
     }
 
