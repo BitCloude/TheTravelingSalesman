@@ -21,7 +21,7 @@ public class DatabaseHelperTravExp extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         String expenseSql = String.format("create table %s " +
-                        "( %s, %s, %s, %s, %s, %s, %s, %s, %s)",
+                        "( %s, %s, %s, %s, %s, %s, %s, %s, %s, FOREIGN KEY(%s) REFERENCES %s(%s),FOREIGN KEY(%s) REFERENCES %s(%s))",
                 DbSchemaTravExp.ExpenseTable.NAME,
                 PRIMARY_KEY_EXPENSE,
                 DbSchemaTravExp.ExpenseTable.Cols.EXPENSE_TRIP_ID,          //foreign key
@@ -31,12 +31,19 @@ public class DatabaseHelperTravExp extends SQLiteOpenHelper {
                 DbSchemaTravExp.ExpenseTable.Cols.EXPENSE_DATE_FROM,
                 DbSchemaTravExp.ExpenseTable.Cols.EXPENSE_DATE_TO,
                 DbSchemaTravExp.ExpenseTable.Cols.EXPENSE_DESCRIPTION,
-                DbSchemaTravExp.ExpenseTable.Cols.EXPENSE_IMAGE + TYPE_BLOB
-        );
+                DbSchemaTravExp.ExpenseTable.Cols.EXPENSE_IMAGE + TYPE_BLOB,
+                DbSchemaTravExp.ExpenseTable.Cols.EXPENSE_TRIP_ID,
+                DbSchemaTravExp.TripTable.NAME,
+                DbSchemaTravExp.TripTable.Cols.TRIP_ID,
+                DbSchemaTravExp.ExpenseTable.Cols.EXPENSE_CLIENT_ID,
+                DbSchema.ClientTable.NAME,
+                DbSchema.ClientTable.Cols.UUID
+
+                );
         db.execSQL(expenseSql);
 
         String tripSql = String.format("create table %s " +
-                        "( %s, %s, %s, %s, %s, %s, %s, %s, %s)",
+                        "( %s, %s, %s, %s, %s, %s, %s, %s, %s, FOREIGN KEY(%s) REFERENCES %s(%s))",
                 DbSchemaTravExp.TripTable.NAME,
                 PRIMARY_KEY_TRIP,
                 DbSchemaTravExp.TripTable.Cols.TRIP_CLIENT_ID,          //foreign key
@@ -46,8 +53,11 @@ public class DatabaseHelperTravExp extends SQLiteOpenHelper {
                 DbSchemaTravExp.TripTable.Cols.TRIP_DATE_FROM,
                 DbSchemaTravExp.TripTable.Cols.TRIP_DATE_TO,
                 DbSchemaTravExp.TripTable.Cols.TRIP_DESCRIPTION,
-                DbSchemaTravExp.TripTable.Cols.TRIP_IMAGE + TYPE_BLOB
-        );
+                DbSchemaTravExp.TripTable.Cols.TRIP_IMAGE + TYPE_BLOB,
+                DbSchemaTravExp.TripTable.Cols.TRIP_CLIENT_ID,
+                DbSchema.ClientTable.NAME,
+                DbSchema.ClientTable.Cols.UUID
+                );
 
         db.execSQL(tripSql);
 
