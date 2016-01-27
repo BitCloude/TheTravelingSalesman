@@ -46,14 +46,6 @@
             android:name=".ReportsActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".ReportsExpenseActivity"
-            android:parentActivityName=".ReportsActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".ReportsTasksActivity"
-            android:parentActivityName=".ReportsActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
             android:name=".TripExpMan"
             android:label="@string/title_activity_trip_exp_man"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -111,7 +103,7 @@
         <activity
             android:name=".view.ClientPickActivity"
             android:launchMode="singleTop" />
-        <activity android:name=".ReportActivity"
+        <activity android:name=".ReportTaskActivity"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

@@ -1,108 +1,119 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="30dp"
-    android:orientation="horizontal"
-    android:background="#66e1d7"
-    android:weightSum="10">
-
-    <RelativeLayout
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_marginEnd="5dp"
-        android:layout_weight="5"
-        android:id="@+id/taskHeader">
-
-        <TextView
-            android:id="@+id/taskTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/task"
-            android:textColor="@color/TextPrimary"
-            android:gravity="center"
-            android:layout_centerInParent="true" />
-
-        <ImageView
-            android:id="@+id/titleSorted"
-            android:layout_width="14dp"
-            android:layout_height="14dp"
-            android:src="@drawable/ic_dark_sortable"
-            android:layout_alignTop="@+id/taskTitle"
-            android:layout_toEndOf="@+id/taskTitle"
-            android:layout_marginStart="21dp" />
-    </RelativeLayout>
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
 
-    <include layout="@layout/view_divider_vertical" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:background="@color/HeaderBackground"
+        android:layout_height="@dimen/report_header_height"
 
-    <RelativeLayout
-        android:id="@+id/dateHeader"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_marginEnd="5dp"
-        android:layout_marginStart="5dp"
-        android:layout_weight="2.2"
-        >
-        <TextView
-            android:id="@+id/taskDate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="@string/date"
-            android:layout_centerInParent="true"
-            android:textColor="@color/TextPrimary"
-            />
+        android:orientation="horizontal"
+        android:weightSum="10">
 
-        <ImageView
-            android:id="@+id/dateSorted"
-            android:layout_width="14dp"
-            android:layout_height="14dp"
-            android:src="@drawable/ic_dark_sortable"
-            android:layout_centerVertical="true"
-            android:layout_alignParentEnd="true" />
+        <RelativeLayout
+            android:id="@+id/taskHeader"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="5dp"
+            android:layout_weight="5"
+            android:layout_marginStart="5dp">
+
+            <TextView
+                android:id="@+id/taskTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:gravity="center"
+                android:text="@string/task"
+                android:textColor="@color/TextPrimary" />
+
+            <ImageView
+                android:id="@+id/titleSorted"
+                android:layout_width="14dp"
+                android:layout_height="14dp"
+                android:layout_alignTop="@+id/taskTitle"
+                android:layout_marginStart="21dp"
+                android:layout_toEndOf="@+id/taskTitle"
+                android:src="@drawable/ic_dark_sortable" />
         </RelativeLayout>
 
-    <include layout="@layout/view_divider_vertical" />
 
-    <RelativeLayout
-        android:id="@+id/timeHeader"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_marginEnd="5dp"
-        android:layout_marginStart="5dp"
-        android:layout_weight="1.6">
+        <include layout="@layout/view_divider_vertical" />
 
-        <TextView
-            android:id="@+id/taskTime"
+        <RelativeLayout
+            android:id="@+id/dateHeader"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="5dp"
+            android:layout_marginStart="5dp"
+            android:layout_weight="2.2">
 
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="@string/time"
-            android:textColor="@color/TextPrimary"
-            android:layout_alignTop="@+id/timeSorted"
-            android:layout_toStartOf="@+id/timeSorted" />
-        <ImageView
-            android:id="@+id/timeSorted"
-            android:layout_width="14dp"
-            android:layout_height="14dp"
-            android:src="@drawable/ic_dark_sortable"
-            android:layout_centerVertical="true"
-            android:layout_alignParentEnd="true" />
+            <TextView
+                android:id="@+id/taskDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:gravity="center"
+                android:text="@string/date"
+                android:textColor="@color/TextPrimary" />
+
+            <ImageView
+                android:id="@+id/dateSorted"
+                android:layout_width="14dp"
+                android:layout_height="14dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/ic_dark_sortable" />
+        </RelativeLayout>
+
+        <include layout="@layout/view_divider_vertical" />
+
+        <RelativeLayout
+            android:id="@+id/timeHeader"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="5dp"
+            android:layout_marginStart="5dp"
+            android:layout_weight="1.6">
+
+            <TextView
+                android:id="@+id/taskTime"
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/timeSorted"
+                android:layout_toStartOf="@+id/timeSorted"
+                android:gravity="center"
+                android:text="@string/time"
+                android:textColor="@color/TextPrimary" />
+
+            <ImageView
+                android:id="@+id/timeSorted"
+                android:layout_width="14dp"
+                android:layout_height="14dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/ic_dark_sortable" />
 
         </RelativeLayout>
 
-    <include layout="@layout/view_divider_vertical" />
+        <include layout="@layout/view_divider_vertical" />
 
-    <TextView
-        android:id="@+id/statusHeader"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:text="@string/status"
-        android:layout_marginStart="5dp"
-        android:textSize="13sp"
-        android:textColor="@color/TextPrimary"
-        android:layout_weight="1.2"
-        android:layout_gravity="center"
-        android:gravity="center" />
+        <TextView
+            android:id="@+id/statusHeader"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_marginStart="5dp"
+            android:layout_weight="1.2"
+            android:gravity="center"
+            android:text="@string/status"
+            android:textColor="@color/TextPrimary"
+            android:textSize="13sp" />
+    </LinearLayout>
+
+    <include layout="@layout/view_shadow" />
 </LinearLayout>

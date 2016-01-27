@@ -1,6 +1,7 @@
 package com.appers.ayvaz.thetravelingsalesman;
 
 
+import android.app.DatePickerDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -9,18 +10,22 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import com.appers.ayvaz.thetravelingsalesman.adapter.TaskReportAdapter;
 import com.appers.ayvaz.thetravelingsalesman.models.Task;
 import com.appers.ayvaz.thetravelingsalesman.models.TaskManager;
+import com.appers.ayvaz.thetravelingsalesman.utils.DateTimeHelper;
 import com.appers.ayvaz.thetravelingsalesman.utils.EventUtility;
 import com.appers.ayvaz.thetravelingsalesman.view.DividerItemDecoration;
 
+import org.joda.time.LocalDate;
+
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.Bind;
@@ -47,10 +52,20 @@ public class ReportTaskFragment extends Fragment {
     @Bind(R.id.progressBarContainer)
     FrameLayout mProgressBarContainer;
 
+    @Bind(R.id.startDateButton)
+    Button mStartButton;
+
+    @Bind(R.id.endDateButton)
+    Button mEndButton;
+
+    @Bind(R.id.applyButton) Button mApplyButton;
+
+
     private int UNSORTED_ICON = R.drawable.ic_dark_sortable;
     private int ASC_ICON = R.drawable.ic_dark_sorted_asc;
     private int DESC_ICON = R.drawable.ic_dark_sorted_desc;
     private int[] sortable_icons = {UNSORTED_ICON, ASC_ICON, DESC_ICON};
+    private Calendar mStartDate, mEndDate;
 
     private long lastEventId;
     private ImageView[] mHeaderIcons;
@@ -61,12 +76,19 @@ public class ReportTaskFragment extends Fragment {
         // Required empty public constructor
     }
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mStartDate = Calendar.getInstance();
+        mEndDate = Calendar.getInstance();
+
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_report_expense, container, false);
+        View view = inflater.inflate(R.layout.fragment_report_task, container, false);
 
         ButterKnife.bind(this, view);
         mHeaderIcons = new ImageView[]{mTitleSorted, mDateSorted, mTimeSorted};
@@ -107,7 +129,87 @@ public class ReportTaskFragment extends Fragment {
                 updateIcon();
             }
         });
+
+        mStartButton.setText(DateTimeHelper.formatMed(mStartDate.getTime()));
+        mEndButton.setText(DateTimeHelper.formatMed(mEndDate.getTime()));
+        mStartButton.setOnClickListener(new PickDateButtonListener());
+        mEndButton.setOnClickListener(new PickDateButtonListener());
+
+        mApplyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mStartDate != null && mEndDate != null) {
+                    new GetTask().execute(mStartDate, mEndDate);
+                }
+            }
+        });
+
+
+
         return view;
+    }
+
+    private class PickDateButtonListener implements View.OnClickListener {
+
+        @Override
+        public void onClick(View v) {
+
+            DatePickerDialog.OnDateSetListener onDateSetListener;
+            Calendar date;
+
+            if (v.getId() == R.id.startDateButton) {
+                onDateSetListener = new OnStartDateSetListener();
+                date = mStartDate;
+            } else {
+                onDateSetListener = new OnEndDateSetListener();
+                date = mEndDate;
+            }
+
+            DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(), onDateSetListener,
+                    date.get(Calendar.YEAR), date.get(Calendar.MONTH),
+                    date.get(Calendar.DAY_OF_MONTH));
+
+            datePickerDialog.show();
+
+        }
+    }
+
+    private class OnStartDateSetListener implements DatePickerDialog.OnDateSetListener {
+
+        @Override
+        public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+            mStartDate.set(year, monthOfYear, dayOfMonth);
+            if (!mStartDate.before(mEndDate)) {
+                mEndDate.set(mStartDate.get(Calendar.YEAR), mStartDate.get(Calendar.MONTH),
+                        mStartDate.get(Calendar.DAY_OF_MONTH));
+                showEndTime();
+            }
+            showStartTime();
+        }
+    }
+
+    private class OnEndDateSetListener implements DatePickerDialog.OnDateSetListener {
+
+        @Override
+        public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+            mEndDate.set(year, monthOfYear, dayOfMonth);
+            if (!mStartDate.before(mEndDate)) {
+                mStartDate.set(mEndDate.get(Calendar.YEAR), mEndDate.get(Calendar.MONTH),
+                        mEndDate.get(Calendar.DAY_OF_MONTH));
+                showStartTime();
+            }
+
+            showEndTime();
+
+        }
+    }
+
+    private void showStartTime() {
+        mStartButton.setText(DateTimeHelper.formatMed(mStartDate.getTime()));
+    }
+
+    private void showEndTime() {
+        mEndButton.setText(DateTimeHelper.formatMed(mEndDate.getTime()));
     }
 
     private void updateIcon() {

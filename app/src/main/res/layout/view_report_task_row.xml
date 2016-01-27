@@ -36,10 +36,11 @@
 <HorizontalScrollView
     android:layout_width="0dp"
     android:layout_height="match_parent"
-    android:layout_marginEnd="5dp"
     android:layout_weight="5"
     android:scrollbars="none"
-    android:fillViewport="false">
+    android:fillViewport="false"
+    android:layout_marginRight="5dp"
+    android:layout_marginLeft="5dp">
     <TextView
         android:id="@+id/taskTitle"
         android:layout_width="wrap_content"

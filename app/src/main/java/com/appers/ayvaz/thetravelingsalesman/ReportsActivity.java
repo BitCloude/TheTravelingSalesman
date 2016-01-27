@@ -1,6 +1,5 @@
 package com.appers.ayvaz.thetravelingsalesman;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,7 +22,7 @@ public class ReportsActivity extends BaseActivity {
     }
 
     public void gotoTasks(View view) {
-        startActivity(ReportActivity.newIntent(this, ReportActivity.REPORT_TYPE_TASK));
+        startActivity(ReportTaskActivity.newIntent(this, ReportTaskActivity.REPORT_TYPE_TASK));
     }
 
 

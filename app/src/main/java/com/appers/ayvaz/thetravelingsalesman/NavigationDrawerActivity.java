@@ -79,7 +79,7 @@ public abstract class NavigationDrawerActivity extends AppCompatActivity {
     private void selectItem(int itemId) {
 
         if (itemId == R.id.nav_report_task) {
-            startActivity(ReportActivity.newIntent(this, ReportActivity.REPORT_TYPE_TASK));
+            startActivity(ReportTaskActivity.newIntent(this, ReportTaskActivity.REPORT_TYPE_TASK));
         } else if (itemId == R.id.nav_trip) {
             startActivity(new Intent(this, TripExpMan.class));
         } else if (itemId == R.id.nav_tasks) {

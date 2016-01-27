@@ -12,4 +12,6 @@
     <color name="divider">#aaaaaa</color>
 
     <color name="YearBackground">#188ec8</color>
+    <color name="HeaderBackground">#ffffff</color>
+    <color name="LightButton">#d3f0ea</color>
 </resources>

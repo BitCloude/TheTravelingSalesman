@@ -6,7 +6,7 @@ import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.view.Menu;
 
-public class ReportActivity extends SingleFragmentActivity {
+public class ReportTaskActivity extends SingleFragmentActivity {
 
     private static final String EXTRA_REPORT_TYPE = "extra_report_type";
     public static final int REPORT_TYPE_TASK = 0;
@@ -18,7 +18,7 @@ public class ReportActivity extends SingleFragmentActivity {
 
 
     public static Intent newIntent(Context packageContext, int reportType) {
-        Intent i = new Intent(packageContext, ReportActivity.class);
+        Intent i = new Intent(packageContext, ReportTaskActivity.class);
         i.putExtra(EXTRA_REPORT_TYPE, reportType);
         return i;
     }
@@ -42,6 +42,9 @@ public class ReportActivity extends SingleFragmentActivity {
 
         Intent intent = getIntent();
         mThisType = intent.getIntExtra(EXTRA_REPORT_TYPE, 0);
+
+        setTitle(getString(R.string.title_activity_report_task));
+
     }
 
     @Override

@@ -16,6 +16,10 @@
     <string name="title_activity_notification">Notification</string>
     <string name="title_activity_task">All Tasks</string>
     <string name="title_activity_client">Client Activity</string>
+    <string name="title_activity_report_task">Task Report</string>
+    <string name="title_activity_expense_task">Expense Report</string>
+    <string name="title_activity_client_info">Client info</string>
+    <string name="title_activity_task_list_with_calendar">TaskListWithCalendar</string>
 
     <string-array name="client_array">
         <item>Client1</item>
@@ -104,14 +108,16 @@
     <string name="client_search_title">Search client</string>
 
     <string name="r_u_sure">%s will be deleted.</string>
-    <string name="title_activity_task_list_with_calendar">TaskListWithCalendar</string>
+
     <string name="search_hint_client">Search client</string>
-    <string name="title_activity_client_info">ClientInfoActivity</string>
-    <string name="title_activity_task_report">Task Report</string>
+
+
     <string name="search_hint_task">Search tasks</string>
     <string name="selected_count">%1$s selected</string>
 
     <string name="task">Task</string>
     <string name="time">Time</string>
     <string name="status">Status</string>
+
+    <string name="go">Go</string>
 </resources>

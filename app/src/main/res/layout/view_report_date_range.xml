@@ -4,12 +4,44 @@
     android:layout_height="wrap_content"
     android:padding="6dp">
 
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/startDateButton"
+        android:layout_marginRight="6dp"
+        android:layout_alignParentTop="true"
+        android:layout_toEndOf="@+id/textView6"
+        android:backgroundTint="#ffffff" />
+
+    <Button
+        android:layout_width="100dp"
+        style="?android:attr/buttonStyleSmall"
+
+        android:layout_height="wrap_content"
+        android:id="@+id/endDateButton"
+        android:layout_alignParentTop="true"
+        android:layout_toStartOf="@+id/applyButton"
+        android:layout_marginRight="12dp"
+        android:backgroundTint="#ffffff" />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="36dp"
+        android:id="@+id/applyButton"
+        android:text="@string/go"
+        android:layout_centerVertical="true"
+        android:layout_alignParentEnd="true"
+        android:backgroundTint="#ffffff" />
+
     <TextView
-        android:id="@+id/date_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/date"
-        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="From"
+        android:id="@+id/textView6"
+        android:layout_marginRight="16dp"
         android:layout_centerVertical="true"
         android:layout_alignParentStart="true" />
 
@@ -17,38 +49,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="From"
-        android:id="@+id/fromLabel"
+        android:text="To"
+        android:id="@+id/textView7"
         android:layout_centerVertical="true"
-        android:layout_toStartOf="@+id/fromDate"
-        android:layout_marginRight="6dp" />
-
-    <Button
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="1999.9.9"
-        android:id="@+id/fromDate"
-        android:layout_alignParentTop="true"
-        android:layout_toStartOf="@+id/toLabel"
-        android:layout_marginRight="6dp" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="to"
-        android:id="@+id/toLabel"
-        android:layout_centerVertical="true"
-        android:layout_toStartOf="@+id/toDate"
-        android:layout_marginRight="6dp" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="2000.10.10"
-        android:id="@+id/toDate"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_toStartOf="@+id/endDateButton"
+        android:layout_marginRight="8dp" />
 
 </RelativeLayout>

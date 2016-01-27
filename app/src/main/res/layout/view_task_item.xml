@@ -34,7 +34,7 @@
     android:padding="8dp"
     android:orientation="horizontal"
     android:weightSum="8"
-    android:background="@drawable/statelist_item_background"
+    android:background="@drawable/state_list_item_background"
     >
 
     <LinearLayout
