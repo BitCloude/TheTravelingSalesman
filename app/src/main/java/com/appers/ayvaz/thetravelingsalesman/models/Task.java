@@ -7,6 +7,7 @@ import android.provider.CalendarContract.Events;
 import com.appers.ayvaz.thetravelingsalesman.utils.DateTimeHelper;
 
 import java.util.Calendar;
+import java.util.Comparator;
 import java.util.Date;
 
 /**
@@ -136,7 +137,30 @@ public class Task {
     }
 
 
+    public static class TitleComparator implements Comparator<Task> {
+
+        @Override
+        public int compare(Task lhs, Task rhs) {
+            return lhs.getTitle().compareTo(rhs.getTitle());
+        }
+    }
+
+    public static class DateTimeComparator implements Comparator<Task> {
 
 
+        @Override
+        public int compare(Task lhs, Task rhs) {
+            return lhs.getStartTime().compareTo(rhs.getStartTime());
+        }
+    }
 
+    public static class TimeComparator implements Comparator<Task> {
+        @Override
+        public int compare(Task lhs, Task rhs) {
+            return DateTimeHelper.compare(lhs.getStartTime(), rhs.getStartTime());
+        }
+
+    }
 }
+
+

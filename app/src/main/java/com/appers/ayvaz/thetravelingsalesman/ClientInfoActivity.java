@@ -4,10 +4,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -26,7 +24,6 @@ import android.widget.Toast;
 
 import com.appers.ayvaz.thetravelingsalesman.models.Client;
 import com.appers.ayvaz.thetravelingsalesman.models.ClientManager;
-import com.appers.ayvaz.thetravelingsalesman.dialog.DeleteAlertDialogFragment;
 import com.appers.ayvaz.thetravelingsalesman.utils.CommUtils;
 import com.appers.ayvaz.thetravelingsalesman.utils.PictureUtils;
 
@@ -213,7 +210,7 @@ public class ClientInfoActivity extends AppCompatActivity {
 
         if (container == null) {
             if (group == 1 && mCommContainer != null) {
-                mInflater.inflate(R.layout.view_divider_vertical, mContainer);
+                mInflater.inflate(R.layout.view_divider_horizontal, mContainer);
             }
 
 

@@ -1,5 +1,7 @@
 package com.appers.ayvaz.thetravelingsalesman.utils;
 
+import org.joda.time.LocalDate;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -37,6 +39,10 @@ public class DateTimeHelper {
         return new SimpleDateFormat("MMM dd", Locale.getDefault());
     }
 
+    public static String formatShortDate(Date date) {
+        return getMonthDateFormat().format(date);
+    }
+
     public static String formatTime(Date date) {
         return getTimeFormat().format(date);
     }
@@ -58,5 +64,23 @@ public class DateTimeHelper {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(millis);
         return calendar.getTime();
+    }
+
+    public static int compare(Date d1, Date d2) {
+        Calendar c1 = Calendar.getInstance();
+        Calendar c2 = Calendar.getInstance();
+        c1.setTime(d1);
+        c2.setTime(d2);
+
+        int m1 = c1.get(Calendar.HOUR) * 60 + c1.get(Calendar.MINUTE);
+        int m2 = c2.get(Calendar.HOUR) * 60 + c2.get(Calendar.MINUTE);
+
+        return m1 - m2;
+    }
+
+    public static boolean isSameYear(Date d1, Date d2) {
+        LocalDate l1 = new LocalDate(d1);
+        LocalDate l2 = new LocalDate(d2);
+        return l1.getYear() == l2.getYear();
     }
 }

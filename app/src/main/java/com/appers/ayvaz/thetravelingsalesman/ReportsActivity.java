@@ -19,11 +19,12 @@ public class ReportsActivity extends BaseActivity {
 
 
     public void gotoExpenses(View view) {
-        startActivity(new Intent(this, ReportsExpenseActivity.class));
+
     }
 
     public void gotoTasks(View view) {
-        startActivity(new Intent(this, ReportsTasksActivity.class));
+        startActivity(ReportActivity.newIntent(this, ReportActivity.REPORT_TYPE_TASK));
     }
+
 
 }

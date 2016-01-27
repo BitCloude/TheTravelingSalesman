@@ -9,4 +9,7 @@
     <color name="TextPrimary">#111111</color>
     <color name="TextSecondary">#333333</color>
     <color name="background_primary">#ffffff</color>
+    <color name="divider">#aaaaaa</color>
+
+    <color name="YearBackground">#188ec8</color>
 </resources>

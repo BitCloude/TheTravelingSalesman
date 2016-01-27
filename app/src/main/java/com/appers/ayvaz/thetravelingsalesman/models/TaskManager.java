@@ -8,9 +8,14 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.provider.CalendarContract;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
 
+import com.appers.ayvaz.thetravelingsalesman.adapter.TaskReportAdapter;
 import com.appers.ayvaz.thetravelingsalesman.database.DatabaseHelper;
 import com.appers.ayvaz.thetravelingsalesman.database.DbSchema;
 import com.appers.ayvaz.thetravelingsalesman.database.DbSchema.TaskTable.Cols;
@@ -27,8 +32,16 @@ import java.util.UUID;
  * Created by D on 030 12/30.
  */
 public class TaskManager {
-    private static TaskManager mTaskManager;
+    public static final String[] INSTANCE_PROJECTION = new String[]{
+            CalendarContract.Instances.EVENT_ID,      // 0
+            CalendarContract.Instances.BEGIN,         // 1
+            CalendarContract.Instances.END          // 2
+    };
 
+    private static final int PROJECTION_ID_INDEX = 0;
+    private static final int PROJECTION_BEGIN_INDEX = 1;
+    private static final int PROJECTION_END_INDEX = 2;
+    private static TaskManager mTaskManager;
     private static String[] projections = new String[]{
             CalendarContract.Events._ID,
             CalendarContract.Events.TITLE,
@@ -43,7 +56,6 @@ public class TaskManager {
     private final String DEBUG_TAG = "TaskManager debug:";
     private Context mContext;
     private SQLiteDatabase mDatabase;
-
     private LocalDate selectedDate;
 
     private TaskManager(Context context) {
@@ -52,15 +64,12 @@ public class TaskManager {
                 .getWritableDatabase();
     }
 
-
-
     public static TaskManager get(Context context) {
         if (mTaskManager == null) {
             mTaskManager = new TaskManager(context);
         }
         return mTaskManager;
     }
-
 
     public void addTask(Task item) {
         ContentValues values = getContentValues(item);
@@ -142,7 +151,6 @@ public class TaskManager {
         return taskList;
     }
 
-
     public List<Task> search(CharSequence userInput) {
         String selection = CalendarContract.Events.TITLE + " LIKE ?";
         String[] selectionArgs = new String[]{"%" + userInput + "%"};
@@ -175,28 +183,35 @@ public class TaskManager {
         return result;
     }
 
-
-
-
-
-    public static final String[] INSTANCE_PROJECTION = new String[] {
-            CalendarContract.Instances.EVENT_ID,      // 0
-            CalendarContract.Instances.BEGIN,         // 1
-            CalendarContract.Instances.END          // 2
-    };
-
-    private static final int PROJECTION_ID_INDEX = 0;
-    private static final int PROJECTION_BEGIN_INDEX = 1;
-    private static final int PROJECTION_END_INDEX = 2;
-
-
     public List<Task> queryInstance(LocalDate date) {
         // query one day
         Calendar beginTime = Calendar.getInstance();
         beginTime.set(date.getYear(), date.getMonthOfYear() - 1, date.getDayOfMonth(), 0, 0);
         Calendar endTime = Calendar.getInstance();
         endTime.set(date.getYear(), date.getMonthOfYear() - 1, date.getDayOfMonth(), 23, 59);
-        List<Task> list =  queryInstance(beginTime, endTime, null);
+        List<Task> list = queryInstance(beginTime, endTime, null);
+        Client client;
+
+        for (int i = 0; i < list.size(); i++) {
+            Task t = list.get(i);
+            if ((client = getClient(t)) != null) {
+                t.setClient(client);
+            }
+
+        }
+
+        return list;
+    }
+
+    public List<Task> queryOneDay(Calendar date) {
+        // query one day
+        Calendar beginTime = Calendar.getInstance();
+        beginTime.set(date.get(Calendar.YEAR), date.get(Calendar.MONTH),
+                date.get(Calendar.DAY_OF_MONTH), 0, 0);
+        Calendar endTime = Calendar.getInstance();
+        endTime.set(date.get(Calendar.YEAR), date.get(Calendar.MONTH),
+                date.get(Calendar.DAY_OF_MONTH), 23, 59);
+        List<Task> list = queryInstance(beginTime, endTime, null);
         Client client;
 
         for (int i = 0; i < list.size(); i++) {
@@ -226,6 +241,10 @@ public class TaskManager {
 
         return client;
     }
+
+
+
+
     public List<Task> queryInstance(Calendar beginTime, Calendar endTime, Long eventId) {
 
         List<Task> taskList = new ArrayList<>();
@@ -244,6 +263,15 @@ public class TaskManager {
 
         String selection = eventId == null ? null : CalendarContract.Instances.EVENT_ID + " = ?";
         String[] selectionArgs = eventId == null ? null : new String[]{Long.toString(eventId)};
+
+        // test AsyncQueryHandler
+//
+//        EventQueryHandler eqh = new EventQueryHandler(cr, taskList, mContext);
+//        eqh.startQuery(0, null, builder.build(),
+//                INSTANCE_PROJECTION,
+//                selection,
+//                selectionArgs,
+//                null);
 
         cur = cr.query(builder.build(),
                 INSTANCE_PROJECTION,
@@ -280,18 +308,67 @@ public class TaskManager {
     }
 
 
+    private static class EventQueryHandler extends AsyncQueryHandler {
 
+
+        private List<Task> tasks;
+        private Context mContext;
+
+        public EventQueryHandler(ContentResolver cr, List<Task> list, Context context) {
+            super(cr);
+            tasks = list;
+            mContext = context;
+        }
+
+
+        @Override
+        protected void onQueryComplete(int token, Object cookie, Cursor cursor) {
+            if (cursor == null || cursor.getCount() == 0) {
+                return;
+            }
+
+
+            while (cursor.moveToNext()) {
+
+                long eventId = cursor.getLong(PROJECTION_ID_INDEX);
+                long begin = cursor.getLong(PROJECTION_BEGIN_INDEX);
+                long end = cursor.getLong(PROJECTION_END_INDEX);
+
+
+                String selection = CalendarContract.Events._ID + " = ?";
+                String[] selectionARgs = new String[]{Long.toString(eventId)};
+
+                Cursor eventCursor = mContext.getContentResolver().query(
+                        CalendarContract.Events.CONTENT_URI, projections,
+                        selection, selectionARgs, null);
+
+                if (eventCursor == null || eventCursor.getCount() == 0) {
+                    continue;
+                }
+
+                eventCursor.moveToFirst();
+                Task task = Task.fromCursor(eventCursor);
+                task.setStartTime(begin);
+                task.setEndTime(end);
+                tasks.add(task);
+
+            }
+
+            cursor.close();
+        }
+    }
 
     private static class QueryHandler extends AsyncQueryHandler {
 
-        private List<Task> mList;
         ContentResolver mCr;
+        private List<Task> mList;
 
         public QueryHandler(ContentResolver cr, List<Task> list) {
             super(cr);
             mCr = cr;
             mList = list;
         }
+
         @Override
         protected void onQueryComplete(int token, Object cookie, Cursor cursor) {
             while (cursor.moveToNext()) {
@@ -314,44 +391,6 @@ public class TaskManager {
             return mCr.query(CalendarContract.Events.CONTENT_URI, projections,
                     selection, selectionARgs, null);
 
-        }
-    }
-
-    private static class EventQueryHandler extends AsyncQueryHandler {
-
-        private Client mClient;
-
-        private List<Task> tasks;
-        private LocalDate date;
-
-        public EventQueryHandler(ContentResolver cr, List<Task> list) {
-            super(cr);
-            tasks = list;
-
-        }
-
-        public void setDate(LocalDate selectedDate) {
-            date = selectedDate;
-        }
-
-        public void setClient(Client client) {
-            mClient = client;
-        }
-
-        @Override
-        protected void onQueryComplete(int token, Object cookie, Cursor cursor) {
-            if (cursor == null || cursor.getCount() == 0) {
-                return;
-            }
-            cursor.moveToFirst();
-
-
-            Task task = Task.fromCursor(cursor);
-
-            tasks.add(task);
-
-
-            cursor.close();
         }
     }
 

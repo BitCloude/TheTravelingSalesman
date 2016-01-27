@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.appers.ayvaz.thetravelingsalesman.R;
@@ -19,8 +20,12 @@ import com.appers.ayvaz.thetravelingsalesman.models.Client;
 import com.appers.ayvaz.thetravelingsalesman.models.Task;
 import com.appers.ayvaz.thetravelingsalesman.utils.DateTimeHelper;
 
+import org.joda.time.LocalDate;
+
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import butterknife.Bind;
@@ -30,6 +35,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
 
     private final static int TYPE_CLIENT = 0;
     private final static int TYPE_DATE = 1;
+    private boolean withYear = false;
     List<Task> mTasks;
 
 
@@ -78,13 +84,22 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
 
     /** End of action mode **/
 
+
     public TaskAdapter(List<Task> taskList) {
         mTasks = taskList;
-
+        sort();
     }
 
+    public void setShowYear(boolean b) {
+        withYear = b;
+    }
     public void setData(List<Task> list) {
         mTasks = list;
+        sort();
+    }
+
+    private void sort() {
+        Collections.sort(mTasks, Collections.reverseOrder(new Task.DateTimeComparator()));
     }
 
     @Override
@@ -100,6 +115,20 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
         Task task = mTasks.get(position);
         holder.setTask(task);
         holder.itemView.setActivated(selectedItems.get(position, false));
+
+        if (!withYear) {
+            return;
+        }
+
+        if (position == 0 ||
+                !DateTimeHelper.isSameYear(mTasks.get(position - 1).getStartTime(),
+                        task.getStartTime())) {
+            // if not same year, add year divider
+
+            holder.showYear();
+        } else {
+            holder.hideYear();
+        }
 
     }
 
@@ -126,6 +155,10 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
         @Bind(R.id.buttonAttendee)        ImageView buttonAttendee;
         @Bind(R.id.buttonReminder)        ImageView buttonReminder;
         @Bind(R.id.buttonExtra)        ImageView buttonExtra;
+
+        @Bind(R.id.yearChanged)
+        LinearLayout yearChanged;
+        @Bind(R.id.year)            TextView year;
 
         private Task mTask;
         public ViewHolder(View itemView) {
@@ -168,11 +201,11 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
 
         public void setView() {
 
-            fromDate.setText(DateTimeHelper.formatMed(mTask.getStartTime()));
+            fromDate.setText(DateTimeHelper.formatShortDate(mTask.getStartTime()));
             if (mTask.getEndTime() == null) {
                 toDate.setText("");
             } else {
-                toDate.setText(DateTimeHelper.formatMed(mTask.getEndTime()));
+                toDate.setText(DateTimeHelper.formatShortDate(mTask.getEndTime()));
             }
 
 
@@ -200,12 +233,16 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
             taskDetail.setText(mTask.getLocation());
         }
 
-        //        @Override
-        public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-
-            menu.add(0, v.getId(), 0, "Delete");//groupId, itemId, order, title
-            menu.add(0, v.getId(), 0, "Set client");
+        public void showYear() {
+            int y = new LocalDate(mTask.getStartTime()).getYear();
+            year.setText(Integer.toString(y));
+            yearChanged.setVisibility(View.VISIBLE);
         }
+
+        public void hideYear() {
+            yearChanged.setVisibility(View.GONE);
+        }
+
     }
 
 

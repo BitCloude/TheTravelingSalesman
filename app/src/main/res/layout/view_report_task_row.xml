@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone"
+        android:id="@+id/yearChanged"
+        android:background="@color/YearBackground"
+        >
+
+        <TextView
+            android:id="@+id/year"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="2014"
+            android:textColor="#ffffff"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:gravity="center" />
+        <include layout = "@layout/view_divider_horizontal"
+            />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="10">
+
+
+<HorizontalScrollView
+    android:layout_width="0dp"
+    android:layout_height="match_parent"
+    android:layout_marginEnd="5dp"
+    android:layout_weight="5"
+    android:scrollbars="none"
+    android:fillViewport="false">
+    <TextView
+        android:id="@+id/taskTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:lines="1"
+        android:textColor="@color/TextPrimary" />
+
+</HorizontalScrollView>
+
+
+    <include layout="@layout/view_divider_vertical" />
+
+
+    <TextView
+        android:id="@+id/taskDate"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="4dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="4dp"
+
+        android:layout_weight="2.2"
+        android:gravity="center"
+
+        android:lines="1"
+        android:text="MMM, 29"
+        android:textColor="@color/TextPrimary" />
+
+
+    <include layout="@layout/view_divider_vertical" />
+
+    <TextView
+        android:id="@+id/taskTime"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_marginEnd="5dp"
+        android:layout_marginStart="5dp"
+        android:layout_weight="1.6"
+        android:gravity="center"
+        android:text="12:12"
+        android:textColor="@color/TextPrimary" />
+
+    <include layout="@layout/view_divider_vertical" />
+
+    <CheckBox
+        android:id="@+id/statusCheckBox"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+
+        android:layout_marginStart="5dp"
+        android:layout_weight="1.2"
+        android:checked="false" />
+
+    </LinearLayout>
+
+
+</LinearLayout>

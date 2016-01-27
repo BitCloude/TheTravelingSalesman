@@ -17,13 +17,33 @@
         <item
             android:id="@+id/nav_trip"
             android:title="@string/trip"/>
+
+        <item android:title="@string/reports">
+            <menu>
+                <group android:checkableBehavior="single">
+                    <item
+                        android:id="@+id/nav_report_task"
+                        android:title="@string/title_activity_task_report"/>
+                    <item
+                        android:id="@+id/nav_report_expense"
+                        android:title="@string/expense_report"/>
+
+                </group>
+            </menu>
+        </item>
+
         <item
-            android:id="@+id/nav_reports"
-            android:title="@string/reports"/>
-        <item
-            android:title="@string/help"/>
-        <item
-            android:title="@string/exit"/>
+            android:title="">
+            <menu>
+                <group android:checkableBehavior="none">
+                    <item
+                        android:title="@string/help"/>
+                    <item
+                        android:title="@string/exit"/>
+                </group>
+            </menu>
+        </item>
+
 
         <!--item
             android:id="@+id/nav_travel"
@@ -34,20 +54,5 @@
 
     </group>
 
-    <!--item android:title="@string/reports">
-        <menu>
-            <group android:checkableBehavior="single">
-            <item
-                android:id="@+id/nav_report_client"
-                android:title="@string/client_report"/>
-            <item
-                android:id="@+id/nav_report_expense"
-                android:title="@string/expense_report"/>
-            <item
-                android:id="@+id/nav_report_upcoming"
-                android:title="@string/upcoming_travels"/>
-            </group>
-        </menu>
-    </item-->
 
 </menu>

@@ -2,6 +2,7 @@ package com.appers.ayvaz.thetravelingsalesman;
 
 
 import android.content.DialogInterface;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GestureDetectorCompat;
@@ -20,11 +21,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.FrameLayout;
+import android.widget.ProgressBar;
 import android.widget.SearchView;
 import android.widget.TextView;
 
 
 import com.appers.ayvaz.thetravelingsalesman.adapter.TaskAdapter;
+import com.appers.ayvaz.thetravelingsalesman.adapter.TaskReportAdapter;
 import com.appers.ayvaz.thetravelingsalesman.models.Task;
 import com.appers.ayvaz.thetravelingsalesman.models.TaskManager;
 import com.appers.ayvaz.thetravelingsalesman.view.DividerItemDecoration;
@@ -44,9 +48,13 @@ public class TaskListActivity extends NavigationDrawerActivity
 
     private final String TAG = "debuging--------";
     @Bind(R.id.calendar)    CollapseCalendarView mCalendarView;
-    @Bind(R.id.recycler_view)    RecyclerView mRecyclerView;
+    @Bind(R.id.recyclerView)    RecyclerView mRecyclerView;
     @Bind(R.id.toolbar)    Toolbar mToolbar;
     @Bind(R.id.appbar_shadow) View mShadow;
+    @Bind(R.id.progressBar)
+    ProgressBar mProgressBar;
+    @Bind(R.id.progressBarFrame)
+    FrameLayout mProgressBarContainer;
     //    private FragmentManager mFragmentManager;
 //    private OnDateChanged mFragment;
     private TaskManager mTaskManager;
@@ -59,6 +67,7 @@ public class TaskListActivity extends NavigationDrawerActivity
     private boolean mCalendarMode = true;
     private TextView mActionTitle;
     private MenuItem mChangeClient;
+
 
     private final int calendarIcon = R.drawable.ic_date_range_white_24dp;
     private final int listIcon = calendarIcon; // R.drawable.ic_list_white_18dp;
@@ -74,7 +83,9 @@ public class TaskListActivity extends NavigationDrawerActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_list);
+//        setContentView(R.layout.fragment_list);
+        setContentView(R.layout.activity_task_list);
+
         ViewGroup appbar = (ViewGroup) findViewById(R.id.appbar);
         getLayoutInflater().inflate(R.layout.layout_collapse_calenar_view, appbar);
         ButterKnife.bind(this);
@@ -112,10 +123,8 @@ public class TaskListActivity extends NavigationDrawerActivity
                 DividerItemDecoration.VERTICAL_LIST));
         mRecyclerView.setHasFixedSize(true);
 
-        setUpActionMode();
-
-
         updateUI();
+        setUpActionMode();
 
 
     }
@@ -136,12 +145,9 @@ public class TaskListActivity extends NavigationDrawerActivity
 
     }
 
-    private void changeRange(LocalDate localDate) {
-        // when user click a date, change the adapter
-//        Toast.makeText(getApplicationContext(), localDate.toString(), Toast.LENGTH_SHORT).show();
-//        mFragment.updateUI(localDate);
+    private void changeRange(LocalDate date) {
 
-        List<Task> result = mTaskManager.queryInstance(localDate);
+        /*List<Task> result = mTaskManager.queryInstance(localDate);
 
         if (mAdapter == null) {
             mAdapter = new TaskAdapter(result);
@@ -150,8 +156,14 @@ public class TaskListActivity extends NavigationDrawerActivity
             mAdapter.setData(result);
             mAdapter.notifyDataSetChanged();
 
-        }
+        }*/
 
+        Calendar beginTime = Calendar.getInstance();
+        beginTime.set(date.getYear(), date.getMonthOfYear() - 1, date.getDayOfMonth(), 0, 0);
+        Calendar endTime = Calendar.getInstance();
+        endTime.set(date.getYear(), date.getMonthOfYear() - 1, date.getDayOfMonth(), 23, 59);
+
+        new GetTask().execute(beginTime, endTime);
 
     }
 
@@ -173,7 +185,6 @@ public class TaskListActivity extends NavigationDrawerActivity
             } else {
                 mCalendarView.setVisibility(View.GONE);
             }
-
             changeRange(mCalendarView.getSelectedDate());
 
         } else {
@@ -183,7 +194,59 @@ public class TaskListActivity extends NavigationDrawerActivity
         }
     }
 
+    private class GetTask extends AsyncTask<Calendar, Void, List<Task>> {
 
+        @Override
+        protected List<Task> doInBackground(Calendar... params) {
+
+            return TaskManager.get(TaskListActivity.this)
+                    .queryInstance(params[0], params[1], null);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            mProgressBarContainer.setVisibility(View.VISIBLE);
+            mRecyclerView.setVisibility(View.GONE);
+        }
+
+
+        @Override
+        protected void onPostExecute(List<Task> tasks) {
+            if (mAdapter == null) {
+                mAdapter = new TaskAdapter(tasks);
+                mRecyclerView.setAdapter(mAdapter);
+            } else {
+                mAdapter.setData(tasks);
+                mAdapter.notifyDataSetChanged();
+            }
+
+            mAdapter.setShowYear(!mCalendarMode);
+
+            mProgressBarContainer.setVisibility(View.GONE);
+            mRecyclerView.setVisibility(View.VISIBLE);
+        }
+    }
+
+
+
+
+    private void showAll() {
+        Calendar begin = Calendar.getInstance();
+        begin.set(2000, Calendar.JANUARY, 1);
+        Calendar end = Calendar.getInstance();
+        end.set(2030, Calendar.DECEMBER, 31);
+
+        new GetTask().execute(begin, end, null);
+
+        /*List<Task> result = TaskManager.get(this).queryInstance(begin, end, null);
+        if (mAdapter == null) {
+            mAdapter = new TaskAdapter(result);
+            mRecyclerView.setAdapter(mAdapter);
+        } else {
+            mAdapter.setData(result);
+            mAdapter.notifyDataSetChanged();
+        }*/
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -197,17 +260,10 @@ public class TaskListActivity extends NavigationDrawerActivity
                 MenuItem search = mOptionsMenu.findItem(R.id.action_search);
                 MenuItem toggleMode = mOptionsMenu.findItem(R.id.action_switch_view);
 
-                if (mCalendarMode) {
-                    mCalendarView.setVisibility(View.GONE);
-                    showAll();
-                } else {
-                    mCalendarView.setVisibility(View.VISIBLE);
-                    changeRange(mCalendarView.getSelectedDate());
-                }
 
                 mCalendarMode = !mCalendarMode;
+                updateUI();
                 resetDate.setVisible(mCalendarMode);
-//                search.setVisible(!mCalendarMode);
                 toggleMode.setIcon(mCalendarMode? listIcon : calendarIcon);
 
                 return true;
@@ -218,21 +274,6 @@ public class TaskListActivity extends NavigationDrawerActivity
         }
     }
 
-    private void showAll() {
-        Calendar begin = Calendar.getInstance();
-        begin.set(2000, Calendar.JANUARY, 1);
-        Calendar end = Calendar.getInstance();
-        end.set(2030, Calendar.DECEMBER, 31);
-
-        List<Task> result = TaskManager.get(this).queryInstance(begin, end, null);
-        if (mAdapter == null) {
-            mAdapter = new TaskAdapter(result);
-            mRecyclerView.setAdapter(mAdapter);
-        } else {
-            mAdapter.setData(result);
-            mAdapter.notifyDataSetChanged();
-        }
-    }
 
     private void selectToday() {
         mCalendarView.getManager().selectDay(LocalDate.now());
@@ -267,6 +308,9 @@ public class TaskListActivity extends NavigationDrawerActivity
                         if (mCalendarMode) {
                             mCalendarView.setVisibility(View.GONE);
                         }
+
+                        mOptionsMenu.setGroupVisible(R.id.nonSearchAction, false);
+
                         return true;
                     }
 
@@ -277,6 +321,7 @@ public class TaskListActivity extends NavigationDrawerActivity
                         }
 
                         mRecyclerView.setAdapter(mAdapter);
+                        mOptionsMenu.setGroupVisible(R.id.nonSearchAction, false);
                         return true;
                     }
                 });
@@ -465,6 +510,8 @@ public class TaskListActivity extends NavigationDrawerActivity
             super.onLongPress(e);
         }
     }
+
+
 
     /*
     private void setUpWeekTable() {

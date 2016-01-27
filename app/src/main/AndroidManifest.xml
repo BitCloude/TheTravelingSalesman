@@ -96,7 +96,7 @@
 
         <activity
             android:name=".TaskListActivity"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".TaskSearchResultActivity"
             android:theme="@style/AppTheme">
@@ -108,9 +108,11 @@
                 android:name="android.app.searchable"
                 android:resource="@xml/task_searchable" />
         </activity>
-
-        <activity android:name=".view.ClientPickActivity"
-            android:launchMode="singleTop"></activity>
+        <activity
+            android:name=".view.ClientPickActivity"
+            android:launchMode="singleTop" />
+        <activity android:name=".ReportActivity"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>
