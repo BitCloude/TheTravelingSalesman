@@ -40,8 +40,7 @@
             android:label="@string/title_activity_travel_detail"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".ClientEditActivity"
-            android:parentActivityName=".ClientInfoActivity" />
+            android:name=".ClientEditActivity" />
         <activity
             android:name=".ReportsActivity"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -73,7 +72,7 @@
         <activity
             android:name=".ClientInfoActivity"
             android:label="@string/title_activity_client_info"
-            android:parentActivityName=".ClientActivity"
+            android:parentActivityName=".LandingActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <!--
         activity
@@ -101,10 +100,11 @@
                 android:resource="@xml/task_searchable" />
         </activity>
         <activity
-            android:name=".view.ClientPickActivity"
+            android:name=".ClientPickActivity"
             android:launchMode="singleTop" />
-        <activity android:name=".ReportTaskActivity"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name=".ReportTaskActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>

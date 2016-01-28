@@ -127,13 +127,13 @@ public class ClientManager {
     }
 
     public void addClient(Client item) {
-        ContentValues values = getContentValues(item);
+        ContentValues values = item.getContentValues();//getContentValues(item);
         mDatabase.insert(NAME, null, values);
     }
 
     public void updateClient(Client c) {
         String uuidString = c.getId().toString();
-        ContentValues values = getContentValues(c);
+        ContentValues values = c.getContentValues();//getContentValues(c);
 
         mDatabase.update(NAME, values,
                 Cols.UUID + " =  ?",

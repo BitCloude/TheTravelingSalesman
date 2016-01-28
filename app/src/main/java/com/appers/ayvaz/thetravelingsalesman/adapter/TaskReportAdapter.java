@@ -120,13 +120,7 @@ public class TaskReportAdapter extends RecyclerView.Adapter<TaskReportAdapter.Vi
         }
     }
 
-    @Override
-    public int getItemViewType(int position) {
-        if (mTasks.get(position).getClient() == null) {
-            return TYPE_CLIENT;
-        }
-        return TYPE_DATE;
-    }
+
 
     @Override
     public int getItemCount() {

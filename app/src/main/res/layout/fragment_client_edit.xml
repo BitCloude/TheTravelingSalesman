@@ -105,14 +105,14 @@
         android:id="@+id/emailLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/clientPhone"
-        android:layout_alignBottom="@+id/clientPhone"
+        android:layout_alignBaseline="@+id/client_phone_first"
+        android:layout_alignBottom="@+id/client_phone_first"
         android:layout_alignParentStart="true"
         android:text="@string/email"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
     <EditText
-        android:id="@+id/clientPhone"
+        android:id="@+id/client_phone_first"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/phoneLayout"
@@ -137,12 +137,12 @@
         android:id="@+id/address"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/clientPhone"
-        android:layout_below="@+id/clientPhone"
+        android:layout_alignStart="@+id/client_phone_first"
+        android:layout_below="@+id/client_phone_first"
         android:ems="10"
         android:hint="@string/address"
         android:inputType="textPostalAddress"
-        android:layout_alignEnd="@+id/clientPhone"
+        android:layout_alignEnd="@+id/client_phone_first"
         android:minLines="2" />
 
     <TextView

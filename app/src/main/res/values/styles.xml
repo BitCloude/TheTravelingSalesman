@@ -54,7 +54,7 @@
     </style>
 
     <style name="ItemTextStylePrimary" parent="TextAppearance.AppCompat.Medium">
-        <item name="android:textSize">17sp</item>
+        <item name="android:textSize">18sp</item>
         <item name="android:textColor">@color/TextPrimary</item>
 
     </style>

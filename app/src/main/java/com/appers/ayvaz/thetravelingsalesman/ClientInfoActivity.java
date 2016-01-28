@@ -185,7 +185,7 @@ public class ClientInfoActivity extends AppCompatActivity {
 
     private void bindPhone(ViewGroup parent, String number) {
         View view = parent.getChildAt(parent.getChildCount()-1);
-        final TextView num = (TextView) view.findViewById(R.id.clientPhone);
+        final TextView num = (TextView) view.findViewById(R.id.client_phone_first);
         num.setText(number);
         ImageButton call = (ImageButton) view.findViewById(R.id.callButton);
         ImageButton text = (ImageButton) view.findViewById(R.id.textButton);

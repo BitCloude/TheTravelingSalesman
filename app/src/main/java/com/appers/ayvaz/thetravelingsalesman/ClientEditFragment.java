@@ -8,9 +8,10 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.NavUtils;
+import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.app.AlertDialog;
 import android.telephony.PhoneNumberFormattingTextWatcher;
 import android.util.Log;
@@ -58,7 +59,7 @@ public class ClientEditFragment extends Fragment {
     TextView mFirstName;
     @Bind(R.id.lastName)
     TextView mLastName;
-    @Bind(R.id.clientPhone)
+    @Bind(R.id.client_phone_first)
     TextView mEmail;
     @Bind(R.id.company)
     TextView mCompany;
@@ -259,11 +260,17 @@ public class ClientEditFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case android.R.id.home:
-                Intent upIntent = ClientInfoActivity.newIntent(getActivity(), mClientId);
-                upIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(upIntent);
-                getActivity().finish();
+            case R.id.action_cancel:
+                AlertDialog.Builder cancelBuilder = new AlertDialog.Builder(getContext())
+                        .setMessage("Change will be discarded.")
+                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                getActivity().finish();
+                            }
+                        })
+                        .setNegativeButton(android.R.string.cancel, null);
+                cancelBuilder.create().show();
                 return true;
             case R.id.action_done:
                 updateClient();
@@ -335,6 +342,10 @@ public class ClientEditFragment extends Fragment {
     }
 
     private void updateUI() {
+        if (mClientId == null) {
+            return;
+        }
+
         mFirstName.setText(mClient.getFirstName());
         mLastName.setText(mClient.getLastName());
         mCompany.setText(mClient.getCompany());

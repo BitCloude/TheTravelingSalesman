@@ -1,7 +1,9 @@
 package com.appers.ayvaz.thetravelingsalesman;
 
 
+import android.app.Activity;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -29,6 +31,8 @@ import android.widget.TextView;
 
 import com.appers.ayvaz.thetravelingsalesman.adapter.TaskAdapter;
 import com.appers.ayvaz.thetravelingsalesman.adapter.TaskReportAdapter;
+import com.appers.ayvaz.thetravelingsalesman.models.Client;
+import com.appers.ayvaz.thetravelingsalesman.models.ClientManager;
 import com.appers.ayvaz.thetravelingsalesman.models.Task;
 import com.appers.ayvaz.thetravelingsalesman.models.TaskManager;
 import com.appers.ayvaz.thetravelingsalesman.view.DividerItemDecoration;
@@ -39,6 +43,7 @@ import org.joda.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.UUID;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -47,6 +52,8 @@ public class TaskListActivity extends NavigationDrawerActivity
         implements ActionMode.Callback {
 
     private final String TAG = "debuging--------";
+    private final int REQUEST_CLIENT = 0;
+
     @Bind(R.id.calendar)    CollapseCalendarView mCalendarView;
     @Bind(R.id.recyclerView)    RecyclerView mRecyclerView;
     @Bind(R.id.toolbar)    Toolbar mToolbar;
@@ -264,9 +271,11 @@ public class TaskListActivity extends NavigationDrawerActivity
                 mCalendarMode = !mCalendarMode;
                 updateUI();
                 resetDate.setVisible(mCalendarMode);
-                toggleMode.setIcon(mCalendarMode? listIcon : calendarIcon);
+                toggleMode.setIcon(mCalendarMode ? listIcon : calendarIcon);
 
                 return true;
+
+
 
 
             default:
@@ -274,6 +283,18 @@ public class TaskListActivity extends NavigationDrawerActivity
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode != Activity.RESULT_OK) {
+            return;
+        }
+
+        if (requestCode == REQUEST_CLIENT) {
+            UUID id = UUID.fromString(data.getStringExtra(ClientPickActivity.EXTRA_CLIENT_ID));
+            Client client = ClientManager.get(this).getClient(id);
+            mAdapter.setClient(client);
+        }
+    }
 
     private void selectToday() {
         mCalendarView.getManager().selectDay(LocalDate.now());
@@ -342,6 +363,7 @@ public class TaskListActivity extends NavigationDrawerActivity
         menu.findItem(R.id.action_reset_date).setVisible(mCalendarMode);
 //        menu.findItem(R.id.action_search).setVisible(!mCalendarMode);
         menu.findItem(R.id.action_switch_view).setIcon(mCalendarMode ? listIcon : calendarIcon);
+
 
         return true;
     }
@@ -455,8 +477,13 @@ public class TaskListActivity extends NavigationDrawerActivity
 
                 builder.create().show();
 
-
                 return true;
+
+            case R.id.selectClient:
+                startActivityForResult(new Intent(this, ClientPickActivity.class),
+                        REQUEST_CLIENT);
+                return true;
+
             default:
                 return false;
         }
@@ -466,7 +493,10 @@ public class TaskListActivity extends NavigationDrawerActivity
     public void onDestroyActionMode(ActionMode mode) {
         mActionMode = null;
         mAdapter.clearSelections();
-        mCalendarView.setVisibility(View.VISIBLE);
+        if (mCalendarMode) {
+            mCalendarView.setVisibility(View.VISIBLE);
+        }
+
     }
 
 

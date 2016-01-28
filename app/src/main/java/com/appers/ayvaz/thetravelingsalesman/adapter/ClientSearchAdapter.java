@@ -1,31 +1,44 @@
 package com.appers.ayvaz.thetravelingsalesman.adapter;
 
-import android.content.Intent;
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.appers.ayvaz.thetravelingsalesman.ClientActivity;
 import com.appers.ayvaz.thetravelingsalesman.R;
 import com.appers.ayvaz.thetravelingsalesman.models.Client;
 
 import java.util.List;
+import java.util.UUID;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
 
 
 public class ClientSearchAdapter extends RecyclerView.Adapter<ClientSearchAdapter.ViewHolder> {
 
-    List<Client> mClients;
+    private List<Client> mClients;
+    private OnClientPickListener mListener;
 
 
-    public ClientSearchAdapter(List<Client> items) {
+    public ClientSearchAdapter(List<Client> items, OnClientPickListener listener) {
         mClients = items;
+        mListener = listener;
     }
+
+
 
     public void setClients(List<Client> clients) {
         mClients = clients;
     }
+
+    public interface OnClientPickListener {
+        void onClientPick(UUID clientId);
+    }
+
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -37,8 +50,8 @@ public class ClientSearchAdapter extends RecyclerView.Adapter<ClientSearchAdapte
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mClients.get(position);
-        holder.mName.setText(holder.mItem.toString());
-        holder.mView.setOnClickListener(holder);
+        holder.setText();
+
     }
 
     @Override
@@ -47,21 +60,45 @@ public class ClientSearchAdapter extends RecyclerView.Adapter<ClientSearchAdapte
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        public final View mView;
-        public final TextView mName;
+
+
+
         public Client mItem;
+        @Bind(R.id.client_name) TextView mName;
+        @Bind(R.id.client_phone_first) TextView mPhoneFirst;
+        @Bind(R.id.client_phone_second) TextView mPhoneSecond;
+        @Bind(R.id.client_email) TextView mEmail;
 
         public ViewHolder(View view) {
             super(view);
-            mView = view;
-            mName = (TextView) view.findViewById(R.id.client_name);
+            ButterKnife.bind(this, view);
+            view.setOnClickListener(this);
         }
 
 
         @Override
         public void onClick(View v) {
-            Intent intent = ClientActivity.newIntent(v.getContext(), mItem.getId());
-            v.getContext().startActivity(intent);
+            mListener.onClientPick(mItem.getId());
+
+//            Intent intent = ClientActivity.newIntent(v.getContext(), mItem.getId());
+//            v.getContext().startActivity(intent);
+        }
+
+        public void setText() {
+            mName.setText(mItem.getFullName());
+            checkAndSet(mItem.getFirstPhone(), mPhoneFirst);
+            checkAndSet(mItem.getSecondPhone(), mPhoneSecond);
+            checkAndSet(mItem.getEmail(), mEmail);
+
+        }
+
+        private void checkAndSet(String s, TextView textView) {
+            if (TextUtils.isEmpty(s)) {
+                textView.setVisibility(View.GONE);
+            } else {
+                textView.setVisibility(View.VISIBLE);
+                textView.setText(s);
+            }
         }
     }
 }

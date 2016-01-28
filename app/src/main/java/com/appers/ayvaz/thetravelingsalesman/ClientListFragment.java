@@ -51,7 +51,7 @@ import butterknife.ButterKnife;
  */
 public class ClientListFragment extends Fragment
         implements ActionMode.Callback,
-        RecyclerView.OnItemTouchListener{
+        RecyclerView.OnItemTouchListener, ClientSearchAdapter.OnClientPickListener{
 
     private final String DEBUG_TAG = "ClientListFragment: ";
     public static final int RANGE_ALL = 0;
@@ -80,6 +80,12 @@ public class ClientListFragment extends Fragment
      * fragment (e.g. upon screen orientation changes).
      */
     public ClientListFragment() {
+    }
+
+    @Override
+    public void onClientPick(UUID clientId) {
+        Intent intent = ClientActivity.newIntent(getContext(), clientId);
+        getContext().startActivity(intent);
     }
 
     interface OnFragmentInteractionListener {
@@ -241,7 +247,7 @@ public class ClientListFragment extends Fragment
                 @Override
                 public boolean onQueryTextSubmit(String query) {
                     List<Client> result = ClientManager.get(getActivity()).getSearchResult(query);
-                    mSearchAdapter = new ClientSearchAdapter(result);
+                    mSearchAdapter = new ClientSearchAdapter(result, ClientListFragment.this);
                     mRecyclerView.setAdapter(mSearchAdapter);
 
                     return true;
@@ -394,7 +400,12 @@ public class ClientListFragment extends Fragment
     private class ClientListGestureListener extends GestureDetector.SimpleOnGestureListener {
         @Override
         public boolean onSingleTapConfirmed(MotionEvent e) {
+            if (mSearchOpen) {
+                return false;
+            }
+
             View view = mRecyclerView.findChildViewUnder(e.getX(), e.getY());
+
             int idx =  mRecyclerView.getChildAdapterPosition(view);
             if (idx < 0) {
                 return super.onSingleTapConfirmed(e);

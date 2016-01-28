@@ -93,7 +93,7 @@ public class TaskManager {
 
     private ContentValues getContentValues(Task item) {
         ContentValues values = new ContentValues();
-        values.put(Cols.CLIENT_ID, item.getClient().getId().toString());
+        values.put(Cols.CLIENT_ID, item.getClientID().toString());
         values.put(Cols.EVENT_ID, item.getId());
         return values;
 

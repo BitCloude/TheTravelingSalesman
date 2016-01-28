@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.provider.CalendarContract;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -27,6 +28,7 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -132,17 +134,22 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
 
     }
 
-    @Override
-    public int getItemViewType(int position) {
-        if (mTasks.get(position).getClient() == null) {
-            return TYPE_CLIENT;
-        }
-        return TYPE_DATE;
-    }
+
 
     @Override
     public int getItemCount() {
         return mTasks.size();
+    }
+
+    public void setClient(Client client) {
+        if (getItemCount() != 1) {
+            Log.i("TaskAdapter", "change client error");
+            return;
+        }
+
+        int pos = getSelectedItems().get(0);
+
+        mTasks.get(pos).setClient(client);
     }
 
 

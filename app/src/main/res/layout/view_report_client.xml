@@ -17,10 +17,10 @@
         android:textSize="18sp"
         android:textColor="@color/TextPrimary"
         android:layout_marginEnd="6dp"
-        android:text="Large Text"
         android:id="@+id/client_name"
         android:layout_alignParentTop="true"
-        android:layout_toStartOf="@+id/selectClient" />
+        android:layout_toStartOf="@+id/selectClient"
+        android:lines="1" />
 
     <ImageButton
         style="?android:attr/buttonStyleSmall"

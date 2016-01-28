@@ -161,6 +161,7 @@ public class ClientActivity extends AppCompatActivity
 
 
         mEventId = EventUtility.getNewEventId(this.getContentResolver());
+        Log.i("mEventId: ", mEventId+"");
 
         Intent intent = new Intent(Intent.ACTION_INSERT)
                 .setData(CalendarContract.Events.CONTENT_URI)
@@ -179,6 +180,9 @@ public class ClientActivity extends AppCompatActivity
 
 
         long prev_id = EventUtility.getLastEventId(getContentResolver());
+        Log.i("mEventId: ", mEventId+"");
+        Log.i("mEventId: ", "prev_id: "+prev_id);
+
 //         if prev_id == mEventId, means there is new events created
 //         and we need to insert new events into local sqlite database.
         if (prev_id == mEventId) {

@@ -1,7 +1,9 @@
 package com.appers.ayvaz.thetravelingsalesman;
 
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -13,9 +15,13 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.appers.ayvaz.thetravelingsalesman.adapter.TaskReportAdapter;
+import com.appers.ayvaz.thetravelingsalesman.models.Client;
+import com.appers.ayvaz.thetravelingsalesman.models.ClientManager;
 import com.appers.ayvaz.thetravelingsalesman.models.Task;
 import com.appers.ayvaz.thetravelingsalesman.models.TaskManager;
 import com.appers.ayvaz.thetravelingsalesman.utils.DateTimeHelper;
@@ -27,6 +33,7 @@ import org.joda.time.LocalDate;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -59,6 +66,9 @@ public class ReportTaskFragment extends Fragment {
     Button mEndButton;
 
     @Bind(R.id.applyButton) Button mApplyButton;
+    @Bind(R.id.selectClient)    ImageButton mSelectClient;
+    @Bind(R.id.client_name)
+    TextView mClientName;
 
 
     private int UNSORTED_ICON = R.drawable.ic_dark_sortable;
@@ -66,7 +76,9 @@ public class ReportTaskFragment extends Fragment {
     private int DESC_ICON = R.drawable.ic_dark_sorted_desc;
     private int[] sortable_icons = {UNSORTED_ICON, ASC_ICON, DESC_ICON};
     private Calendar mStartDate, mEndDate;
+    private Client mClient;
 
+    private static final int REQUEST_CLIENT = 0;
     private long lastEventId;
     private ImageView[] mHeaderIcons;
 
@@ -144,6 +156,22 @@ public class ReportTaskFragment extends Fragment {
             }
         });
 
+        mSelectClient.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivityForResult(new Intent(getContext(), ClientPickActivity.class),
+                        REQUEST_CLIENT);
+            }
+        });
+
+        mClientName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mClient != null) {
+                    startActivity(ClientInfoActivity.newIntent(getContext(), mClient.getId()));
+                }
+            }
+        });
 
 
         return view;
@@ -220,6 +248,11 @@ public class ReportTaskFragment extends Fragment {
     }
 
     private void updateUI() {
+        // set client
+        if (mClient != null) {
+            mClientName.setText(mClient.getFullName());
+        }
+        // set time
         Calendar begin = Calendar.getInstance();
         Calendar end = Calendar.getInstance();
         begin.set(2015, 0, 1);
@@ -262,7 +295,7 @@ public class ReportTaskFragment extends Fragment {
         @Override
         protected void onPreExecute() {
             mProgressBarContainer.setVisibility(View.VISIBLE);
-            mRecyclerView.setVisibility(View.GONE);
+//            mRecyclerView.setVisibility(View.GONE);
         }
 
         @Override
@@ -276,9 +309,20 @@ public class ReportTaskFragment extends Fragment {
             }
 
             mProgressBarContainer.setVisibility(View.GONE);
-            mRecyclerView.setVisibility(View.VISIBLE);
+//            mRecyclerView.setVisibility(View.VISIBLE);
         }
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode != Activity.RESULT_OK) {
+            return;
+        }
 
+        if (requestCode == REQUEST_CLIENT) {
+            UUID uuid = UUID.fromString(data.getStringExtra(ClientPickActivity.EXTRA_CLIENT_ID));
+            mClient = ClientManager.get(getContext()).getClient(uuid);
+            updateUI();
+        }
+    }
 }
