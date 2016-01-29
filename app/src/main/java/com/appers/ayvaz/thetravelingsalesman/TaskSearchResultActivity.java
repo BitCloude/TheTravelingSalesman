@@ -44,7 +44,7 @@ public class TaskSearchResultActivity extends AppCompatActivity {
         List<Task> result = TaskManager.get(this).search(query);
 
         if (mAdapter == null) {
-            mAdapter = new TaskAdapter(result);
+            mAdapter = new TaskAdapter(result, this);
             mRecyclerView.setAdapter(mAdapter);
         } else {
             mAdapter.setData(result);

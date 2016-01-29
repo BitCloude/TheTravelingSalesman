@@ -17,7 +17,7 @@ public class Task {
 
 
 
-    private long mId;
+    private long eventID;
     private Date startTime;
     private Date endTime;
     private boolean hasAlarm;
@@ -75,15 +75,15 @@ public class Task {
     }
 
     public Task(long eventId) {
-        mId = eventId;
+        this.eventID = eventId;
     }
 
     public Client getClient() {
         return client;
     }
 
-    public long getId() {
-        return mId;
+    public long getEventID() {
+        return eventID;
     }
 
     public Date getStartTime() {
@@ -115,7 +115,7 @@ public class Task {
     public static Task fromCursor(Cursor eventCursor) {
         Task task = new Task();
 
-        task.mId = eventCursor.getLong(eventCursor.getColumnIndex(
+        task.eventID = eventCursor.getLong(eventCursor.getColumnIndex(
                 Events._ID));
         task.startTime = DateTimeHelper.fromContentResolver(eventCursor.getString(
                 eventCursor.getColumnIndex(Events.DTSTART)));

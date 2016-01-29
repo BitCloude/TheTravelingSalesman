@@ -108,6 +108,7 @@
     <string name="client_search_title">Search client</string>
 
     <string name="r_u_sure">%s will be deleted.</string>
+    <string name="task_delete_result">Task was %s deleted.</string>
 
     <string name="search_hint_client">Search client</string>
 

@@ -14,6 +14,7 @@ import android.support.v7.view.ActionMode;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -21,12 +22,14 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.SearchView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import com.appers.ayvaz.thetravelingsalesman.adapter.TaskAdapter;
@@ -48,10 +51,9 @@ import java.util.UUID;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class TaskListActivity extends NavigationDrawerActivity
-        implements ActionMode.Callback {
+public class TaskListActivity extends NavigationDrawerActivity {
 
-    private final String TAG = "debuging--------";
+    private final String DEBUG_TAG = "TaskListActivity: ";
     private final int REQUEST_CLIENT = 0;
 
     @Bind(R.id.calendar)    CollapseCalendarView mCalendarView;
@@ -74,6 +76,7 @@ public class TaskListActivity extends NavigationDrawerActivity
     private boolean mCalendarMode = true;
     private TextView mActionTitle;
     private MenuItem mChangeClient;
+    private ArrayAdapter<Task> arrayAdapter;
 
 
     private final int calendarIcon = R.drawable.ic_date_range_white_24dp;
@@ -92,9 +95,6 @@ public class TaskListActivity extends NavigationDrawerActivity
         super.onCreate(savedInstanceState);
 //        setContentView(R.layout.fragment_list);
         setContentView(R.layout.activity_task_list);
-
-        ViewGroup appbar = (ViewGroup) findViewById(R.id.appbar);
-        getLayoutInflater().inflate(R.layout.layout_collapse_calenar_view, appbar);
         ButterKnife.bind(this);
 
         setTitle(R.string.title_activity_task);
@@ -131,39 +131,71 @@ public class TaskListActivity extends NavigationDrawerActivity
         mRecyclerView.setHasFixedSize(true);
 
         updateUI();
-        setUpActionMode();
+        registerForContextMenu(mRecyclerView);
+//        setUpActionMode();
+
+
 
 
     }
 
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
 
+        switch (item.getItemId()) {
+            case R.id.action_delete:
+                alertDeletion();
+                return true;
+            case R.id.action_change_client:
+                startActivityForResult(new Intent(this, ClientPickActivity.class),
+                        REQUEST_CLIENT);
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+
+    }
+
+    private void alertDeletion() {
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setMessage(getString(R.string.r_u_sure, "Task"))
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        boolean result = mAdapter.deleteSelected();
+                        Toast.makeText(TaskListActivity.this, getString(R.string.task_delete_result,
+                                result ? "" : "not"), Toast.LENGTH_SHORT)
+                                .show();
+                        if (result) {
+                            updateUI();
+                        }
+                    }
+                })
+                .setNegativeButton(android.R.string.cancel, null)
+                .create();
+
+        dialog.show();
+
+    }
 
     private void doMySearch(CharSequence query) {
 
         List<Task> result = TaskManager.get(this).search(query);
+
         if (mSearchAdapter == null) {
-            mSearchAdapter = new TaskAdapter(result);
+            mSearchAdapter = new TaskAdapter(result, this);
+            mRecyclerView.setAdapter(mSearchAdapter);
         } else {
             mSearchAdapter.setData(result);
             mSearchAdapter.notifyDataSetChanged();
         }
 
-        mRecyclerView.setAdapter(mSearchAdapter);
+
 
     }
 
     private void changeRange(LocalDate date) {
-
-        /*List<Task> result = mTaskManager.queryInstance(localDate);
-
-        if (mAdapter == null) {
-            mAdapter = new TaskAdapter(result);
-            mRecyclerView.setAdapter(mAdapter);
-        } else {
-            mAdapter.setData(result);
-            mAdapter.notifyDataSetChanged();
-
-        }*/
 
         Calendar beginTime = Calendar.getInstance();
         beginTime.set(date.getYear(), date.getMonthOfYear() - 1, date.getDayOfMonth(), 0, 0);
@@ -186,19 +218,14 @@ public class TaskListActivity extends NavigationDrawerActivity
 
     private void updateUI() {
 
-        if (mCalendarMode) {
             if (mActionMode == null) {
                 mCalendarView.setVisibility(View.VISIBLE);
             } else {
                 mCalendarView.setVisibility(View.GONE);
             }
+
             changeRange(mCalendarView.getSelectedDate());
 
-        } else {
-            mCalendarView.setVisibility(View.GONE);
-            showAll();
-
-        }
     }
 
     private class GetTask extends AsyncTask<Calendar, Void, List<Task>> {
@@ -220,7 +247,7 @@ public class TaskListActivity extends NavigationDrawerActivity
         @Override
         protected void onPostExecute(List<Task> tasks) {
             if (mAdapter == null) {
-                mAdapter = new TaskAdapter(tasks);
+                mAdapter = new TaskAdapter(tasks, TaskListActivity.this);
                 mRecyclerView.setAdapter(mAdapter);
             } else {
                 mAdapter.setData(tasks);
@@ -231,6 +258,7 @@ public class TaskListActivity extends NavigationDrawerActivity
 
             mProgressBarContainer.setVisibility(View.GONE);
             mRecyclerView.setVisibility(View.VISIBLE);
+
         }
     }
 
@@ -245,14 +273,7 @@ public class TaskListActivity extends NavigationDrawerActivity
 
         new GetTask().execute(begin, end, null);
 
-        /*List<Task> result = TaskManager.get(this).queryInstance(begin, end, null);
-        if (mAdapter == null) {
-            mAdapter = new TaskAdapter(result);
-            mRecyclerView.setAdapter(mAdapter);
-        } else {
-            mAdapter.setData(result);
-            mAdapter.notifyDataSetChanged();
-        }*/
+
     }
 
     @Override
@@ -262,7 +283,7 @@ public class TaskListActivity extends NavigationDrawerActivity
                 selectToday();
 
                 return true;
-            case R.id.action_switch_view:
+           /* case R.id.action_switch_view:
                 MenuItem resetDate = mOptionsMenu.findItem(R.id.action_reset_date);
                 MenuItem search = mOptionsMenu.findItem(R.id.action_search);
                 MenuItem toggleMode = mOptionsMenu.findItem(R.id.action_switch_view);
@@ -274,7 +295,7 @@ public class TaskListActivity extends NavigationDrawerActivity
                 toggleMode.setIcon(mCalendarMode ? listIcon : calendarIcon);
 
                 return true;
-
+*/
 
 
 
@@ -283,24 +304,27 @@ public class TaskListActivity extends NavigationDrawerActivity
         }
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode != Activity.RESULT_OK) {
-            return;
-        }
-
-        if (requestCode == REQUEST_CLIENT) {
-            UUID id = UUID.fromString(data.getStringExtra(ClientPickActivity.EXTRA_CLIENT_ID));
-            Client client = ClientManager.get(this).getClient(id);
-            mAdapter.setClient(client);
-        }
-    }
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        if (resultCode != Activity.RESULT_OK) {
+//            return;
+//        }
+//
+//        if (requestCode == REQUEST_CLIENT) {
+//            UUID id = UUID.fromString(data.getStringExtra(ClientPickActivity.EXTRA_CLIENT_ID));
+//            Client client = ClientManager.get(this).getClient(id);
+//            boolean s = mAdapter.setClient(client, this);
+//            Log.i("updated successfully: ", s+"");
+//        }
+//    }
 
     private void selectToday() {
         mCalendarView.getManager().selectDay(LocalDate.now());
         mCalendarView.populateLayout();
         changeRange(LocalDate.now());
     }
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -323,8 +347,10 @@ public class TaskListActivity extends NavigationDrawerActivity
                     @Override
                     public boolean onMenuItemActionExpand(MenuItem item) {
                         if (mSearchAdapter == null) {
-                            mSearchAdapter = new TaskAdapter(new ArrayList<Task>(0));
+                            mSearchAdapter = new TaskAdapter(new ArrayList<Task>(0),
+                                    TaskListActivity.this);
                         }
+
                         mRecyclerView.setAdapter(mSearchAdapter);
                         if (mCalendarMode) {
                             mCalendarView.setVisibility(View.GONE);
@@ -341,8 +367,9 @@ public class TaskListActivity extends NavigationDrawerActivity
                             mCalendarView.setVisibility(View.VISIBLE);
                         }
 
+                        mSearchAdapter.clearData();
                         mRecyclerView.setAdapter(mAdapter);
-                        mOptionsMenu.setGroupVisible(R.id.nonSearchAction, false);
+                        mOptionsMenu.setGroupVisible(R.id.nonSearchAction, true);
                         return true;
                     }
                 });
@@ -350,221 +377,29 @@ public class TaskListActivity extends NavigationDrawerActivity
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                doMySearch(query);
-                return true;
+                return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                return false;
+                Log.i(DEBUG_TAG, newText);
+                doMySearch(newText);
+                return true;
             }
         });
 
         menu.findItem(R.id.action_reset_date).setVisible(mCalendarMode);
-//        menu.findItem(R.id.action_search).setVisible(!mCalendarMode);
-        menu.findItem(R.id.action_switch_view).setIcon(mCalendarMode ? listIcon : calendarIcon);
-
 
         return true;
     }
 
-    /** action mode */
-
-    private void setUpActionMode() {
-        mGestureDetector =
-                new GestureDetectorCompat(this, new TaskListGestureListener());
-
-        mOnItemTouchListener = new RecyclerView.OnItemTouchListener() {
-            @Override
-            public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
-                return mGestureDetector.onTouchEvent(e);
-            }
-
-            @Override
-            public void onTouchEvent(RecyclerView rv, MotionEvent e) {
-
-            }
-
-            @Override
-            public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
-
-            }
-        };
-
-        mRecyclerView.addOnItemTouchListener(mOnItemTouchListener);
-    }
-
-    private void myToggleSelection(int idx) {
-        mAdapter.toggleSelection(idx);
-        int cnt = mAdapter.getSelectedItemCount();
-        setActionTitle(cnt);
-
-        // hide button when multiple tasks are selected
-        mChangeClient.setVisible(cnt == 1);
-    }
-
-    private void selectAll() {
-        mAdapter.selectAll();
-        int cnt = mAdapter.getSelectedItemCount();
-        setActionTitle(cnt);
-        mChangeClient.setVisible(cnt == 1);
-    }
-
-    private void clearSelections() {
-        mAdapter.clearSelections();
-        setActionTitle(0);
-        mChangeClient.setVisible(false);
-    }
-
-    private void setActionTitle(int cnt) {
-        if (mActionTitle != null) {
-            String title = getString(
-                    R.string.selected_count,
-                    cnt);
-            //        mActionMode.setTitle(title);
-
-            mActionTitle.setText(title);
-        }
-    }
-
-
-    @Override
-    public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-        MenuInflater inflater = mode.getMenuInflater();
-        inflater.inflate(R.menu.menu_task_context, menu);
-        mCalendarView.setVisibility(View.GONE);
-        mode.setCustomView(getLayoutInflater().inflate(R.layout.action_mode, null));
-
-        mActionTitle = (TextView) mode.getCustomView().findViewById(R.id.textView);
-        mChangeClient = menu.findItem(R.id.action_change_client);
-        CheckBox checkBox = (CheckBox) mode.getCustomView().findViewById(R.id.checkBox);
-        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    selectAll();
-                } else {
-                    clearSelections();
-                }
-            }
-        });
-
-
-        return true;
-    }
-
-    @Override
-    public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-        return false;
-    }
-
-    @Override
-    public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_delete:
-                int cnt = mAdapter.getSelectedItemCount();
-                String s = cnt > 1 ? " task" : " tasks";
-                AlertDialog.Builder builder = new AlertDialog.Builder(this)
-                        .setMessage(getString(R.string.r_u_sure, s))
-                        .setCancelable(true)
-                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                // todo:delete tasks
-                            }
-                        })
-                        .setNegativeButton(android.R.string.cancel, null);
-
-                builder.create().show();
-
-                return true;
-
-            case R.id.selectClient:
-                startActivityForResult(new Intent(this, ClientPickActivity.class),
-                        REQUEST_CLIENT);
-                return true;
-
-            default:
-                return false;
-        }
-    }
-
-    @Override
-    public void onDestroyActionMode(ActionMode mode) {
-        mActionMode = null;
-        mAdapter.clearSelections();
-        if (mCalendarMode) {
-            mCalendarView.setVisibility(View.VISIBLE);
-        }
-
-    }
 
 
 
-    private class TaskListGestureListener extends GestureDetector.SimpleOnGestureListener {
-        @Override
-        public boolean onSingleTapConfirmed(MotionEvent e) {
-            View view = mRecyclerView.findChildViewUnder(e.getX(), e.getY());
-            int idx =  mRecyclerView.getChildAdapterPosition(view);
-            if (idx < 0) {
-                return super.onSingleTapConfirmed(e);
-            }
-
-            TaskAdapter.ViewHolder vh = (TaskAdapter.ViewHolder) mRecyclerView
-                    .findViewHolderForAdapterPosition(idx);
-
-            if (mActionMode != null) {
-                myToggleSelection(idx);
-            } else {
-                vh.onClick(view);
-            }
-
-
-            return super.onSingleTapConfirmed(e);
-        }
-
-        public void onLongPress(MotionEvent e) {
-            View view = mRecyclerView.findChildViewUnder(e.getX(), e.getY());
-            if (mActionMode != null) {
-                return;
-            }
-            // Start the CAB using the ActionMode.Callback defined above
-
-            mActionMode = startSupportActionMode(TaskListActivity.this);
-
-            int pos = mRecyclerView.getChildAdapterPosition(view);
-//                Toast.makeText(TaskListActivity.this, "pos: " + pos, Toast.LENGTH_SHORT).show();
-            myToggleSelection(pos);
-
-
-            super.onLongPress(e);
-        }
-    }
 
 
 
-    /*
-    private void setUpWeekTable() {
-        String[] namesOfDays = DateFormatSymbols.getInstance().getShortWeekdays();
 
-        TableRow tableRow = (TableRow) findViewById(R.id.dateRow1);
-        int cnt = tableRow.getChildCount();
-        for (int i = 0; i < cnt; i++) {
-            TextView tv = (TextView) tableRow.getChildAt(i);
-            tv.setGravity(Gravity.CENTER);
-            tv.setText(namesOfDays[i + 1]);
-        }
 
-        GregorianCalendar calendar = new GregorianCalendar();
-        calendar.roll(Calendar.DATE, 0 - calendar.get(Calendar.DAY_OF_WEEK));
 
-        tableRow = (TableRow) findViewById(R.id.dateRow2);
-        for (int i = 0; i < tableRow.getChildCount(); i++) {
-            TextView tv = (TextView) tableRow.getChildAt(i);
-            tv.setGravity(Gravity.CENTER);
-            tv.setText(""+calendar.get(Calendar.DATE));
-            calendar.roll(Calendar.DATE, 1);
-        }
-    }
-    */
 }

@@ -257,7 +257,6 @@ public class TaskFragment extends Fragment {
     }
 
 
-    // // TODO: 017 01/17 add new task and select client
     /*private void createNewTask() {
 
 

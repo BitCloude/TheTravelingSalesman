@@ -80,7 +80,7 @@ public class ClientSearchAdapter extends RecyclerView.Adapter<ClientSearchAdapte
         public void onClick(View v) {
             mListener.onClientPick(mItem.getId());
 
-//            Intent intent = ClientActivity.newIntent(v.getContext(), mItem.getId());
+//            Intent intent = ClientActivity.newIntent(v.getContext(), mItem.getEventID());
 //            v.getContext().startActivity(intent);
         }
 

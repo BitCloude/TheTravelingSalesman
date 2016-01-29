@@ -338,6 +338,7 @@ public class ClientEditFragment extends Fragment {
         mClient.setNote(mNote.getText().toString());
         mClient.setAddress(mAddress.getText().toString());
         mClient.setCompany(mCompany.getText().toString());
+
         // // TODO: 028 12/28 set other attributes
     }
 

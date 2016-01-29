@@ -8,14 +8,9 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.provider.CalendarContract;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.View;
-import android.widget.ProgressBar;
 
-import com.appers.ayvaz.thetravelingsalesman.adapter.TaskReportAdapter;
 import com.appers.ayvaz.thetravelingsalesman.database.DatabaseHelper;
 import com.appers.ayvaz.thetravelingsalesman.database.DbSchema;
 import com.appers.ayvaz.thetravelingsalesman.database.DbSchema.TaskTable.Cols;
@@ -27,6 +22,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+
+
 
 /**
  * Created by D on 030 12/30.
@@ -53,7 +50,7 @@ public class TaskManager {
             CalendarContract.Events.EVENT_LOCATION
     };
 
-    private final String DEBUG_TAG = "TaskManager debug:";
+    private final String DEBUG_TAG = "TaskManager: ";
     private Context mContext;
     private SQLiteDatabase mDatabase;
     private LocalDate selectedDate;
@@ -76,10 +73,30 @@ public class TaskManager {
         mDatabase.insert(DbSchema.TaskTable.NAME, null, values);
     }
 
-    private boolean deleteEvent(long eventId) {
-        String selection = Cols.EVENT_ID + " = " + eventId;
+    public boolean delete(long eventID) {
+        // delete task from our database
+        deleteTask(eventID);
+        // delete event from phone
+        return deleteEvent(eventID);
+    }
+
+
+    private boolean deleteTask(long eventID) {
+        String selection = Cols.EVENT_ID + " = " + eventID;
         int deleteResult = mDatabase.delete(DbSchema.TaskTable.NAME, selection, null);
+        Log.i(DEBUG_TAG, "Task " + (deleteResult > 0 ? "" : "not") +" deleted");
         return deleteResult > 0;
+    }
+
+    private boolean deleteEvent(long eventID) {
+        ContentResolver cr = mContext.getContentResolver();
+
+        Uri deleteUri = null;
+        deleteUri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, eventID);
+        int rows = cr.delete(deleteUri, null, null);
+        Log.i(DEBUG_TAG, "Rows deleted: " + rows);
+
+        return rows > 0;
     }
 
     private Cursor queryEvent(long eventId) {
@@ -94,7 +111,7 @@ public class TaskManager {
     private ContentValues getContentValues(Task item) {
         ContentValues values = new ContentValues();
         values.put(Cols.CLIENT_ID, item.getClientID().toString());
-        values.put(Cols.EVENT_ID, item.getId());
+        values.put(Cols.EVENT_ID, item.getEventID());
         return values;
 
     }
@@ -131,11 +148,12 @@ public class TaskManager {
 
             List<Task> result = queryInstance(now, end, eventId);
 
-//            if (result.size() == 0) {
-//                Log.i(DEBUG_TAG, "Event to be deleted: " + eventId);
-//                Log.i(DEBUG_TAG, "client: " + clientId);
-//                deleteList.add(eventId);
-//            }
+            if (result.size() == 0) {
+                Log.i(DEBUG_TAG, "Event to be deleted: " + eventId);
+                Log.i(DEBUG_TAG, "client: " + clientId);
+                deleteList.add(eventId);
+            }
+
             taskList.addAll(result);
 
         }
@@ -144,7 +162,7 @@ public class TaskManager {
 
 
         for (long delEvent : deleteList) {
-            if (deleteEvent(delEvent)) {
+            if (delete(delEvent)) {
                 Log.i(DEBUG_TAG, "Event " + delEvent + " deleted.");
             }
         }
@@ -228,7 +246,7 @@ public class TaskManager {
     private Client getClient(Task t) {
         Cursor c = mDatabase.query(DbSchema.TaskTable.NAME,
                 null,
-                Cols.EVENT_ID + " = " + t.getId(),
+                Cols.EVENT_ID + " = " + t.getEventID(),
                 null, null, null, null);
         if (c == null || c.getCount() == 0) {
             return null;
@@ -306,6 +324,27 @@ public class TaskManager {
 
         return taskList;
     }
+
+    public boolean updateTask(Task task) {
+        ContentValues values = getContentValues(task);
+
+        Cursor cursor = mDatabase.query(DbSchema.TaskTable.NAME, null, Cols.EVENT_ID + " = " + task.getEventID(),
+        null, null, null, null);
+        int cnt = cursor.getCount();
+        cursor.close();
+        if (cnt > 0) {
+            return mDatabase.update(DbSchema.TaskTable.NAME, values,
+                    Cols.EVENT_ID + " = " + task.getEventID(),
+                    null) > 0;
+        } else {
+            return mDatabase.insert(DbSchema.TaskTable.NAME, null, values) > 0;
+        }
+
+
+    }
+
+
+
 
 
     private static class EventQueryHandler extends AsyncQueryHandler {

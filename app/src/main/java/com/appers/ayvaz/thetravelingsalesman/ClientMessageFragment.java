@@ -1,6 +1,7 @@
 package com.appers.ayvaz.thetravelingsalesman;
 
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -104,28 +105,37 @@ public class ClientMessageFragment extends Fragment  implements ClientActivity.C
     @Override
     public void onResume() {
         super.onResume();
-//        updateUI();
+        updateUI();
     }
 
     private void updateUI() {
-
-        List<MyMessage> messages= MessageBox.get(getContext()).getMessages(mNumber1, mNumber2);
-
-        if (mAdapter == null) {
-            mAdapter = new MessageAdapterSlow(getContext(), messages);
-            mRecyclerView.setAdapter(mAdapter);
-        } else {
-            mAdapter.setMessages(messages);
-            mAdapter.notifyDataSetChanged();
-        }
-
-
+        new UpdateMessageTask().execute();
     }
 
     public void updateUI(Client client) {
         mNumber1 = client.getFirstPhone();
         mNumber2 = client.getSecondPhone();
         updateUI();
+    }
+
+    private class UpdateMessageTask extends AsyncTask<Void, Void, List<MyMessage>> {
+
+        @Override
+        protected List<MyMessage> doInBackground(Void... params) {
+            List<MyMessage> messages= MessageBox.get(getContext()).getMessages(mNumber1, mNumber2);
+            return messages;
+        }
+
+        @Override
+        protected void onPostExecute(List<MyMessage> messages) {
+            if (mAdapter == null) {
+                mAdapter = new MessageAdapterSlow(getContext(), messages);
+                mRecyclerView.setAdapter(mAdapter);
+            } else {
+                mAdapter.setMessages(messages);
+                mAdapter.notifyDataSetChanged();
+            }
+        }
     }
 
 

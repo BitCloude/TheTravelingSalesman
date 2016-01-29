@@ -155,7 +155,7 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ViewHolder
 
 
         public void onClick(View v) {
-//            Intent intent = ClientEditActivity.newIntent(v.getContext(), mItem.getId());
+//            Intent intent = ClientEditActivity.newIntent(v.getContext(), mItem.getEventID());
 
                 // start an instance of CrimePagerActivity
                 Intent intent = ClientActivity.newIntent(v.getContext(), mItem.getId());

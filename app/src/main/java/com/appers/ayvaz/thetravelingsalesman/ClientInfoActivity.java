@@ -92,6 +92,9 @@ public class ClientInfoActivity extends AppCompatActivity {
 
     private void showPhoto() {
         File file = ClientManager.get(this).getPhotoFile(mClient, false);
+        if (file == null || !file.exists()) {
+            return;
+        }
         Bitmap bitmap = PictureUtils.getScaledBitmap(
                 file.getPath(), this);
         mImageView.setImageBitmap(bitmap);

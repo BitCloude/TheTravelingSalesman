@@ -23,7 +23,7 @@ public class MessageAdapter extends
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, Cursor cursor) {
-        //// TODO: 030 12/30 set other field 
+
         MyMessage myListItem = MyMessage.fromCursor(cursor, 0);
         viewHolder.mBody.setText(myListItem.getBody());
         viewHolder.mTime.setText(myListItem.getTime().toString());
