@@ -45,14 +45,14 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
     List<Task> mTasks;
 
 
-    public boolean deleteSelected() {
-        if (mSelected < 0) {
+    public boolean delete(int position) {
+        Log.i(DEBUG_TAG, "Selected: " + position);
+
+        if (position < 0 || position > mTasks.size()) {
             return false;
         }
 
-        Log.i(DEBUG_TAG, "Selected: " + mSelected);
-
-        return TaskManager.get(mContext).delete(mTasks.get(mSelected).getEventID());
+        return TaskManager.get(mContext).delete(mTasks.get(position).getEventID());
     }
 
     public void clearData() {
@@ -118,21 +118,26 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
         return mTasks.size();
     }
 
-    /*public boolean setClient(Client client, Context context) {
-        if (getItemCount() != 1) {
-            Log.i("TaskAdapter", "change client error");
+
+
+    public boolean setClient(int position, Client client) {
+
+        if (position < 0 || position > mTasks.size()) {
             return false;
         }
 
-        int pos = getSelectedItems().get(0);
-
-        Task task = mTasks.get(pos);
+        Task task = mTasks.get(position);
         task.setClient(client);
 
-        return TaskManager.get(context).updateTask(task);
+        return TaskManager.get(mContext).updateTask(task);
+
+
     }
 
-*/
+    public int getSelected() {
+        return mSelected;
+    }
+
     // view holder for client view
     public class ViewHolder extends RecyclerView.ViewHolder
             implements View.OnCreateContextMenuListener, View.OnClickListener{
@@ -140,6 +145,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
         @Bind(R.id.task_detail)        TextView taskDetail;
         @Bind(R.id.from_date)        TextView fromDate;
         @Bind(R.id.to_date)        TextView toDate;
+        @Bind(R.id.clientName) TextView clientName;
         @Bind(R.id.buttonAttendee)        ImageView buttonAttendee;
         @Bind(R.id.buttonReminder)        ImageView buttonReminder;
         @Bind(R.id.buttonExtra)        ImageView buttonExtra;
@@ -217,9 +223,16 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
 
         protected void setTitleDetail() {
             Client client = mTask.getClient();
-            String title = (client == null ? "" : client.toString() + ": ") + mTask.getTitle();
-            taskTitle.setText(title);
+//            String title = (client == null ? "" : client.toString() + ": ") + mTask.getTitle();
+//            taskTitle.setText(title);
             taskDetail.setText(mTask.getLocation());
+            taskTitle.setText(mTask.getTitle());
+            if (client != null) {
+                clientName.setText(client.toString());
+                clientName.setVisibility(View.VISIBLE);
+            } else {
+                clientName.setVisibility(View.GONE);
+            }
         }
 
         public void showYear() {
@@ -234,8 +247,8 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
 
         @Override
         public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-            if (mContext instanceof TaskListActivity) {
-                ((Activity) mContext).getMenuInflater()
+            if (v.getContext() instanceof TaskListActivity) {
+                ((Activity) v.getContext()).getMenuInflater()
                         .inflate(R.menu.menu_task_context, menu);
 
                 menu.setHeaderTitle(mTask.getTitle());

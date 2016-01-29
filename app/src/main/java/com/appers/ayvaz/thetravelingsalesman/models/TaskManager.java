@@ -68,9 +68,9 @@ public class TaskManager {
         return mTaskManager;
     }
 
-    public void addTask(Task item) {
+    public boolean addTask(Task item) {
         ContentValues values = getContentValues(item);
-        mDatabase.insert(DbSchema.TaskTable.NAME, null, values);
+        return mDatabase.insert(DbSchema.TaskTable.NAME, null, values) > 0;
     }
 
     public boolean delete(long eventID) {
@@ -229,14 +229,14 @@ public class TaskManager {
         Calendar endTime = Calendar.getInstance();
         endTime.set(date.get(Calendar.YEAR), date.get(Calendar.MONTH),
                 date.get(Calendar.DAY_OF_MONTH), 23, 59);
+
         List<Task> list = queryInstance(beginTime, endTime, null);
-        Client client;
+
+
 
         for (int i = 0; i < list.size(); i++) {
             Task t = list.get(i);
-            if ((client = getClient(t)) != null) {
-                t.setClient(client);
-            }
+            t.setClient(getClient(t));
 
         }
 
@@ -328,8 +328,8 @@ public class TaskManager {
     public boolean updateTask(Task task) {
         ContentValues values = getContentValues(task);
 
-        Cursor cursor = mDatabase.query(DbSchema.TaskTable.NAME, null, Cols.EVENT_ID + " = " + task.getEventID(),
-        null, null, null, null);
+        Cursor cursor = mDatabase.query(DbSchema.TaskTable.NAME, null,
+                Cols.EVENT_ID + " = " + task.getEventID(), null, null, null, null);
         int cnt = cursor.getCount();
         cursor.close();
         if (cnt > 0) {

@@ -15,16 +15,10 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.GestureDetector;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.SearchView;
@@ -33,7 +27,6 @@ import android.widget.Toast;
 
 
 import com.appers.ayvaz.thetravelingsalesman.adapter.TaskAdapter;
-import com.appers.ayvaz.thetravelingsalesman.adapter.TaskReportAdapter;
 import com.appers.ayvaz.thetravelingsalesman.models.Client;
 import com.appers.ayvaz.thetravelingsalesman.models.ClientManager;
 import com.appers.ayvaz.thetravelingsalesman.models.Task;
@@ -77,14 +70,18 @@ public class TaskListActivity extends NavigationDrawerActivity {
     private TextView mActionTitle;
     private MenuItem mChangeClient;
     private ArrayAdapter<Task> arrayAdapter;
+    private int mSelected;
 
 
     private final int calendarIcon = R.drawable.ic_date_range_white_24dp;
     private final int listIcon = calendarIcon; // R.drawable.ic_list_white_18dp;
 
+
     protected Fragment createFragment(LocalDate date) {
         return ClientTaskFragment.newInstance(date);
     }
+
+
 
     interface OnDateChanged {
         void updateUI(LocalDate date);
@@ -142,6 +139,8 @@ public class TaskListActivity extends NavigationDrawerActivity {
     @Override
     public boolean onContextItemSelected(MenuItem item) {
 
+        mSelected = mAdapter.getSelected();
+
         switch (item.getItemId()) {
             case R.id.action_delete:
                 alertDeletion();
@@ -163,12 +162,13 @@ public class TaskListActivity extends NavigationDrawerActivity {
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        boolean result = mAdapter.deleteSelected();
+                        boolean result = mAdapter.delete(mSelected);
+
                         Toast.makeText(TaskListActivity.this, getString(R.string.task_delete_result,
                                 result ? "" : "not"), Toast.LENGTH_SHORT)
                                 .show();
                         if (result) {
-                            updateUI();
+                            mAdapter.notifyItemChanged(mSelected);
                         }
                     }
                 })
@@ -178,6 +178,22 @@ public class TaskListActivity extends NavigationDrawerActivity {
         dialog.show();
 
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode != Activity.RESULT_OK) {
+            return;
+        }
+
+        if (requestCode == REQUEST_CLIENT) {
+            UUID id = UUID.fromString(data.getStringExtra(ClientPickActivity.EXTRA_CLIENT_ID));
+            Client client = ClientManager.get(this).getClient(id);
+            boolean s = mAdapter.setClient(mSelected, client);
+            Log.i(DEBUG_TAG, "update " + (s ? "success" : "failed"));
+            mAdapter.notifyItemChanged(mSelected);
+        }
+    }
+
 
     private void doMySearch(CharSequence query) {
 
@@ -197,12 +213,11 @@ public class TaskListActivity extends NavigationDrawerActivity {
 
     private void changeRange(LocalDate date) {
 
-        Calendar beginTime = Calendar.getInstance();
-        beginTime.set(date.getYear(), date.getMonthOfYear() - 1, date.getDayOfMonth(), 0, 0);
-        Calendar endTime = Calendar.getInstance();
-        endTime.set(date.getYear(), date.getMonthOfYear() - 1, date.getDayOfMonth(), 23, 59);
+        Calendar selected = Calendar.getInstance();
+        selected.set(date.getYear(), date.getMonthOfYear() - 1, date.getDayOfMonth(), 0, 0);
 
-        new GetTask().execute(beginTime, endTime);
+
+        new GetTask().execute(selected);
 
     }
 
@@ -234,7 +249,7 @@ public class TaskListActivity extends NavigationDrawerActivity {
         protected List<Task> doInBackground(Calendar... params) {
 
             return TaskManager.get(TaskListActivity.this)
-                    .queryInstance(params[0], params[1], null);
+                    .queryOneDay(params[0]);
         }
 
         @Override
@@ -304,19 +319,7 @@ public class TaskListActivity extends NavigationDrawerActivity {
         }
     }
 
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        if (resultCode != Activity.RESULT_OK) {
-//            return;
-//        }
-//
-//        if (requestCode == REQUEST_CLIENT) {
-//            UUID id = UUID.fromString(data.getStringExtra(ClientPickActivity.EXTRA_CLIENT_ID));
-//            Client client = ClientManager.get(this).getClient(id);
-//            boolean s = mAdapter.setClient(client, this);
-//            Log.i("updated successfully: ", s+"");
-//        }
-//    }
+
 
     private void selectToday() {
         mCalendarView.getManager().selectDay(LocalDate.now());
