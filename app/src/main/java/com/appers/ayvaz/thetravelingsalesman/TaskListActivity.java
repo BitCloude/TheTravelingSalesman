@@ -150,6 +150,11 @@ public class TaskListActivity extends NavigationDrawerActivity {
                         REQUEST_CLIENT);
                 return true;
 
+            case R.id.action_view_client:
+                startActivity(ClientInfoActivity.newIntent(this,
+                        mAdapter.getSelectedClient()));
+                return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }

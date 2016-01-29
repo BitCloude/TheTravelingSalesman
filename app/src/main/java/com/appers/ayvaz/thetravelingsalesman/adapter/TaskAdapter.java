@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -136,6 +137,10 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
 
     public int getSelected() {
         return mSelected;
+    }
+
+    public UUID getSelectedClient() {
+        return mTasks.get(mSelected).getClientID();
     }
 
     // view holder for client view
@@ -251,7 +256,11 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
                 ((Activity) v.getContext()).getMenuInflater()
                         .inflate(R.menu.menu_task_context, menu);
 
+
+                menu.findItem(R.id.action_view_client).setVisible(mTask.getClient() != null);
+
                 menu.setHeaderTitle(mTask.getTitle());
+
 
             }
 

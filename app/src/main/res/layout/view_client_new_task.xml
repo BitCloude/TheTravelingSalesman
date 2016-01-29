@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="48dp"
-    android:padding="5dp"
-    android:background="@color/background_primary"
+    android:layout_height="wrap_content"
+    android:layout_margin="6dp"
+    android:background="@android:color/transparent"
     android:orientation="vertical">
 
     <EditText
@@ -15,7 +15,15 @@
         android:hint="Add a task"
         android:textColor="@color/TextPrimary"
         android:textSize="16sp"
-        android:layout_alignParentTop="true" />
+        android:layout_alignParentTop="false"
+        android:background="#ffffff"
+        android:layout_centerVertical="true"
+        android:paddingTop="7dp"
+        android:shadowRadius="3"
+        android:textColorHint="@color/TextHint"
+        android:paddingBottom="7dp"
+        android:paddingStart="6dp"
+        android:paddingEnd="6dp" />
 
     <ImageButton
         android:id="@+id/newTaskOK"
@@ -26,6 +34,7 @@
         android:layout_centerVertical="true"
         android:layout_marginLeft="6dp"
         android:layout_marginRight="6dp"
+        android:src="@drawable/ic_add_white_24dp"
         android:background="@android:color/transparent"
         />
 </RelativeLayout>
