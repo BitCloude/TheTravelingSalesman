@@ -47,11 +47,7 @@ public class ReportTaskActivity extends SingleFragmentActivity {
 
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_report, menu);
-        return true;
-    }
+
 
     @Override
     protected void onResume() {

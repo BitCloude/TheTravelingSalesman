@@ -5,12 +5,12 @@
     android:title="save"
     app:showAsAction="ifRoom"
         android:icon="@drawable/ic_save_white_24dp"
-    android:id="@+id/export_view"/>
+    android:id="@+id/action_save"/>
 
     <item
         android:title="@string/action_settings"
         app:showAsAction="always"
         android:icon="@drawable/ic_email_white_24dp"
-        android:id="@+id/send_mail"/>
+        android:id="@+id/action_send"/>
 
 </menu>

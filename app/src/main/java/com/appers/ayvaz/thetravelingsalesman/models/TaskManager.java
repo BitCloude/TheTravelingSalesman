@@ -35,10 +35,13 @@ public class TaskManager {
             CalendarContract.Instances.END          // 2
     };
 
+    // year range for events
+    private final static int END_YEAR = 2030;
     private static final int PROJECTION_ID_INDEX = 0;
     private static final int PROJECTION_BEGIN_INDEX = 1;
     private static final int PROJECTION_END_INDEX = 2;
     private static TaskManager mTaskManager;
+
     private static String[] projections = new String[]{
             CalendarContract.Events._ID,
             CalendarContract.Events.TITLE,
@@ -84,7 +87,7 @@ public class TaskManager {
     private boolean deleteTask(long eventID) {
         String selection = Cols.EVENT_ID + " = " + eventID;
         int deleteResult = mDatabase.delete(DbSchema.TaskTable.NAME, selection, null);
-        Log.i(DEBUG_TAG, "Task " + (deleteResult > 0 ? "" : "not") +" deleted");
+        Log.i(DEBUG_TAG, "Task " + (deleteResult > 0 ? "" : "not") + " deleted");
         return deleteResult > 0;
     }
 
@@ -116,7 +119,16 @@ public class TaskManager {
 
     }
 
-    public List<Task> query(UUID clientId) {
+    public List<Task> query(UUID clientID) {
+        Calendar now = Calendar.getInstance();
+        now.setTime(new Date());
+        Calendar end = Calendar.getInstance();
+        end.set(END_YEAR, 11, 30, 23, 59);
+
+        return query(clientID, now, end);
+    }
+
+    public List<Task> query(UUID clientID, Calendar start, Calendar end) {
         List<Task> taskList = new ArrayList<>();
         List<Long> deleteList = new ArrayList<>();
 
@@ -125,7 +137,7 @@ public class TaskManager {
                 DbSchema.TaskTable.NAME,
                 null,
                 Cols.CLIENT_ID + " = ?",
-                new String[]{clientId.toString()},
+                new String[]{clientID.toString()},
                 null,
                 null,
                 null
@@ -141,16 +153,11 @@ public class TaskManager {
 
             long eventId = cursor.getLong(cursor.getColumnIndex(Cols.EVENT_ID));
 
-            Calendar now = Calendar.getInstance();
-            now.setTime(new Date());
-            Calendar end = Calendar.getInstance();
-            end.set(2050, 11, 30, 23, 59);
-
-            List<Task> result = queryInstance(now, end, eventId);
+            List<Task> result = queryInstance(start, end, eventId);
 
             if (result.size() == 0) {
                 Log.i(DEBUG_TAG, "Event to be deleted: " + eventId);
-                Log.i(DEBUG_TAG, "client: " + clientId);
+                Log.i(DEBUG_TAG, "client: " + clientID);
                 deleteList.add(eventId);
             }
 

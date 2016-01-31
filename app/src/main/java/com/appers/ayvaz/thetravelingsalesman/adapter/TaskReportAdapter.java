@@ -1,10 +1,14 @@
 package com.appers.ayvaz.thetravelingsalesman.adapter;
 
+import android.app.ProgressDialog;
 import android.content.ContentUris;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.provider.CalendarContract;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.util.SparseBooleanArray;
@@ -15,14 +19,20 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.appers.ayvaz.thetravelingsalesman.R;
+import com.appers.ayvaz.thetravelingsalesman.database.DbSchema;
 import com.appers.ayvaz.thetravelingsalesman.models.Client;
 import com.appers.ayvaz.thetravelingsalesman.models.Task;
 import com.appers.ayvaz.thetravelingsalesman.utils.DateTimeHelper;
+import com.appers.ayvaz.thetravelingsalesman.utils.ReportExportUtils;
 
 import org.joda.time.LocalDate;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -47,10 +57,12 @@ public class TaskReportAdapter extends RecyclerView.Adapter<TaskReportAdapter.Vi
     private int[] mOrders = new int[3];
     private Comparator[] comparators = {new Task.TitleComparator(), new Task.DateTimeComparator(),
     new Task.TimeComparator()};
+    private Context mContext;
 
-    public TaskReportAdapter(List<Task> taskList) {
+    public TaskReportAdapter(List<Task> taskList, Context context) {
         mTasks = taskList;
         mSortMode = SORT_BY_DATETIME;
+        mContext = context;
         sort(mSortMode, false);
 
     }
@@ -127,7 +139,114 @@ public class TaskReportAdapter extends RecyclerView.Adapter<TaskReportAdapter.Vi
         return mTasks.size();
     }
 
+    public void saveReport(Client client) {
+        if (mTasks.size() == 0) {
+            Toast.makeText(mContext, R.string.report_nothing_to_save, Toast.LENGTH_SHORT).show();
+            return;
+        }
 
+        final File file = ReportExportUtils.getFileNameByTime(mContext,
+                ReportExportUtils.TYPE_TASK, client);
+
+        if (file == null) {
+            Log.i(DEBUG_TAG, "FILE NULL");
+            return;
+        }
+
+        AlertDialog alertDialog = new AlertDialog.Builder(mContext)
+                .setMessage(mContext.getString(R.string.save_report, file.getPath()))
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        new GenerateTaskReport().execute(file);
+                    }
+                })
+                .setNegativeButton(android.R.string.cancel, null)
+                .create();
+
+        alertDialog.show();
+
+    }
+
+    private class GenerateTaskReport extends AsyncTask<File, Integer, Void> {
+
+        private ProgressDialog progressDialog;
+
+        @Override
+        protected void onPreExecute() {
+            progressDialog = new ProgressDialog(mContext);
+            progressDialog.setTitle(R.string.saving);
+            progressDialog.setMax(mTasks.size());
+            progressDialog.show();
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            super.onProgressUpdate(values);
+            progressDialog.setProgress(values[0]);
+        }
+
+        @Override
+        protected Void doInBackground(File... params) {
+            final String DIVIDER = ", ";
+            final String NEW_LINE = "\n";
+            if (params == null || params.length != 1) {
+                Log.i(DEBUG_TAG, "file path not included");
+                return null;
+            }
+
+            try (FileWriter writer = new FileWriter(params[0])){
+                writer.append(mContext.getString(R.string.client_name));
+                writer.append(DIVIDER);
+                writer.append(mContext.getString(R.string.task_title));
+                writer.append(DIVIDER);
+                writer.append(mContext.getString(R.string.location));
+                writer.append(DIVIDER);
+                writer.append(mContext.getString(R.string.start_time));
+                writer.append(DIVIDER);
+                writer.append(mContext.getString(R.string.end_time));
+                writer.append(DIVIDER);
+                writer.append(mContext.getString(R.string.description));
+                writer.append(DIVIDER);
+
+                for (int i = 0; i < mTasks.size(); i++) {
+                    publishProgress(i);
+                    Task t = mTasks.get(i);
+                    if (t.getClient() != null) {
+                        writer.append(t.getClient().toString());
+                        writer.append(DIVIDER);
+                    }
+
+                    writer.append(t.getTitle());
+                    writer.append(DIVIDER);
+                    writer.append(t.getLocation());
+                    writer.append(DIVIDER);
+                    writer.append(DateTimeHelper.getFullTime(t.getStartTime()));
+                    writer.append(DIVIDER);
+                    writer.append(DateTimeHelper.getFullTime(t.getEndTime()));
+                    writer.append(DIVIDER);
+                    writer.append(t.getNotes());
+
+                    writer.append(NEW_LINE);
+                }
+
+                writer.flush();
+                writer.close();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            progressDialog.dismiss();
+            Toast.makeText(mContext, R.string.report_saved, Toast.LENGTH_LONG).show();
+        }
+    }
     // view holder for client view
     public class ViewHolder extends RecyclerView.ViewHolder {
         @Bind(R.id.taskTitle)        TextView taskTitle;
@@ -150,6 +269,8 @@ public class TaskReportAdapter extends RecyclerView.Adapter<TaskReportAdapter.Vi
             setView();
 
         }
+
+
 
         public void setView() {
 

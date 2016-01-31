@@ -10,6 +10,9 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -28,10 +31,7 @@ import com.appers.ayvaz.thetravelingsalesman.utils.DateTimeHelper;
 import com.appers.ayvaz.thetravelingsalesman.utils.EventUtility;
 import com.appers.ayvaz.thetravelingsalesman.view.DividerItemDecoration;
 
-import org.joda.time.LocalDate;
-
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -41,6 +41,8 @@ import butterknife.ButterKnife;
 
 public class ReportTaskFragment extends Fragment {
 
+    private static final String DEBUG_TAG = "ReportTaskFragment: ";
+    private static final int REQUEST_CLIENT = 0;
     @Bind(R.id.recyclerView)
     RecyclerView mRecyclerView;
     @Bind(R.id.taskHeader)
@@ -55,30 +57,24 @@ public class ReportTaskFragment extends Fragment {
     ImageView mDateSorted;
     @Bind(R.id.timeSorted)
     ImageView mTimeSorted;
-
     @Bind(R.id.progressBarContainer)
     FrameLayout mProgressBarContainer;
-
     @Bind(R.id.startDateButton)
     Button mStartButton;
-
     @Bind(R.id.endDateButton)
     Button mEndButton;
-
-    @Bind(R.id.applyButton) Button mApplyButton;
-    @Bind(R.id.selectClient)    ImageButton mSelectClient;
+    @Bind(R.id.applyButton)
+    Button mApplyButton;
+    @Bind(R.id.selectClient)
+    ImageButton mSelectClient;
     @Bind(R.id.client_name)
     TextView mClientName;
-
-
     private int UNSORTED_ICON = R.drawable.ic_dark_sortable;
     private int ASC_ICON = R.drawable.ic_dark_sorted_asc;
     private int DESC_ICON = R.drawable.ic_dark_sorted_desc;
     private int[] sortable_icons = {UNSORTED_ICON, ASC_ICON, DESC_ICON};
-    private Calendar mStartDate, mEndDate;
+    private Calendar mStartDateSet, mEndDateSet, mStartDate, mEndDate;
     private Client mClient;
-
-    private static final int REQUEST_CLIENT = 0;
     private long lastEventId;
     private ImageView[] mHeaderIcons;
 
@@ -91,8 +87,14 @@ public class ReportTaskFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         mStartDate = Calendar.getInstance();
+        mStartDate.add(Calendar.MONTH, -2);
         mEndDate = Calendar.getInstance();
+        mEndDate.add(Calendar.MONTH, 2);
+
+        mStartDateSet = Calendar.getInstance();
+        mEndDateSet = Calendar.getInstance();
 
     }
 
@@ -109,6 +111,7 @@ public class ReportTaskFragment extends Fragment {
         mRecyclerView.addItemDecoration(new DividerItemDecoration(getContext(),
                 DividerItemDecoration.VERTICAL_LIST));
 
+        setHasOptionsMenu(true);
 
         updateUI();
 
@@ -142,17 +145,18 @@ public class ReportTaskFragment extends Fragment {
             }
         });
 
-        mStartButton.setText(DateTimeHelper.formatMed(mStartDate.getTime()));
-        mEndButton.setText(DateTimeHelper.formatMed(mEndDate.getTime()));
+
         mStartButton.setOnClickListener(new PickDateButtonListener());
         mEndButton.setOnClickListener(new PickDateButtonListener());
 
         mApplyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mStartDate != null && mEndDate != null) {
-                    new GetTask().execute(mStartDate, mEndDate);
-                }
+
+                mStartDate.setTime(mStartDateSet.getTime());
+                mEndDate.setTime(mEndDateSet.getTime());
+                new GetTask().execute(mStartDate, mEndDate);
+
             }
         });
 
@@ -177,6 +181,94 @@ public class ReportTaskFragment extends Fragment {
         return view;
     }
 
+    private void showStartTime() {
+        mStartButton.setText(DateTimeHelper.formatMed(mStartDateSet.getTime()));
+    }
+
+    private void showEndTime() {
+        mEndButton.setText(DateTimeHelper.formatMed(mEndDateSet.getTime()));
+    }
+
+    private void updateIcon() {
+        int[] orders = mAdapter.getOrders();
+        for (int i = 0; i < 3; i++) {
+            mHeaderIcons[i].setImageResource(sortable_icons[orders[i]]);
+        }
+    }
+
+    private void updateUI() {
+
+        if (mClient != null) {
+            mClientName.setText(mClient.toString());
+        }
+
+        showStartTime();
+        showEndTime();
+
+        if (lastEventId != EventUtility.getLastEventId(getContext().getContentResolver())) {
+            new GetTask().execute(mStartDate, mEndDate);
+        }
+
+
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        lastEventId = EventUtility.getLastEventId(getContext().getContentResolver());
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        //reset button time
+        mStartDateSet.setTime(mStartDate.getTime());
+        mEndDateSet.setTime(mEndDate.getTime());
+
+        // set client
+        if (mClient != null) {
+            mClient = ClientManager.get(getActivity()).getClient(mClient.getId());
+        }
+
+        updateUI();
+
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode != Activity.RESULT_OK) {
+            return;
+        }
+
+        if (requestCode == REQUEST_CLIENT) {
+            UUID uuid = UUID.fromString(data.getStringExtra(ClientPickActivity.EXTRA_CLIENT_ID));
+            mClient = ClientManager.get(getContext()).getClient(uuid);
+            updateUI();
+        }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+
+        inflater.inflate(R.menu.menu_report, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_save:
+                mAdapter.saveReport(mClient);
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+
+        }
+    }
+
     private class PickDateButtonListener implements View.OnClickListener {
 
         @Override
@@ -187,10 +279,10 @@ public class ReportTaskFragment extends Fragment {
 
             if (v.getId() == R.id.startDateButton) {
                 onDateSetListener = new OnStartDateSetListener();
-                date = mStartDate;
+                date = mStartDateSet;
             } else {
                 onDateSetListener = new OnEndDateSetListener();
-                date = mEndDate;
+                date = mEndDateSet;
             }
 
             DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(), onDateSetListener,
@@ -206,10 +298,10 @@ public class ReportTaskFragment extends Fragment {
 
         @Override
         public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-            mStartDate.set(year, monthOfYear, dayOfMonth);
-            if (!mStartDate.before(mEndDate)) {
-                mEndDate.set(mStartDate.get(Calendar.YEAR), mStartDate.get(Calendar.MONTH),
-                        mStartDate.get(Calendar.DAY_OF_MONTH));
+            mStartDateSet.set(year, monthOfYear, dayOfMonth);
+            if (!mStartDateSet.before(mEndDateSet)) {
+                mEndDateSet.set(mStartDateSet.get(Calendar.YEAR), mStartDateSet.get(Calendar.MONTH),
+                        mStartDateSet.get(Calendar.DAY_OF_MONTH));
                 showEndTime();
             }
             showStartTime();
@@ -220,10 +312,10 @@ public class ReportTaskFragment extends Fragment {
 
         @Override
         public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-            mEndDate.set(year, monthOfYear, dayOfMonth);
-            if (!mStartDate.before(mEndDate)) {
-                mStartDate.set(mEndDate.get(Calendar.YEAR), mEndDate.get(Calendar.MONTH),
-                        mEndDate.get(Calendar.DAY_OF_MONTH));
+            mEndDateSet.set(year, monthOfYear, dayOfMonth);
+            if (!mStartDateSet.before(mEndDateSet)) {
+                mStartDateSet.set(mEndDateSet.get(Calendar.YEAR), mEndDateSet.get(Calendar.MONTH),
+                        mEndDateSet.get(Calendar.DAY_OF_MONTH));
                 showStartTime();
             }
 
@@ -232,64 +324,16 @@ public class ReportTaskFragment extends Fragment {
         }
     }
 
-    private void showStartTime() {
-        mStartButton.setText(DateTimeHelper.formatMed(mStartDate.getTime()));
-    }
-
-    private void showEndTime() {
-        mEndButton.setText(DateTimeHelper.formatMed(mEndDate.getTime()));
-    }
-
-    private void updateIcon() {
-        int[] orders = mAdapter.getOrders();
-        for (int i = 0; i < 3; i++) {
-            mHeaderIcons[i].setImageResource(sortable_icons[orders[i]]);
-        }
-    }
-
-    private void updateUI() {
-        // set client
-        if (mClient != null) {
-            mClientName.setText(mClient.getFullName());
-        }
-        // set time
-        Calendar begin = Calendar.getInstance();
-        Calendar end = Calendar.getInstance();
-        begin.set(2015, 0, 1);
-        end.set(2016, 0, 31);
-//        List<Task> tasks = TaskManager.get(getContext()).queryInstance(begin, end, null);
-//        if (mAdapter == null) {
-//            mAdapter = new TaskReportAdapter(tasks);
-//            mRecyclerView.setAdapter(mAdapter);
-//        } else {
-//            mAdapter.setData(tasks);
-//            mAdapter.notifyDataSetChanged();
-//        }
-        mProgressBarContainer.setVisibility(View.VISIBLE);
-        new GetTask().execute(begin, end);
-
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        lastEventId = EventUtility.getLastEventId(getContext().getContentResolver());
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (lastEventId != EventUtility.getLastEventId(getContext().getContentResolver())) {
-            updateUI();
-        }
-    }
-
     private class GetTask extends AsyncTask<Calendar, Void, List<Task>> {
 
         @Override
         protected List<Task> doInBackground(Calendar... params) {
+            if (mClient != null) {
+                return TaskManager.get(getContext()).query(mClient.getId(), params[0], params[1]);
+            }
 
-            return TaskManager.get(getContext()).queryInstance(params[0], params[1], null);
+            return TaskManager.get(getActivity()).queryInstance(params[0], params[1], null);
+
         }
 
         @Override
@@ -301,7 +345,7 @@ public class ReportTaskFragment extends Fragment {
         @Override
         protected void onPostExecute(List<Task> tasks) {
             if (mAdapter == null) {
-                mAdapter = new TaskReportAdapter(tasks);
+                mAdapter = new TaskReportAdapter(tasks, getActivity());
                 mRecyclerView.setAdapter(mAdapter);
             } else {
                 mAdapter.setData(tasks);
@@ -310,19 +354,6 @@ public class ReportTaskFragment extends Fragment {
 
             mProgressBarContainer.setVisibility(View.GONE);
 //            mRecyclerView.setVisibility(View.VISIBLE);
-        }
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode != Activity.RESULT_OK) {
-            return;
-        }
-
-        if (requestCode == REQUEST_CLIENT) {
-            UUID uuid = UUID.fromString(data.getStringExtra(ClientPickActivity.EXTRA_CLIENT_ID));
-            mClient = ClientManager.get(getContext()).getClient(uuid);
-            updateUI();
         }
     }
 }

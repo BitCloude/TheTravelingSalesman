@@ -83,4 +83,9 @@ public class DateTimeHelper {
         LocalDate l2 = new LocalDate(d2);
         return l1.getYear() == l2.getYear();
     }
+
+    public static String getFullTime(Date date) {
+        return DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.FULL,
+                Locale.getDefault()).format(date);
+    }
 }
