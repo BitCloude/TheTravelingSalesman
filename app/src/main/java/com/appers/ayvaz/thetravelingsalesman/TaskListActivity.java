@@ -169,12 +169,11 @@ public class TaskListActivity extends NavigationDrawerActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         boolean result = mAdapter.delete(mSelected);
 
-                        Toast.makeText(TaskListActivity.this, getString(R.string.task_delete_result,
+                        Toast.makeText(TaskListActivity.this,
+                                getString(R.string.task_delete_result,
                                 result ? "" : "not"), Toast.LENGTH_SHORT)
                                 .show();
-                        if (result) {
-                            mAdapter.notifyItemChanged(mSelected);
-                        }
+
                     }
                 })
                 .setNegativeButton(android.R.string.cancel, null)

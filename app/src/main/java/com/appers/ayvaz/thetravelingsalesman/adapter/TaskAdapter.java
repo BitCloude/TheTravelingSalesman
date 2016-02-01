@@ -53,7 +53,13 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
             return false;
         }
 
-        return TaskManager.get(mContext).delete(mTasks.get(position).getEventID());
+        boolean result = TaskManager.get(mContext).delete(mTasks.get(position).getEventID());
+        if (result) {
+            mTasks.remove(position);
+            notifyItemChanged(position);
+        }
+
+        return result;
     }
 
     public void clearData() {

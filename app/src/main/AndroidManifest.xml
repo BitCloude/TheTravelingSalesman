@@ -54,10 +54,10 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".LandingActivity"
+            android:launchMode="singleTask"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
@@ -87,6 +87,7 @@
 
         <activity
             android:name=".TaskListActivity"
+            android:launchMode="singleTask"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".TaskSearchResultActivity"
@@ -104,6 +105,7 @@
             android:launchMode="singleTop" />
         <activity
             android:name=".ReportTaskActivity"
+            android:launchMode="singleTask"
             android:theme="@style/AppTheme.NoActionBar" />
     </application>
 

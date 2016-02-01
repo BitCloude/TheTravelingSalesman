@@ -174,16 +174,22 @@ public class TaskReportAdapter extends RecyclerView.Adapter<TaskReportAdapter.Vi
 
         @Override
         protected void onPreExecute() {
-            progressDialog = new ProgressDialog(mContext);
-            progressDialog.setTitle(R.string.saving);
-            progressDialog.setMax(mTasks.size());
-            progressDialog.show();
+            if (mTasks.size() > 40) {
+                progressDialog = new ProgressDialog(mContext);
+                progressDialog.setTitle(R.string.saving);
+                progressDialog.setMax(mTasks.size());
+                progressDialog.show();
+            }
+
         }
 
         @Override
         protected void onProgressUpdate(Integer... values) {
             super.onProgressUpdate(values);
-            progressDialog.setProgress(values[0]);
+            if (progressDialog != null) {
+                progressDialog.setProgress(values[0]);
+            }
+
         }
 
         @Override
@@ -243,7 +249,10 @@ public class TaskReportAdapter extends RecyclerView.Adapter<TaskReportAdapter.Vi
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            progressDialog.dismiss();
+            if (progressDialog != null) {
+                progressDialog.dismiss();
+            }
+
             Toast.makeText(mContext, R.string.report_saved, Toast.LENGTH_LONG).show();
         }
     }

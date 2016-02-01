@@ -123,7 +123,7 @@ public class TaskManager {
         Calendar now = Calendar.getInstance();
         now.setTime(new Date());
         Calendar end = Calendar.getInstance();
-        end.set(END_YEAR, 11, 30, 23, 59);
+        end.set(END_YEAR, 11, 31, 23, 59);
 
         return query(clientID, now, end);
     }
@@ -131,13 +131,21 @@ public class TaskManager {
     public List<Task> query(UUID clientID, Calendar start, Calendar end) {
         List<Task> taskList = new ArrayList<>();
         List<Long> deleteList = new ArrayList<>();
+        String selection = null;
+        String[] selectionArgs = null;
+
+        if (clientID != null) {
+            selection = Cols.CLIENT_ID + " = ?";
+            selectionArgs = new String[]{clientID.toString()};
+        }
+
 
         // first, find all eventId that is related to the client
         Cursor cursor = mDatabase.query(
                 DbSchema.TaskTable.NAME,
                 null,
-                Cols.CLIENT_ID + " = ?",
-                new String[]{clientID.toString()},
+                selection,
+                selectionArgs,
                 null,
                 null,
                 null

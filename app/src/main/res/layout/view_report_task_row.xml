@@ -30,16 +30,22 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:weightSum="10">
+        android:weightSum="10"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp">
 
 
 <HorizontalScrollView
     android:layout_width="0dp"
-    android:layout_height="match_parent"
-    android:layout_weight="5"
+    android:layout_height="wrap_content"
+    android:layout_weight="5.6"
     android:scrollbars="none"
     android:fillViewport="false"
     android:layout_marginRight="5dp"
+    android:layout_gravity="center"
+    android:layout_marginTop="3dp"
+    android:paddingTop="3dp"
+    android:paddingBottom="3dp"
     android:layout_marginLeft="5dp">
     <TextView
         android:id="@+id/taskTitle"
@@ -57,7 +63,7 @@
     <TextView
         android:id="@+id/taskDate"
         android:layout_width="0dp"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="4dp"
         android:layout_marginEnd="5dp"
         android:layout_marginStart="5dp"
@@ -68,7 +74,10 @@
 
         android:lines="1"
         android:text="MMM, 29"
-        android:textColor="@color/TextPrimary" />
+        android:textColor="@color/TextPrimary"
+        android:layout_gravity="center"
+        android:paddingTop="3dp"
+        android:paddingBottom="3dp" />
 
 
     <include layout="@layout/view_divider_vertical" />
@@ -76,24 +85,23 @@
     <TextView
         android:id="@+id/taskTime"
         android:layout_width="0dp"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginEnd="5dp"
         android:layout_marginStart="5dp"
-        android:layout_weight="1.6"
+        android:layout_weight="2.2"
         android:gravity="center"
         android:text="12:12"
-        android:textColor="@color/TextPrimary" />
+        android:textColor="@color/TextPrimary"
+        android:layout_gravity="center" />
 
-    <include layout="@layout/view_divider_vertical" />
+        <!--CheckBox
+            android:id="@+id/statusCheckBox"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
 
-    <CheckBox
-        android:id="@+id/statusCheckBox"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-
-        android:layout_marginStart="5dp"
-        android:layout_weight="1.2"
-        android:checked="false" />
+            android:layout_marginStart="5dp"
+            android:layout_weight="1.2"
+            android:checked="false" /-->
 
     </LinearLayout>
 

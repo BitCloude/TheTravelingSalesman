@@ -200,6 +200,8 @@ public class ReportTaskFragment extends Fragment {
 
         if (mClient != null) {
             mClientName.setText(mClient.toString());
+        } else {
+            mClientName.setText(R.string.client_not_selected);
         }
 
         showStartTime();

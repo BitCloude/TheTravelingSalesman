@@ -27,7 +27,7 @@
                 android:orientation="vertical"
                 >
                 <include layout="@layout/view_report_client"/>
-                <include layout="@layout/view_report_status"/>
+                <!--include layout="@layout/view_report_status"/-->
                 <include layout="@layout/view_report_date_range"/>
 
             </LinearLayout>
