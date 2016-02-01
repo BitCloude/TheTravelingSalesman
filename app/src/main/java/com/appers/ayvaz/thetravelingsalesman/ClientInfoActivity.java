@@ -124,28 +124,28 @@ public class ClientInfoActivity extends AppCompatActivity {
 
         }
 
-        if (mClient.getFirstPhone() != null && !mClient.getFirstPhone().equals("")) {
+        if (!TextUtils.isEmpty(mClient.getFirstPhone())) {
             addToView(R.layout.view_client_phone, 0);
             bindPhone(mCommContainer, mClient.getFirstPhone());
         }
 
-        if (mClient.getSecondPhone() != null && !mClient.getSecondPhone().equals("")) {
+        if (!TextUtils.isEmpty(mClient.getSecondPhone())) {
             addToView(R.layout.view_client_phone, 0);
             bindPhone(mCommContainer, mClient.getSecondPhone());
         }
 
-        if (mClient.getEmail() != null && !mClient.getEmail().equals("")) {
+        if (!TextUtils.isEmpty(mClient.getEmail())) {
             addToView(R.layout.view_client_email, 0);
             bindEmail(mCommContainer);
         }
 
 
-        if (mClient.getCompany() != null && !mClient.getCompany().equals("")) {
+        if (!TextUtils.isEmpty(mClient.getCompany())) {
             addToView(R.layout.view_client_other_info, 1);
             bindOtherInfo(mOtherContainer, getResources().getString(R.string.company), mClient.getCompany());
         }
 
-        if (mClient.getNote() != null && !mClient.getNote().equals("")) {
+        if (!TextUtils.isEmpty(mClient.getNote())) {
             addToView(R.layout.view_client_other_info, 1);
             bindOtherInfo(mOtherContainer, getResources().getString(R.string.note), mClient.getNote());
         }

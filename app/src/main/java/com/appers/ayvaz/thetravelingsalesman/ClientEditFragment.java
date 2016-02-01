@@ -21,6 +21,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -56,21 +57,25 @@ public class ClientEditFragment extends Fragment {
     private static final String DIALOG_DELETE = "DialogDelete";
     private static final String DIALOG_PHOTO = "DialogPhoto";
     @Bind(R.id.firstName)
-    TextView mFirstName;
+    EditText mFirstName;
     @Bind(R.id.lastName)
-    TextView mLastName;
+    EditText mLastName;
     @Bind(R.id.client_phone_first)
-    TextView mEmail;
+    EditText mEmail;
     @Bind(R.id.company)
-    TextView mCompany;
+    EditText mCompany;
     @Bind(R.id.mobile)
-    TextView mPhoneFirst;
+    EditText mPhoneFirst;
     @Bind(R.id.secondPhone)
-    TextView mPhoneSecond;
+    EditText mPhoneSecond;
     @Bind(R.id.note)
-    TextView mNote;
+    EditText mNote;
     @Bind(R.id.address)
-    TextView mAddress;
+    EditText mAddress;
+    @Bind(R.id.linkedIn) EditText mLinkedIn;
+    @Bind(R.id.designation) EditText mDesignation;
+
+
     @Bind(R.id.imageView)
     ImageView mImageView;
     @Bind(R.id.deletePhoto)
@@ -79,6 +84,7 @@ public class ClientEditFragment extends Fragment {
     private Client mClient;
     private File mPhotoFile, mPhotoTmp;
     private MenuItem mStar, mDelete;
+
 
 
     public ClientEditFragment() {
@@ -338,8 +344,8 @@ public class ClientEditFragment extends Fragment {
         mClient.setNote(mNote.getText().toString());
         mClient.setAddress(mAddress.getText().toString());
         mClient.setCompany(mCompany.getText().toString());
-
-        // // TODO: 028 12/28 set other attributes
+        mClient.setLinkedIn(mLinkedIn.getText().toString());
+        mClient.setDesignation(mDesignation.getText().toString());
     }
 
     private void updateUI() {
@@ -355,7 +361,8 @@ public class ClientEditFragment extends Fragment {
         mAddress.setText(mClient.getAddress());
         mEmail.setText(mClient.getEmail());
         mPhoneSecond.setText(mClient.getSecondPhone());
-        // // TODO: 007 01/07 set other attributes
+        mLinkedIn.setText(mClient.getLinkedIn());
+        mDesignation.setText(mClient.getDesignation());
 
     }
 
