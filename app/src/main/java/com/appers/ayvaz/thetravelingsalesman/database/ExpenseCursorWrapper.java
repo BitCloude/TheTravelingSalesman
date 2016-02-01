@@ -23,6 +23,7 @@ public class ExpenseCursorWrapper extends CursorWrapper {
         byte[] img = getBlob(getColumnIndex(DbSchema.ExpenseTable.Cols.EXPENSE_IMAGE));
 
         Expense expense = new Expense(Integer.valueOf(id));
+       // Expense expense = new Expense();
         expense.setTrip_id(Integer.valueOf(trip_id));
         expense.setClient_id(Integer.valueOf(client_id));
         expense.setType(type);

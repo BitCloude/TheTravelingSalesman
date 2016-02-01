@@ -12,6 +12,7 @@ import com.appers.ayvaz.thetravelingsalesman.database.TripCursorWrapper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class TripContent {
 
@@ -36,13 +37,14 @@ public class TripContent {
 
     private static ContentValues getContentValues(Trip trip) {
         ContentValues values = new ContentValues();
-        values.put(DbSchema.TripTable.Cols.TRIP_ID, Integer.toString(trip.getId()));
-        values.put(DbSchema.TripTable.Cols.TRIP_CLIENT_ID, Integer.toString(trip.getClient_id()));
+       // values.put(DbSchema.TripTable.Cols.TRIP_ID, Integer.toString(trip.getId()));
+        values.put(DbSchema.TripTable.Cols.TRIP_CLIENT_ID, trip.getClient_id().toString());
         values.put(DbSchema.TripTable.Cols.TRIP_TYPE, trip.getType());
         values.put(DbSchema.TripTable.Cols.TRIP_FROM, trip.getTrip_from());
         values.put(DbSchema.TripTable.Cols.TRIP_TO, trip.getTrip_to());
         values.put(DbSchema.TripTable.Cols.TRIP_DATE_FROM, trip.getDate_from());
         values.put(DbSchema.TripTable.Cols.TRIP_DATE_TO, trip.getDate_to());
+        values.put(DbSchema.TripTable.Cols.TRIP_BOARDING,trip.getBoarding());
         values.put(DbSchema.TripTable.Cols.TRIP_DESCRIPTION, trip.getDescription());
         values.put(DbSchema.TripTable.Cols.TRIP_IMAGE, trip.getImage());
 
@@ -70,7 +72,28 @@ public class TripContent {
         List<Trip> trips = new ArrayList<>();
         String whereClause = null;
         String[] whereArgs = null;
-        String sortOrder = DbSchema.TripTable.Cols.TRIP_ID;
+        String sortOrder = null;
+
+
+        try (TripCursorWrapper cursor = queryTrips(whereClause, whereArgs,
+                sortOrder)) {
+            cursor.moveToFirst();
+            while (!cursor.isAfterLast()) {
+                trips.add(cursor.getTrip());
+                cursor.moveToNext();
+            }
+        }
+
+        return trips;
+    }
+
+    public List<Trip> getClientTrips(UUID uuid) {
+        List<Trip> trips = new ArrayList<>();
+        String whereClause  = DbSchema.TripTable.Cols.TRIP_CLIENT_ID + " = ?";
+        String[] whereArgs = new String[]{uuid.toString()};
+        String sortOrder = null;
+
+
 
 
         try (TripCursorWrapper cursor = queryTrips(whereClause, whereArgs,

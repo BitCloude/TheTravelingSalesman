@@ -38,7 +38,7 @@ public class ExpenseContent {
 
     private static ContentValues getContentValues(Expense expense) {
         ContentValues values = new ContentValues();
-        values.put(DbSchema.ExpenseTable.Cols.EXPENSE_ID, Integer.toString(expense.getId()));
+        //values.put(DbSchema.ExpenseTable.Cols.EXPENSE_ID, Integer.toString(expense.getId()));
         values.put(DbSchema.ExpenseTable.Cols.EXPENSE_TRIP_ID, Integer.toString(expense.getTrip_id()));
         values.put(DbSchema.ExpenseTable.Cols.EXPENSE_CLIENT_ID, Integer.toString(expense.getClient_id()));
         values.put(DbSchema.ExpenseTable.Cols.EXPENSE_TYPE, expense.getType());

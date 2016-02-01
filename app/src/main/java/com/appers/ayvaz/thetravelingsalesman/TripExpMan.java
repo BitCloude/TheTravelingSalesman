@@ -1,5 +1,6 @@
 package com.appers.ayvaz.thetravelingsalesman;
 
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -16,23 +17,40 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.appers.ayvaz.thetravelingsalesman.database.TripCursorWrapper;
+import com.appers.ayvaz.thetravelingsalesman.dialog.DatePickerFragment;
+import com.appers.ayvaz.thetravelingsalesman.models.Client;
+import com.appers.ayvaz.thetravelingsalesman.models.ClientManager;
 import com.appers.ayvaz.thetravelingsalesman.models.Expense;
 import com.appers.ayvaz.thetravelingsalesman.models.ExpenseContent;
 import com.appers.ayvaz.thetravelingsalesman.models.Trip;
 import com.appers.ayvaz.thetravelingsalesman.models.TripContent;
 
-public class TripExpMan extends NavigationDrawerActivity {
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
+
+//Intent Extras
+//request expense tab(trip is default), KEY: ORIGIN, NAME: "EXPENSE"
+//set default client, KEY: CLIENT, NAME: client's UUID in String
+
+public class TripExpMan extends NavigationDrawerActivity implements SectionsPagerAdapter.PlaceholderFragment.SectionNumberHolder {
 
 
     LinearLayout linearLayout;
-    RelativeLayout childLayout;
-    String[] from= {"October 2015", "November 2015", "December 2015","January 2016", "February 2016", "March 2016","April 2016", "May 2016", "June 2016", "July 2016", "August 2016", "September 2016"};
+    RelativeLayout contextChildView = null;
+    String[] from = {"October 2015", "November 2015", "December 2015", "January 2016", "February 2016", "March 2016", "April 2016", "May 2016", "June 2016", "July 2016", "August 2016", "September 2016"};
 
     String data = "Trip From Delhi to Hyderhabad";
     String cost = "$125,000";
@@ -40,7 +58,15 @@ public class TripExpMan extends NavigationDrawerActivity {
     CharSequence mTitle, mDrawerTitle;
     NavigationView mNavigationView;
     ActionBarDrawerToggle mDrawerToggle;
+    int fragmentSection;
+    static String clientDefault = null;
 
+
+
+    @Override
+    public void reportSection(int position) {
+
+    }
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -67,6 +93,16 @@ public class TripExpMan extends NavigationDrawerActivity {
         getLayoutInflater().inflate(R.layout.view_tab, appBar);
 
         setTitle("Trips and Expenses");
+
+        String request = null;
+
+        Intent incoming = getIntent();
+        if(incoming != null && incoming.hasExtra("ORIGIN"))
+            request = incoming.getStringExtra("ORIGIN");
+        if(incoming != null && incoming.hasExtra("CLIENT"))
+            clientDefault = incoming.getStringExtra("CLIENT");
+
+
        /* Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setNavigationIcon(R.drawable.ic_drawer);
        setSupportActionBar(toolbar);
@@ -84,11 +120,28 @@ public class TripExpMan extends NavigationDrawerActivity {
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
-
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabLayout);
         tabLayout.setupWithViewPager(mViewPager);
+        tabLayout.setOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager) {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                super.onTabSelected(tab);
+                fragmentSection = tab.getPosition();
 
+            }
 
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
+//mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+        // mViewPager.setCurrentItem(tab.getPosition());
 
       /*  FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -98,10 +151,44 @@ public class TripExpMan extends NavigationDrawerActivity {
                         .setAction("Action", null).show();
             }
         });
-
 */
+        if(request !=null && request.equals("EXPENSE"))
+        mViewPager.setCurrentItem(1); //expense tab
 
     }
+
+    public void editIntent(Object obj){
+        if(obj instanceof Trip) {
+            Intent intent = new Intent(getApplicationContext(), TravelDetail.class);
+            intent.putExtra("TRIP", (Trip) obj);
+            startActivity(intent);
+            Toast.makeText(getApplicationContext(),""+((Trip) obj).getId(),Toast.LENGTH_LONG).show();
+        }
+        else if(obj instanceof Expense) {
+            Intent intent = new Intent(getApplicationContext(), ExpenseAdd.class);
+            intent.putExtra("EXPENSE", (Expense) obj);
+            startActivity(intent);
+            Toast.makeText(getApplicationContext(),""+((Expense) obj).getId(),Toast.LENGTH_LONG).show();
+        }
+
+    }
+
+    public void removeUtil(Object obj){
+
+        TripContent tripContent = TripContent.get(getApplicationContext());
+        ExpenseContent expenseContent = ExpenseContent.get(getApplicationContext());
+        if(obj instanceof Trip) {
+            tripContent.delete(((Trip) obj).getId());
+            Toast.makeText(getApplicationContext(),""+((Trip) obj).getId(),Toast.LENGTH_LONG).show();
+        }
+        else if(obj instanceof Expense) {
+            expenseContent.delete(((Expense) obj).getId());
+            Toast.makeText(getApplicationContext(),""+((Expense) obj).getId(),Toast.LENGTH_LONG).show();
+        }
+
+
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -125,8 +212,24 @@ public class TripExpMan extends NavigationDrawerActivity {
         if (id == R.id.action_settings) {
             return true;
         }
-        if(id == 66)
+        if (id == 66) {
+
+            //SectionsPagerAdapter.PlaceholderFragment placeholderFragment = (SectionsPagerAdapter.PlaceholderFragment) getSupportFragmentManager().findFragmentById(R.id.fragmentLinearLayout);
+
+
+            if (fragmentSection == 0) {
+                Intent intent = new Intent(getApplicationContext(), TravelDetail.class);
+                if(SectionsPagerAdapter.PlaceholderFragment.selection !=null)
+                    intent.putExtra("CLIENT", SectionsPagerAdapter.PlaceholderFragment.selection.getId().toString());
+                startActivity(intent);
+            } else {
+                Intent intent = new Intent(getApplicationContext(), ExpenseAdd.class);
+                startActivity(intent);
+            }
+
             return true;
+        }
+
       /*  if (mDrawerToggle.onOptionsItemSelected(item)) {
             return true;
         }
@@ -140,150 +243,57 @@ public class TripExpMan extends NavigationDrawerActivity {
         int groupId = 1;
         menu.add(groupId, 11, 100, "Edit");
         menu.add(groupId, 22, 200, "Delete");
+        contextChildView = (RelativeLayout) v;
     }
+
+
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
+
+
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == 11) {
-            Toast.makeText(getApplicationContext(), "Edit", Toast.LENGTH_SHORT).show();
-            return true;
-        }
+        switch (id) {
 
-        if (id == 22) {
-            Toast.makeText(getApplicationContext(), "Delete", Toast.LENGTH_SHORT).show();
-            return true;
-        }
+            case 11: {
+
+                editIntent(contextChildView.getTag());
+                Toast.makeText(getApplicationContext(), "Edit", Toast.LENGTH_SHORT).show();
+                return true;
+            }
+
+            case 22: {
+                // SectionsPagerAdapter.PlaceholderFragment placeholderFragment = (SectionsPagerAdapter.PlaceholderFragment)getSupportFragmentManager().findFragmentById(R.id.fragmentLinearLayout);
+                // if(placeholderFragment != null){
+                removeUtil(contextChildView.getTag());
+
+                LinearLayout linear = (LinearLayout) contextChildView.getParent();
+                linear.removeView(contextChildView);
+                Toast.makeText(getApplicationContext(), "Delete", Toast.LENGTH_SHORT).show();
+                return true;
+            }
+
+             }
+            return super.onContextItemSelected(item);
 
 
-        return super.onContextItemSelected(item);
+
     }
 
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    public static class PlaceholderFragment extends Fragment {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
-        LinearLayout linearLayout;
-        RelativeLayout childLayout;
-        String[] from= {"October 2015", "November 2015", "December 2015","January 2016", "February 2016", "March 2016","April 2016", "May 2016", "June 2016", "July 2016", "August 2016", "September 2016"};
-
-        String data = "Trip From Delhi to Hyderhabad";
-        String cost = "$125,000";
-
-        String dataExp = "Hotel Bill From Delhi to Hyderhabad";
-        String costExp = "$25,000";
-
-        ImageButton button;
-        private static final String ARG_SECTION_NUMBER = "section_number";
-
-        public PlaceholderFragment() {
-        }
-
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         */
-        public static PlaceholderFragment newInstance(int sectionNumber) {
-            PlaceholderFragment fragment = new PlaceholderFragment();
-            Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-            fragment.setArguments(args);
-            return fragment;
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_trip_exp_man, container, false);
-
-
-                linearLayout = (LinearLayout) rootView.findViewById(R.id.fragmentLinearLayout);
-
-            Expense mExpense = new Expense(1);
-                    mExpense.setDescription("Hotel bill from database");
-                    mExpense.setAmount("50");
-            Trip mTrip = new Trip(1);
-                    mTrip.setTrip_from("from los Angeles");
-                    mTrip.setTrip_to(" to NEW York");
-
-            ExpenseContent expenseContent = ExpenseContent.get(getActivity());
-            expenseContent.addExpense(mExpense);
-
-            TripContent tripContent = TripContent.get(getActivity());
-            tripContent.addTrip(mTrip);
-
-                for (int i = 0; i < 12; i++) {
-                    childLayout = new RelativeLayout(getActivity());
-                    RelativeLayout.LayoutParams layoutParamsCost = new RelativeLayout.LayoutParams(
-                            RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                    layoutParamsCost.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-
-                    RelativeLayout.LayoutParams layoutParamsData = new RelativeLayout.LayoutParams(
-                            RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                    layoutParamsData.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-                    //childLayout.setOrientation(LinearLayout.HORIZONTAL);
-                    TextView textdata = new TextView(getActivity());
-                    textdata.setLines(2);
-                    TextView textcost = new TextView(getActivity());
-                    textcost.setLines(1);
-
-                    if(getArguments().getInt(ARG_SECTION_NUMBER) == 1) {
-                        textdata.setText(tripContent.getTrip(1).getTrip_from());
-                        textcost.setText(tripContent.getTrip(1).getTrip_to());
-                    }
-                    else {
-                        textdata.setText(expenseContent.getExpense(1).getDescription());
-                        textcost.setText(expenseContent.getExpense(1).getAmount());
-                    }
-
-
-                    childLayout.setBackgroundColor(Color.LTGRAY);
-                    childLayout.addView(textdata, layoutParamsData);
-                    childLayout.addView(textcost, layoutParamsCost);
-
-
-                    TextView textView = new TextView(getActivity());
-                    textView.setText(from[i]);
-                    //   ArrayAdapter<String> adapter4 = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,expenses);
-                    // listViewExpenses.setAdapter(adapter4);
-
-                    //childlayout.addView(textView);
-                    linearLayout.addView(textView);
-                    linearLayout.addView(childLayout);
-
-                    registerForContextMenu(childLayout);
-
-                   button = (ImageButton) rootView.findViewById(R.id.fragmentCalenderButton);
-                    button.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Intent intent = new Intent(getActivity(),ReportsActivity.class);
-                            startActivity(intent);
-                        }
-                    });
-
-                }
-
-
-
-
-          //  TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-           // textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
-            return rootView;
-        }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        checkMenu(R.id.nav_trip);
     }
+
+}
 
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
      * one of the sections/tabs/pages.
      */
-    public class SectionsPagerAdapter extends FragmentPagerAdapter {
+     class SectionsPagerAdapter extends FragmentPagerAdapter {
 
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
@@ -291,7 +301,7 @@ public class TripExpMan extends NavigationDrawerActivity {
 
         @Override
         public Fragment getItem(int position) {
-            // getClient is called to instantiate the fragment for the given page.
+            // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
             return PlaceholderFragment.newInstance(position + 1);
         }
@@ -312,11 +322,233 @@ public class TripExpMan extends NavigationDrawerActivity {
             }
             return null;
         }
+
+
+
+
+
+
+        public static class PlaceholderFragment extends Fragment {
+            /**
+             * The fragment argument representing the section number for this
+             * fragment.
+             */
+            SectionNumberHolder mCallback;
+
+
+            static Client selection=null;
+            AutoCompleteTextView autoCompleteTextView;
+            TextView dateSet;
+            ClientManager clientManager;
+            List<Client> clientList;
+            List<Object> list;
+            boolean tripBool;
+            ExpenseContent expenseContent;
+
+            TripContent tripContent;
+
+            public interface SectionNumberHolder {
+                public void reportSection(int position);
+            }
+
+            LinearLayout linearLayout;
+            RelativeLayout childLayout;
+            String[] from = {"October 2015", "November 2015", "December 2015", "January 2016", "February 2016", "March 2016", "April 2016", "May 2016", "June 2016", "July 2016", "August 2016", "September 2016"};
+
+            String data = "Trip From Delhi to Hyderhabad";
+            String cost = "$125,000";
+
+            String dataExp = "Hotel Bill From Delhi to Hyderhabad";
+            String costExp = "$25,000";
+            Calendar date = Calendar.getInstance();
+
+
+            ImageButton button;
+            private static final String ARG_SECTION_NUMBER = "section_number";
+            private static int section;
+
+            public PlaceholderFragment() {
+            }
+
+            /**
+             * Returns a new instance of this fragment for the given section
+             * number.
+             */
+            public static PlaceholderFragment newInstance(int sectionNumber) {
+                PlaceholderFragment fragment = new PlaceholderFragment();
+                Bundle args = new Bundle();
+                args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+                fragment.setArguments(args);
+                section = sectionNumber;
+                return fragment;
+            }
+
+
+            @Override
+            public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                     Bundle savedInstanceState) {
+                View rootView = inflater.inflate(R.layout.fragment_trip_exp_man, container, false);
+                tripBool = true;
+                try {
+                    mCallback = (SectionNumberHolder) getActivity();
+                } catch (ClassCastException e) {
+                    throw new ClassCastException(getActivity().toString()
+                            + " must implement SectionNumberHolder");
+                }
+
+                dateSet = (TextView) rootView.findViewById(R.id.expensesDateText);
+                button = (ImageButton) rootView.findViewById(R.id.fragmentCalenderButton);
+                autoCompleteTextView = (AutoCompleteTextView) rootView.findViewById(R.id.tripExpManAutoClient);
+                linearLayout = (LinearLayout) rootView.findViewById(R.id.fragmentLinearListLayout);
+                //mCallback.reportSection(getArguments().getInt(ARG_SECTION_NUMBER));
+                clientManager= ClientManager.get(getActivity());
+                clientList = clientManager.getClients();
+
+
+                ArrayAdapter<Client> adapter = new ArrayAdapter<Client>(getActivity(), android.R.layout.simple_dropdown_item_1line, clientList);
+                autoCompleteTextView.setAdapter(adapter);
+                expenseContent = ExpenseContent.get(getActivity());
+
+                tripContent = TripContent.get(getActivity());
+
+                if(TripExpMan.clientDefault != null && TripCursorWrapper.isUUIDValid(TripExpMan.clientDefault)) {
+                    selection = clientManager.getClient(UUID.fromString(TripExpMan.clientDefault));
+                    autoCompleteTextView.setText(selection.toString());
+                }
+
+                button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //DatePickerFragment datePickerFragmentragment = new DatePickerFragment();
+                        // FragmentTransaction ft = getFragmentManager().beginTransaction;
+                        // ft.add(YourFragment.newInstance(), null);
+                        // ft.commit();
+                        android.support.v4.app.FragmentTransaction ft = getFragmentManager().beginTransaction();
+                        ft.add(DatePickerFragment.newInstance(date), null);
+                       ft.commit();
+                       // dateSet.setText(date.toString());
+
+
+                    }
+                });
+
+                display();
+
+
+                autoCompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        selection= (Client)parent.getItemAtPosition(position);
+                        linearLayout.removeAllViews();
+                        display();
+                    }
+                });
+
+
+
+                //END OF LOOP
+
+                //  TextView textView = (TextView) rootView.findViewById(R.id.section_label);
+                // textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
+                return rootView;
+            }
+
+            public void display(){
+
+                if(selection == null){
+                    if (getArguments().getInt(ARG_SECTION_NUMBER) == 1) {
+                        list = new ArrayList<Object>(tripContent.getTrips()) ;
+                        tripBool = true;
+                    }
+                    else {
+                        list = new ArrayList<Object>(expenseContent.getExpenses());
+                        tripBool = false;
+                    }}
+                else
+                {
+                    if (getArguments().getInt(ARG_SECTION_NUMBER) == 1) {
+                        list = new ArrayList<Object>(tripContent.getClientTrips(selection.getId())) ;
+                        tripBool = true;
+                    }
+                    else {
+                        list = new ArrayList<Object>(expenseContent.getExpenses());
+                        tripBool = false;
+                    }
+
+
+                }
+                int i = 0;
+                while(i < list.size()) {
+                    childLayout = new RelativeLayout(getActivity());
+                    RelativeLayout.LayoutParams layoutParamsCost = new RelativeLayout.LayoutParams(
+                            RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                    layoutParamsCost.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+
+                    RelativeLayout.LayoutParams layoutParamsData = new RelativeLayout.LayoutParams(
+                            RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                    layoutParamsData.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+                    //childLayout.setOrientation(LinearLayout.HORIZONTAL);
+                    TextView textdata = new TextView(getActivity());
+                    textdata.setLines(2);
+                    TextView textcost = new TextView(getActivity());
+                    textcost.setLines(1);
+
+                    if(tripBool) {
+                        Trip trip = (Trip)list.get(i);
+                        textdata.setText(trip.getClient_id().toString());
+                        textcost.setText(trip.getTrip_to());
+                        childLayout.setTag(trip);
+                    }
+                    else {
+                        Expense expense = (Expense)list.get(i);
+                        textdata.setText(expense.getDescription());
+                        textcost.setText(expense.getAmount());
+                        childLayout.setTag(expense);
+                    }
+
+                    /*if (getArguments().getInt(ARG_SECTION_NUMBER) == 1) {
+                        textdata.setText(tripContent.getTrip(1).getTrip_from());
+                        textcost.setText(tripContent.getTrip(1).getTrip_to());
+                    } else {
+                        textdata.setText(expenseContent.getExpense(1).getDescription());
+                        textcost.setText(expenseContent.getExpense(1).getAmount());
+                    }
+                   */
+
+                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                    params.setMargins(1, 1, 1, 1);
+                    childLayout.setLayoutParams(params);
+                    childLayout.setBackgroundColor(Color.LTGRAY);
+                    childLayout.addView(textdata, layoutParamsData);
+                    childLayout.addView(textcost, layoutParamsCost);
+
+                    getActivity().registerForContextMenu(childLayout);
+
+                    TextView textView = new TextView(getActivity());
+                    //textView.setText(from[i]);
+                    //   ArrayAdapter<String> adapter4 = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,expenses);
+                    // listViewExpenses.setAdapter(adapter4);
+
+                    //childlayout.addView(textView);
+                    //  linearLayout.addView(textView);
+                    linearLayout.addView(childLayout);
+
+
+
+                    i++;
+                }
+
+
+            }
+
+        }
+
+
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        checkMenu(R.id.nav_trip);
-    }
-}
+
+
+
+/**
+ * A placeholder fragment containing a simple view.
+ */
