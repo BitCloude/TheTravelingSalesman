@@ -99,8 +99,16 @@ Spinner spinnerType;
         else if(intentRecieved !=null && intentRecieved.hasExtra("CLIENT")){
             UUID clientUUID = UUID.fromString(intentRecieved.getStringExtra("CLIENT"));
             selectedClient =clientManager.getClient(clientUUID);
+            if(selectedClient!=null){
             clientSelected();
             autoCompleteTextViewClients.setText(selectedClient.toString());
+            if(intentRecieved.hasExtra("TRIP_ID"))
+            {
+                selectedTrip = tripContent.getTrip(intentRecieved.getIntExtra("TRIP_ID",0));
+                if(selectedTrip!=null){
+                    autoCompleteTextViewTrips.setText(selectedTrip.toString());
+                }
+            }}
             textDateFrom.setText(String.format("%tm/%td/%tY", dateFrom,dateFrom,dateFrom));
             textDateTo.setText(String.format("%tm/%td/%tY", dateTo, dateTo, dateTo));
         } else{
@@ -162,6 +170,10 @@ Spinner spinnerType;
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), TravelDetail.class);
+                if(selectedClient!=null)
+                {
+                    intent.putExtra("CLIENT", selectedClient.getId().toString());
+                }
                 startActivity(intent);
             }
         });
@@ -224,9 +236,10 @@ Spinner spinnerType;
             spinnerType.setSelection(4);
     }
     public void clientSelected(){
+        if(selectedClient!=null){
         tripList = tripContent.getClientTrips(selectedClient.getId());
         ArrayAdapter<Trip> adapterTrip = new ArrayAdapter<Trip>(this, android.R.layout.simple_dropdown_item_1line, tripList);
-        autoCompleteTextViewTrips.setAdapter(adapterTrip);
+        autoCompleteTextViewTrips.setAdapter(adapterTrip);}
     }
 
     public void loadData(Expense expense) {

@@ -49,7 +49,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
 
-                    android:src="@android:drawable/ic_menu_my_calendar" />
+                    android:src="@drawable/ic_travel_detail_calender_dark" />
 
 
             </LinearLayout>

@@ -513,14 +513,14 @@ public class TripExpMan extends NavigationDrawerActivity implements SectionsPage
 
                     if(tripBool) {
                         Trip trip = (Trip)list.get(i);
-                        textdata.setText(trip.getClient_id().toString());
-                        textcost.setText(trip.getTrip_to());
+                        textdata.setText("From: "+ trip.getTrip_from());
+                        textcost.setText("To: "+ trip.getTrip_to());
                         childLayout.setTag(trip);
                     }
                     else {
                         Expense expense = (Expense)list.get(i);
                         textdata.setText(expense.getDescription());
-                        textcost.setText(expense.getAmount());
+                        textcost.setText("$" + expense.getAmount());
                         childLayout.setTag(expense);
                     }
 

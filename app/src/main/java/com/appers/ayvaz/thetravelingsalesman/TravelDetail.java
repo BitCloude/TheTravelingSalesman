@@ -4,9 +4,11 @@ import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -15,6 +17,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -43,6 +46,7 @@ public class TravelDetail extends AppCompatActivity {
     EditText editTravelFrom, editTravelTo, editTravelBoardingPass, editTravelDescription;
     static TextView textDateFrom, textDateTo;
     AutoCompleteTextView autoCompleteTextView;
+    Button addExpense;
 
 
     RadioGroup radioGroup;
@@ -61,6 +65,7 @@ public class TravelDetail extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        addExpense = (Button) findViewById(R.id.travelDetailAddExpense);
         radPlane = (RadioButton) findViewById(R.id.buttonTravelPlane);
         radTrain = (RadioButton) findViewById(R.id.buttonTravelTrain);
         radCar = (RadioButton) findViewById(R.id.buttonTravelCar);
@@ -173,6 +178,19 @@ public class TravelDetail extends AppCompatActivity {
 
             }
         });
+
+        addExpense.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if(saveData()) {
+                    Intent intent = new Intent(getApplicationContext(), ExpenseAdd.class);
+                    intent.putExtra("CLIENT", selection.getId().toString());
+                    intent.putExtra("TRIP_ID", trip_main.getId());
+                    startActivity(intent);
+                }
+            }
+        });
         // spinnerTravelClient = (Spinner) findViewById(R.id.spinnerTravelAddClient);
         //ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item,clients);
         //spinnerTravelClient.setAdapter(adapter);
@@ -234,7 +252,9 @@ public class TravelDetail extends AppCompatActivity {
         textDateTo.setText(TripContent.CalendarToString(trip.getDate_to()));
         dateTo = trip.getDate_to();
         tripType = trip.getType();
+        if(tripType!=null)
         RadioCheck(tripType);
+
         trip_main = trip;
     }
 
@@ -245,15 +265,19 @@ public class TravelDetail extends AppCompatActivity {
     }
 
         //last method to be run, if a Trip does not exist add. otherwise update
-    public void saveData(){
+    public boolean saveData(){
 
         boolean edit = true;
         if(trip_main == null){
             trip_main= new Trip();
             edit = false;
         }
-        //if(selection != null)
+        if(selection != null && !autoCompleteTextView.getText().toString().equals(""))
         trip_main.setClient_id(selection.getId());
+        else {
+            autoCompleteTextView.setHintTextColor(ContextCompat.getColor(getApplicationContext(), R.color.hint_text_red));
+            return false;
+        }
         trip_main.setTrip_from(editTravelFrom.getText().toString());
         trip_main.setTrip_to(editTravelTo.getText().toString());
         trip_main.setDescription(editTravelDescription.getText().toString());
@@ -268,11 +292,7 @@ public class TravelDetail extends AppCompatActivity {
         else
          tripContent.addTrip(trip_main);
 
-        Intent intent = new Intent(getApplicationContext(), TripExpMan.class);
-        intent.putExtra("ORIGIN", "TRIP");
-        intent.putExtra("CLIENT", selection.getId().toString());
-        startActivity(intent);
-
+        return true;
 
     }
 
@@ -300,7 +320,12 @@ public class TravelDetail extends AppCompatActivity {
             case R.id.action_settings:
                 return true;
             case 22:
-                saveData();
+                if(saveData()){
+                Intent intent = new Intent(getApplicationContext(), TripExpMan.class);
+                intent.putExtra("ORIGIN", "TRIP");
+                intent.putExtra("CLIENT", selection.getId().toString());
+                startActivity(intent);}
+
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
