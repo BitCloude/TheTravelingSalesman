@@ -17,37 +17,60 @@
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
         android:paddingTop="@dimen/activity_vertical_margin">
+        <RadioGroup
+            android:id="@+id/travelDetailRadioGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
 
-
-        <ImageButton
+        <RadioButton
             android:id="@+id/buttonTravelPlane"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:src="@android:drawable/ic_dialog_alert" />
 
-        <ImageButton
+            />
+            <!--android:src="@drawable/ic_trip_detail_plane" -->
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1"
+                android:clickable="false"/>
+
+        <RadioButton
             android:id="@+id/buttonTravelTrain"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:src="@android:drawable/ic_input_get" />
+            android:layout_gravity="center_horizontal"
 
-        <ImageButton
-            android:id="@+id/buttonTravelRoad"
+            />
+        <!-- android:src="@drawable/ic_trip_detail_train" -->
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1"
+                android:clickable="false"/>
+
+        <RadioButton
+            android:id="@+id/buttonTravelCar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:src="@android:drawable/ic_input_delete" />
+            android:layout_gravity="end"
+
+            />
+            <!-- android:src="@drawable/ic_trip_detail_car" -->
+
+        </RadioGroup>
+
 
         <ImageButton
             android:id="@+id/cameraTravelButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/buttonTravelPlane"
+            android:layout_below="@+id/travelDetailRadioGroup"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="20dp"
-            android:src="@android:drawable/ic_menu_camera"
+            android:src="@drawable/ic_travel_details_camera_dark"
             android:text="ADD Photo" />
 
         <AutoCompleteTextView
@@ -148,7 +171,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignTop="@id/travelDetailDateFrom"
-            android:src="@android:drawable/ic_menu_my_calendar" />
+            android:src="@drawable/ic_travel_detail_calender_dark" />
 
 
         <TextView
@@ -175,7 +198,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_below="@id/travelDetailButtonCalenderFrom"
-            android:src="@android:drawable/ic_menu_my_calendar" />
+            android:src="@drawable/ic_travel_detail_calender_dark" />
 
         <TextView
             android:id="@+id/travelDetailDescription"

@@ -26,85 +26,77 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:src="@android:drawable/ic_menu_camera"
+            android:src="@drawable/ic_travel_details_camera_dark"
             android:text="ADD Photo" />
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/ClientName"
-                android:layout_width="wrap_content"
+            <AutoCompleteTextView
+                android:id="@+id/expenseAddClientName"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
-                android:text="Client Name" />
-
-            <TextView
-                android:id="@+id/client"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignBaseline="@id/ClientName"
-                android:layout_marginLeft="75dp"
-                android:layout_toRightOf="@id/ClientName"
-                android:text="Replace W/ Client" />
-
-            <TextView
-                android:id="@+id/SelectTrip"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/ClientName"
-                android:layout_marginTop="10dp"
-                android:text="Select A Trip" />
-
+                android:hint="Client Name" />
 
             <ImageButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/buttonAddTravel"
-                android:src="@android:drawable/ic_menu_add"
-                android:layout_alignTop="@+id/SelectTrip"
+                android:src="@drawable/ic_expense_add_plus_dark"
+                android:layout_alignTop="@+id/expenseAddSelectTrip"
                 android:layout_alignParentEnd="true"/>
 
-            <Spinner
-                android:id="@+id/spinnerTripSelect"
-                android:layout_width="match_parent"
+
+            <AutoCompleteTextView
+                android:id="@+id/expenseAddSelectTrip"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignLeft="@+id/client"
-                android:layout_alignTop="@+id/SelectTrip"
-                android:layout_toLeftOf="@id/buttonAddTravel"/>
+                android:layout_below="@id/expenseAddClientName"
+                android:layout_marginTop="10dp"
+                android:layout_alignParentStart="true"
+                android:layout_toStartOf="@id/buttonAddTravel"
+                android:hint="Select A Trip" />
+
+
 
             <TextView
                 android:id="@+id/ExpenseType"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/buttonAddTravel"
-                android:text="Expense Type" />
+                android:layout_marginTop="4dp"
+                android:textSize="18dp"
+                android:text="Expense \n    Type"
+                />
 
             <Spinner
                 android:id="@+id/spinnerExpenseType"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignLeft="@+id/spinnerTripSelect"
-                android:layout_alignTop="@+id/ExpenseType"
-                android:layout_toLeftOf="@id/buttonAddTravel"/>
+                android:layout_toEndOf="@+id/ExpenseType"
+                android:layout_below="@+id/buttonAddTravel"
+                android:layout_toLeftOf="@id/buttonAddTravel" />
 
-
-            <TextView
-                android:id="@+id/Amount"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/spinnerExpenseType"
-                android:text="Amount" />
 
             <EditText
                 android:id="@+id/EditAmount"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignLeft="@+id/spinnerExpenseType"
-                android:layout_alignTop="@+id/Amount"
+                android:layout_below="@+id/ExpenseType"
                 android:hint="Enter Amount"
-                android:layout_toLeftOf="@id/buttonAddTravel"/>
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                />
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/ButtonCalenderFrom"
+                android:src="@drawable/ic_travel_detail_calender_dark"
+                android:layout_below="@id/EditAmount"
+                android:layout_alignParentEnd="true"/>
 
 
             <TextView
@@ -112,24 +104,22 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Date From"
+                android:textSize="20dp"
+                android:layout_marginTop="14dp"
                 android:layout_below="@id/EditAmount"/>
 
             <TextView
                 android:id="@+id/EditDateFrom"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignLeft="@id/EditAmount"
+                android:layout_toStartOf="@+id/ButtonCalenderFrom"
                 android:text="12/12/2015"
                 android:textSize="20dp"
-                android:layout_alignTop="@id/DateFrom"/>
+                android:layout_marginRight="30dp"
+                android:layout_marginTop="14dp"
+                android:layout_alignTop="@id/ButtonCalenderFrom"/>
 
-            <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/ButtonCalenderFrom"
-                android:src="@android:drawable/ic_menu_my_calendar"
-                android:layout_below="@id/EditAmount"
-                android:layout_alignParentEnd="true"/>
+
 
 
             <TextView
@@ -137,6 +127,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Date To"
+                android:textSize="20dp"
+                android:layout_marginTop="14dp"
                 android:layout_below="@id/ButtonCalenderFrom"/>
 
 
@@ -153,7 +145,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/ButtonCalenderTo"
-                android:src="@android:drawable/ic_menu_my_calendar"
+                android:src="@drawable/ic_travel_detail_calender_dark"
                 android:layout_below="@id/ButtonCalenderFrom"
                 android:layout_alignParentEnd="true"/>
 
@@ -163,6 +155,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Description:"
+            android:layout_marginTop="8dp"
             android:textSize="20dp" />
 
         <EditText

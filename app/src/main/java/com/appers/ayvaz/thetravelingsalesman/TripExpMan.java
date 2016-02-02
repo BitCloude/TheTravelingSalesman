@@ -219,11 +219,13 @@ public class TripExpMan extends NavigationDrawerActivity implements SectionsPage
 
             if (fragmentSection == 0) {
                 Intent intent = new Intent(getApplicationContext(), TravelDetail.class);
-                if(SectionsPagerAdapter.PlaceholderFragment.selection !=null)
+                if(SectionsPagerAdapter.PlaceholderFragment.selection !=null && !SectionsPagerAdapter.PlaceholderFragment.selection.getFirstName().equals("All"))
                     intent.putExtra("CLIENT", SectionsPagerAdapter.PlaceholderFragment.selection.getId().toString());
                 startActivity(intent);
             } else {
                 Intent intent = new Intent(getApplicationContext(), ExpenseAdd.class);
+                if(SectionsPagerAdapter.PlaceholderFragment.selection !=null && !SectionsPagerAdapter.PlaceholderFragment.selection.getFirstName().equals("All"))
+                    intent.putExtra("CLIENT", SectionsPagerAdapter.PlaceholderFragment.selection.getId().toString());
                 startActivity(intent);
             }
 
@@ -403,9 +405,11 @@ public class TripExpMan extends NavigationDrawerActivity implements SectionsPage
                 //mCallback.reportSection(getArguments().getInt(ARG_SECTION_NUMBER));
                 clientManager= ClientManager.get(getActivity());
                 clientList = clientManager.getClients();
-
-
+                Client clientAll = new Client();
+                clientAll.setFirstName("All");
+                clientAll.setLastName("");
                 ArrayAdapter<Client> adapter = new ArrayAdapter<Client>(getActivity(), android.R.layout.simple_dropdown_item_1line, clientList);
+                adapter.add(clientAll);
                 autoCompleteTextView.setAdapter(adapter);
                 expenseContent = ExpenseContent.get(getActivity());
 
@@ -414,6 +418,7 @@ public class TripExpMan extends NavigationDrawerActivity implements SectionsPage
                 if(TripExpMan.clientDefault != null && TripCursorWrapper.isUUIDValid(TripExpMan.clientDefault)) {
                     selection = clientManager.getClient(UUID.fromString(TripExpMan.clientDefault));
                     autoCompleteTextView.setText(selection.toString());
+
                 }
 
                 button.setOnClickListener(new View.OnClickListener() {
@@ -424,10 +429,11 @@ public class TripExpMan extends NavigationDrawerActivity implements SectionsPage
                         // ft.add(YourFragment.newInstance(), null);
                         // ft.commit();
                         android.support.v4.app.FragmentTransaction ft = getFragmentManager().beginTransaction();
-                        ft.add(DatePickerFragment.newInstance(date), null);
-                       ft.commit();
+                        DatePickerFragment datePickerFragment = DatePickerFragment.newInstance(date);
+                       datePickerFragment.setTargetFragment(PlaceholderFragment.this,0);
+                        ft.add(datePickerFragment, null);
+                        ft.commit();
                        // dateSet.setText(date.toString());
-
 
                     }
                 });
@@ -452,10 +458,22 @@ public class TripExpMan extends NavigationDrawerActivity implements SectionsPage
                 // textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
                 return rootView;
             }
+           // format("%tD", cal);
+            public void onActivityResult(int request_code, int resultCode, Intent intent){
+                Bundle bundle = new Bundle();
+                bundle = intent.getExtras();
+                date = (Calendar) bundle.get("com.appers.avyaz.thetravelingsalesman.task.date");
+                linearLayout.removeAllViews();
+                display();
+
+            }
+
 
             public void display(){
 
-                if(selection == null){
+                dateSet.setText(String.format("%tm/%td/%tY", date,date,date));
+
+                if(selection == null || selection.getFirstName().equals("All")){
                     if (getArguments().getInt(ARG_SECTION_NUMBER) == 1) {
                         list = new ArrayList<Object>(tripContent.getTrips()) ;
                         tripBool = true;
@@ -516,7 +534,7 @@ public class TripExpMan extends NavigationDrawerActivity implements SectionsPage
                    */
 
                     LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                    params.setMargins(1, 1, 1, 1);
+                    params.setMargins(2, 2, 2, 2);
                     childLayout.setLayoutParams(params);
                     childLayout.setBackgroundColor(Color.LTGRAY);
                     childLayout.addView(textdata, layoutParamsData);

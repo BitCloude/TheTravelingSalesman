@@ -5,13 +5,17 @@ import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import java.util.Calendar;
+import java.util.UUID;
+
 public class Expense implements Parcelable{
 
-    private int id , trip_id, client_id;
+    private int id , trip_id;
+    private UUID client_id;
 
-    private String type, amount, date_from,
-            date_to, description;
+    private String type, amount, description;
     private byte[] image;
+    private Calendar date_from, date_to;
 
 
     public Expense(int id) {
@@ -20,15 +24,29 @@ public class Expense implements Parcelable{
 
     public Expense(){}
 
+    public String toString() {
+        if (!isEmpty(type) || !isEmpty(amount)) {
+            return type+
+                    (isEmpty(type) ? "" : " ")
+                    + amount;
+        }
+
+            return description;
+    }
+
+    private boolean isEmpty(String s) {
+        return s == null || s.equals("");
+    }
+
     public int getId(){ return id;}
 
     public void setTrip_id(int trip_id){this.trip_id = trip_id;}
 
     public int getTrip_id(){return trip_id;}
 
-    public void setClient_id(int client_id){this.client_id = client_id;}
+    public void setClient_id(UUID client_id){this.client_id = client_id;}
 
-    public int getClient_id(){return client_id;}
+    public UUID getClient_id(){return client_id;}
 
     public void setType(String type){this.type = type;}
 
@@ -38,13 +56,13 @@ public class Expense implements Parcelable{
 
     public String getAmount(){return amount;}
 
-    public void setDate_from(String date_from){this.date_from = date_from;}
+    public void setDate_from(Calendar date_from){this.date_from = date_from;}
 
-    public String getDate_from(){return date_from;}
+    public Calendar getDate_from(){return date_from;}
 
-    public void setDate_to(String date_to){this.date_to = date_to;}
+    public void setDate_to(Calendar date_to){this.date_to = date_to;}
 
-    public String getDate_to(){return date_to;}
+    public Calendar getDate_to(){return date_to;}
 
     public void setDescription(String description){this.description = description;}
 
@@ -63,11 +81,11 @@ public class Expense implements Parcelable{
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(id);
         dest.writeInt(trip_id);
-        dest.writeInt(client_id);
+        dest.writeSerializable(client_id);
         dest.writeString(type);
         dest.writeString(amount);
-        dest.writeString(date_from);
-        dest.writeString(date_to);
+        dest.writeSerializable(date_from);
+        dest.writeSerializable(date_to);
         dest.writeString(description);
         dest.writeByteArray(image);
 
@@ -86,11 +104,11 @@ public class Expense implements Parcelable{
     private Expense(Parcel in) {
         this.id = in.readInt();
         this.trip_id=in.readInt();
-        this.client_id = in.readInt();
+        this.client_id = (UUID) in.readSerializable();
         this.type = in.readString();
         this.amount = in.readString();
-        this.date_from = in.readString();
-        this.date_to = in.readString();
+        this.date_from = (Calendar) in.readSerializable();
+        this.date_to = (Calendar) in.readSerializable();
         this.description = in.readString();
         this.image = in.createByteArray();
 

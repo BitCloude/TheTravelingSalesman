@@ -5,6 +5,11 @@ import android.database.CursorWrapper;
 
 import com.appers.ayvaz.thetravelingsalesman.models.Trip;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.UUID;
 
 public class TripCursorWrapper extends CursorWrapper {
@@ -26,6 +31,21 @@ public class TripCursorWrapper extends CursorWrapper {
         }
     }
 
+    public static Calendar stringToCalendar(String stringDate)
+    {
+        DateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
+        Calendar calendar = Calendar.getInstance();
+        try {
+            calendar.setTime(formatter.parse(stringDate));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        /*Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        */
+        return calendar;
+    }
+
     public Trip getTrip() {
         String id = getString(getColumnIndex(DbSchema.TripTable.Cols.TRIP_ID));
         String client_id = getString(getColumnIndex(DbSchema.TripTable.Cols.TRIP_CLIENT_ID));
@@ -45,8 +65,8 @@ public class TripCursorWrapper extends CursorWrapper {
         trip.setType(type);
         trip.setTrip_from(trip_from);
         trip.setTrip_to(trip_to);
-        trip.setDate_from(date_from);
-        trip.setDate_to(date_to);
+        trip.setDate_from(stringToCalendar(date_from));
+        trip.setDate_to(stringToCalendar(date_to));
         trip.setBoarding(boarding);
         trip.setDescription(description);
         trip.setImage(img);

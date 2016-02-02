@@ -5,15 +5,17 @@ import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.UUID;
 
 public class Trip implements Parcelable {
     private int id;
     private UUID client_id;
 
-    private String type, trip_from, trip_to,date_from,
-            date_to, boarding, description;
+    private String type, trip_from, trip_to, boarding, description;
     private byte[] image;
+    private Calendar date_from, date_to;
 
     public Trip(){}
 
@@ -56,13 +58,13 @@ public class Trip implements Parcelable {
 
     public String getTrip_to(){return trip_to;}
 
-    public void setDate_from(String date_from){this.date_from = date_from;}
+    public void setDate_from(Calendar date_from){this.date_from = date_from;}
 
-    public String getDate_from(){return date_from;}
+    public Calendar getDate_from(){return date_from;}
 
-    public void setDate_to(String date_to){this.date_to = date_to;}
+    public void setDate_to(Calendar date_to){this.date_to = date_to;}
 
-    public String getDate_to(){return date_to;}
+    public Calendar getDate_to(){return date_to;}
 
     public void setBoarding(String boarding){this.boarding = boarding;}
 
@@ -89,8 +91,8 @@ public class Trip implements Parcelable {
         dest.writeString(type);
         dest.writeString(trip_from);
         dest.writeString(trip_to);
-        dest.writeString(date_from);
-        dest.writeString(date_to);
+        dest.writeSerializable(date_from);
+        dest.writeSerializable(date_to);
         dest.writeString(boarding);
         dest.writeString(description);
         dest.writeByteArray(image);
@@ -113,8 +115,8 @@ public class Trip implements Parcelable {
         this.type = in.readString();
         this.trip_from = in.readString();
         this.trip_to = in.readString();
-       this.date_from = in.readString();
-        this.date_to = in.readString();
+       this.date_from = (Calendar)in.readSerializable();
+        this.date_to = (Calendar) in.readSerializable();
         this.boarding = in.readString();
         this.description = in.readString();
         this.image = in.createByteArray();

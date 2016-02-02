@@ -10,7 +10,12 @@ import com.appers.ayvaz.thetravelingsalesman.database.DatabaseHelperTravExp;
 import com.appers.ayvaz.thetravelingsalesman.database.DbSchema;
 import com.appers.ayvaz.thetravelingsalesman.database.TripCursorWrapper;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -34,6 +39,12 @@ public class TripContent {
 
         return content;
     }
+    public static String CalendarToString(Calendar calendar)
+    {
+        DateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
+        String stringCalender = formatter.format(calendar.getTime());
+        return stringCalender;
+    }
 
     private static ContentValues getContentValues(Trip trip) {
         ContentValues values = new ContentValues();
@@ -42,8 +53,8 @@ public class TripContent {
         values.put(DbSchema.TripTable.Cols.TRIP_TYPE, trip.getType());
         values.put(DbSchema.TripTable.Cols.TRIP_FROM, trip.getTrip_from());
         values.put(DbSchema.TripTable.Cols.TRIP_TO, trip.getTrip_to());
-        values.put(DbSchema.TripTable.Cols.TRIP_DATE_FROM, trip.getDate_from());
-        values.put(DbSchema.TripTable.Cols.TRIP_DATE_TO, trip.getDate_to());
+        values.put(DbSchema.TripTable.Cols.TRIP_DATE_FROM, CalendarToString(trip.getDate_from()));
+        values.put(DbSchema.TripTable.Cols.TRIP_DATE_TO, CalendarToString(trip.getDate_to()));
         values.put(DbSchema.TripTable.Cols.TRIP_BOARDING,trip.getBoarding());
         values.put(DbSchema.TripTable.Cols.TRIP_DESCRIPTION, trip.getDescription());
         values.put(DbSchema.TripTable.Cols.TRIP_IMAGE, trip.getImage());
