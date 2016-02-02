@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AlertDialog;
@@ -145,6 +146,11 @@ public class ClientInfoActivity extends AppCompatActivity {
             bindOtherInfo(mOtherContainer, getResources().getString(R.string.company), mClient.getCompany());
         }
 
+        if (!TextUtils.isEmpty(mClient.getLinkedIn())) {
+            addToView(R.layout.view_client_linkedin_row, 1);
+            bindLinkedIn(mOtherContainer, mClient.getLinkedInFull());
+        }
+
         if (!TextUtils.isEmpty(mClient.getNote())) {
             addToView(R.layout.view_client_other_info, 1);
             bindOtherInfo(mOtherContainer, getResources().getString(R.string.note), mClient.getNote());
@@ -156,8 +162,37 @@ public class ClientInfoActivity extends AppCompatActivity {
             bindOtherInfo(mOtherContainer, getResources().getString(R.string.address), mClient.getAddress());
         }
 
-        //// TODO: 009 01/09 other fields
+        if (!TextUtils.isEmpty(mClient.getDesignation())) {
+            addToView(R.layout.view_client_other_info, 1);
+            bindOtherInfo(mOtherContainer, getResources().getString(R.string.designation),
+                    mClient.getDesignation());
+        }
 
+        if (!TextUtils.isEmpty(mClient.getGroup())) {
+            addToView(R.layout.view_client_other_info, 1);
+            bindOtherInfo(mOtherContainer, getResources().getString(R.string.group),
+                    mClient.getGroup());
+        }
+
+    }
+
+    private void bindLinkedIn(ViewGroup parent, String linkedIn) {
+        View v = parent.getChildAt(parent.getChildCount() - 1);
+        TextView field = (TextView) v.findViewById(R.id.content);
+        field.setText(linkedIn);
+
+
+        ImageButton button = (ImageButton) v.findViewById(R.id.linkedInButt);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_VIEW,
+                        Uri.parse(mClient.getLinkedIn()));
+
+                startActivity(intent);
+
+            }
+        });
     }
 
     private void bindOtherInfo(ViewGroup parent, String name, String content) {
@@ -188,7 +223,7 @@ public class ClientInfoActivity extends AppCompatActivity {
 
     private void bindPhone(ViewGroup parent, String number) {
         View view = parent.getChildAt(parent.getChildCount()-1);
-        final TextView num = (TextView) view.findViewById(R.id.client_phone_first);
+        final TextView num = (TextView) view.findViewById(R.id.client_email);
         num.setText(number);
         ImageButton call = (ImageButton) view.findViewById(R.id.callButton);
         ImageButton text = (ImageButton) view.findViewById(R.id.textButton);

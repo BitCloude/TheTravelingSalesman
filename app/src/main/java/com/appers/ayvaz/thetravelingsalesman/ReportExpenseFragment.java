@@ -39,24 +39,18 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 
-public class ReportTaskFragment extends Fragment {
+public class ReportExpenseFragment extends Fragment {
 
-    private static final String DEBUG_TAG = "ReportTaskFragment: ";
+    private static final String DEBUG_TAG = "ReportTripFragment: ";
     private static final int REQUEST_CLIENT = 0;
     @Bind(R.id.recyclerView)
     RecyclerView mRecyclerView;
-    @Bind(R.id.taskHeader)
-    ViewGroup mTaskTitle;
-    @Bind(R.id.timeHeader)
-    ViewGroup mTaskTime;
-    @Bind(R.id.dateHeader)
-    ViewGroup mTaskDate;
+
     @Bind(R.id.titleSorted)
     ImageView mTitleSorted;
     @Bind(R.id.dateSorted)
     ImageView mDateSorted;
-    @Bind(R.id.timeSorted)
-    ImageView mTimeSorted;
+
     @Bind(R.id.progressBarContainer)
     FrameLayout mProgressBarContainer;
     @Bind(R.id.startDateButton)
@@ -69,6 +63,7 @@ public class ReportTaskFragment extends Fragment {
     ImageButton mSelectClient;
     @Bind(R.id.client_name)
     TextView mClientName;
+
     private int UNSORTED_ICON = R.drawable.ic_dark_sortable;
     private int ASC_ICON = R.drawable.ic_dark_sorted_asc;
     private int DESC_ICON = R.drawable.ic_dark_sorted_desc;
@@ -80,7 +75,7 @@ public class ReportTaskFragment extends Fragment {
 
     private TaskReportAdapter mAdapter;
 
-    public ReportTaskFragment() {
+    public ReportExpenseFragment() {
         // Required empty public constructor
     }
 
@@ -105,7 +100,7 @@ public class ReportTaskFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_report_task, container, false);
 
         ButterKnife.bind(this, view);
-        mHeaderIcons = new ImageView[]{mTitleSorted, mDateSorted, mTimeSorted};
+        //mHeaderIcons = new ImageView[]{mTitleSorted, mDateSorted, mTimeSorted};
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mRecyclerView.addItemDecoration(new DividerItemDecoration(getContext(),
@@ -115,7 +110,7 @@ public class ReportTaskFragment extends Fragment {
 
         updateUI();
 
-        mTaskTitle.setOnClickListener(new View.OnClickListener() {
+        /*mTaskTitle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 boolean asc = mAdapter.getOrders()[0] != 1;
@@ -143,7 +138,7 @@ public class ReportTaskFragment extends Fragment {
                 mAdapter.sort(TaskReportAdapter.SORT_BY_TIME, asc);
                 updateIcon();
             }
-        });
+        });*/
 
 
         mStartButton.setOnClickListener(new PickDateButtonListener());
@@ -207,9 +202,9 @@ public class ReportTaskFragment extends Fragment {
         showStartTime();
         showEndTime();
 
-//        if (lastEventId != EventUtility.getLastEventId(getContext().getContentResolver())) {
+        if (lastEventId != EventUtility.getLastEventId(getContext().getContentResolver())) {
             new GetTask().execute(mStartDate, mEndDate);
-//        }
+        }
 
 
     }
@@ -330,10 +325,11 @@ public class ReportTaskFragment extends Fragment {
 
         @Override
         protected List<Task> doInBackground(Calendar... params) {
+            if (mClient != null) {
+                return TaskManager.get(getContext()).query(mClient.getId(), params[0], params[1]);
+            }
 
-            return TaskManager.get(getContext()).query(mClient == null ? null : mClient.getId(),
-                    params[0], params[1]);
-
+            return TaskManager.get(getActivity()).queryInstance(params[0], params[1], null);
 
         }
 

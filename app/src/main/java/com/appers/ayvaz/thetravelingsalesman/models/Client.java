@@ -16,6 +16,8 @@ public class Client {
     private String firstName, lastName, email, company, firstPhone, secondPhone,
             designation, note, group, address, linkedIn;
 
+    public static final String LINKEDIN_DOMAIN = "https://www.linkedin.com/";
+
     private boolean stared;
 
     public Client() {
@@ -126,6 +128,10 @@ public class Client {
 
     public void setFirstPhone(String mobile) {
         this.firstPhone = CommUtils.normalizeNumber(mobile);
+    }
+
+    public String getLinkedInFull() {
+        return LINKEDIN_DOMAIN + getLinkedIn();
     }
 
     public String getNote() {

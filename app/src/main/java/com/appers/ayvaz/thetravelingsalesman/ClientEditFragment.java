@@ -10,8 +10,6 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.NavUtils;
-import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.app.AlertDialog;
 import android.telephony.PhoneNumberFormattingTextWatcher;
 import android.util.Log;
@@ -60,7 +58,7 @@ public class ClientEditFragment extends Fragment {
     EditText mFirstName;
     @Bind(R.id.lastName)
     EditText mLastName;
-    @Bind(R.id.client_phone_first)
+    @Bind(R.id.client_email)
     EditText mEmail;
     @Bind(R.id.company)
     EditText mCompany;
@@ -74,6 +72,8 @@ public class ClientEditFragment extends Fragment {
     EditText mAddress;
     @Bind(R.id.linkedIn) EditText mLinkedIn;
     @Bind(R.id.designation) EditText mDesignation;
+    @Bind(R.id.linkedInDomain)
+    TextView mDomain;
 
 
     @Bind(R.id.imageView)
@@ -363,6 +363,8 @@ public class ClientEditFragment extends Fragment {
         mPhoneSecond.setText(mClient.getSecondPhone());
         mLinkedIn.setText(mClient.getLinkedIn());
         mDesignation.setText(mClient.getDesignation());
+
+        mDomain.setText(Client.LINKEDIN_DOMAIN);
 
     }
 

@@ -30,7 +30,7 @@
             android:layout_height="wrap_content"
             android:textAppearance="@style/ItemTextStylePrimary"
             android:text="+1 415 555 555"
-            android:id="@+id/client_phone_first"
+            android:id="@+id/client_email"
             android:layout_marginStart="32dp"
             android:layout_above="@+id/numberLabel"
             android:layout_toEndOf="@+id/callButton" />
@@ -42,5 +42,5 @@
             android:text="Home"
             android:id="@+id/numberLabel"
             android:layout_alignBottom="@+id/callButton"
-            android:layout_alignStart="@+id/client_phone_first" />
+            android:layout_alignStart="@+id/client_email" />
     </RelativeLayout>
