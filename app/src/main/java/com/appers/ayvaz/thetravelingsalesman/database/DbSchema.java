@@ -60,6 +60,7 @@ public class DbSchema {
             public static final String TRIP_TYPE = "trip_type";
             public static final String TRIP_FROM = "trip_from";
             public static final String TRIP_TO = "trip_to";
+            public static final String TRIP_BOARDING = "trip_boarding_pass";
             public static final String TRIP_DATE_FROM = "trip_date_from";
             public static final String TRIP_DATE_TO = "trip_date_to";
             public static final String TRIP_DESCRIPTION = "trip_description";

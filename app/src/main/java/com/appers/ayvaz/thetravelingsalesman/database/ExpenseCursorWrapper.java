@@ -5,10 +5,45 @@ import android.database.CursorWrapper;
 
 import com.appers.ayvaz.thetravelingsalesman.models.Expense;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.UUID;
+
 public class ExpenseCursorWrapper extends CursorWrapper {
 
     public ExpenseCursorWrapper(Cursor cursor) {
         super(cursor);
+    }
+
+    public static boolean isUUIDValid(String uuid){
+        if( uuid == null) return false;
+        try {
+            // we have to convert to object and back to string because the built in fromString does not have
+            // good validation logic.
+            UUID fromStringUUID = UUID.fromString(uuid);
+            String toStringUUID = fromStringUUID.toString();
+            return toStringUUID.equals(uuid);
+        } catch(IllegalArgumentException e) {
+            return false;
+        }
+    }
+
+    public static Calendar stringToCalendar(String stringDate)
+    {
+        DateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
+        Calendar calendar = Calendar.getInstance();
+        try {
+            calendar.setTime(formatter.parse(stringDate));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        /*Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        */
+        return calendar;
     }
 
     public Expense getExpense() {
@@ -23,12 +58,14 @@ public class ExpenseCursorWrapper extends CursorWrapper {
         byte[] img = getBlob(getColumnIndex(DbSchema.ExpenseTable.Cols.EXPENSE_IMAGE));
 
         Expense expense = new Expense(Integer.valueOf(id));
+       // Expense expense = new Expense();
+        if(isUUIDValid(client_id))
         expense.setTrip_id(Integer.valueOf(trip_id));
-        expense.setClient_id(Integer.valueOf(client_id));
+        expense.setClient_id(UUID.fromString(client_id));
         expense.setType(type);
         expense.setAmount(amount);
-        expense.setDate_from(date_from);
-        expense.setDate_to(date_to);
+        expense.setDate_from(stringToCalendar(date_from));
+        expense.setDate_to(stringToCalendar(date_to));
         expense.setDescription(description);
         expense.setImage(img);
 

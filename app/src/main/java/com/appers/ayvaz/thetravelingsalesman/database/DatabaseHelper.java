@@ -75,7 +75,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(expenseSql);
 
         String tripSql = String.format("create table %s " +
-                        "( %s, %s, %s, %s, %s, %s, %s, %s, %s, FOREIGN KEY(%s) REFERENCES %s(%s))",
+                        "( %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, FOREIGN KEY(%s) REFERENCES %s(%s))",
                 DbSchema.TripTable.NAME,
                 PRIMARY_KEY_TRIP,
                 DbSchema.TripTable.Cols.TRIP_CLIENT_ID,          //foreign key
@@ -84,6 +84,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 DbSchema.TripTable.Cols.TRIP_TO,
                 DbSchema.TripTable.Cols.TRIP_DATE_FROM,
                 DbSchema.TripTable.Cols.TRIP_DATE_TO,
+                DbSchema.TripTable.Cols.TRIP_BOARDING,
                 DbSchema.TripTable.Cols.TRIP_DESCRIPTION,
                 DbSchema.TripTable.Cols.TRIP_IMAGE + TYPE_BLOB,
                 DbSchema.TripTable.Cols.TRIP_CLIENT_ID,
