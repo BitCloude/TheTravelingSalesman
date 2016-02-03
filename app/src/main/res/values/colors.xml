@@ -8,6 +8,13 @@
     <color name="tabText">#E0F7FA</color>
     <color name="TextPrimary">#111111</color>
     <color name="TextSecondary">#333333</color>
+    <color name="TextHint">#888</color>
+
     <color name="background_primary">#ffffff</color>
     <color name="hint_text_red">#B71C1C</color>
+    <color name="divider">#aaaaaa</color>
+
+    <color name="YearBackground">#188ec8</color>
+    <color name="HeaderBackground">#ffffff</color>
+    <color name="LightButton">#d3f0ea</color>
 </resources>

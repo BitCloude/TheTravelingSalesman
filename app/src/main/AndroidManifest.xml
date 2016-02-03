@@ -40,18 +40,9 @@
             android:label="@string/title_activity_travel_detail"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".ClientEditActivity"
-            android:parentActivityName=".ClientInfoActivity" />
+            android:name=".ClientEditActivity" />
         <activity
             android:name=".ReportsActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".ReportsExpenseActivity"
-            android:parentActivityName=".ReportsActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".ReportsTasksActivity"
-            android:parentActivityName=".ReportsActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".TripExpMan"
@@ -63,10 +54,10 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".LandingActivity"
+            android:launchMode="singleTask"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
@@ -81,7 +72,7 @@
         <activity
             android:name=".ClientInfoActivity"
             android:label="@string/title_activity_client_info"
-            android:parentActivityName=".ClientActivity"
+            android:parentActivityName=".LandingActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <!--
         activity
@@ -96,7 +87,8 @@
 
         <activity
             android:name=".TaskListActivity"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:launchMode="singleTask"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".TaskSearchResultActivity"
             android:theme="@style/AppTheme">
@@ -108,9 +100,13 @@
                 android:name="android.app.searchable"
                 android:resource="@xml/task_searchable" />
         </activity>
-
-        <activity android:name=".view.ClientPickActivity"
-            android:launchMode="singleTop"></activity>
+        <activity
+            android:name=".ClientPickActivity"
+            android:launchMode="singleTop" />
+        <activity
+            android:name=".ReportTaskActivity"
+            android:launchMode="singleTask"
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>

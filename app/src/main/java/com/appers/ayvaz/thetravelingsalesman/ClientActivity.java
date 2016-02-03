@@ -38,8 +38,9 @@ public class ClientActivity extends AppCompatActivity
         {
 
 
+            private static final String DEBUG_TAG = "ClientActivity: ";
 
-    interface ClientChanged {
+            interface ClientChanged {
         void updateUI(Client client);
     }
 
@@ -161,6 +162,7 @@ public class ClientActivity extends AppCompatActivity
 
 
         mEventId = EventUtility.getNewEventId(this.getContentResolver());
+        Log.i(DEBUG_TAG, "mEventID: " + mEventId);
 
         Intent intent = new Intent(Intent.ACTION_INSERT)
                 .setData(CalendarContract.Events.CONTENT_URI)
@@ -179,6 +181,9 @@ public class ClientActivity extends AppCompatActivity
 
 
         long prev_id = EventUtility.getLastEventId(getContentResolver());
+
+        Log.i(DEBUG_TAG, "prev_id: "+prev_id);
+
 //         if prev_id == mEventId, means there is new events created
 //         and we need to insert new events into local sqlite database.
         if (prev_id == mEventId) {

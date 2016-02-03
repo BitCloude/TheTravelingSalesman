@@ -4,6 +4,7 @@ package com.appers.ayvaz.thetravelingsalesman;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.TabLayout;
@@ -51,14 +52,14 @@ import butterknife.ButterKnife;
  */
 public class ClientListFragment extends Fragment
         implements ActionMode.Callback,
-        RecyclerView.OnItemTouchListener{
+        RecyclerView.OnItemTouchListener, ClientSearchAdapter.OnClientPickListener{
 
     private final String DEBUG_TAG = "ClientListFragment: ";
     public static final int RANGE_ALL = 0;
     public static final int RANGE_RECENT = 1;
     public static final int RANGE_FAVORITE = 2;
     private static final String ARG_RANGE = "list_range";
-    private int mRange = 1;
+    private int mRange = RANGE_ALL;
     private ClientAdapter mAdapter;
     private ClientSearchAdapter mSearchAdapter;
     boolean mSearchOpen;
@@ -80,6 +81,12 @@ public class ClientListFragment extends Fragment
      * fragment (e.g. upon screen orientation changes).
      */
     public ClientListFragment() {
+    }
+
+    @Override
+    public void onClientPick(UUID clientId) {
+        Intent intent = ClientActivity.newIntent(getContext(), clientId);
+        getContext().startActivity(intent);
     }
 
     interface OnFragmentInteractionListener {
@@ -161,22 +168,31 @@ public class ClientListFragment extends Fragment
     }
 
     public void updateUI() {
-        ClientManager clientContent = ClientManager.get(getActivity());
-        List<Client> clients = clientContent.getClients(mRange);
+        new GetClientTask().execute();
+    }
 
-        if (mSearchOpen && mSearchAdapter != null) {
-            mRecyclerView.setAdapter(mSearchAdapter);
-            return;
+    private class GetClientTask extends AsyncTask<Void, Void, List<Client>> {
+        @Override
+        protected List<Client> doInBackground(Void... params) {
+            return ClientManager.get(getActivity()).getClients(mRange);
         }
 
-        if (mAdapter == null) {
-            mAdapter = new ClientAdapter(clients);
-            mRecyclerView.setAdapter(mAdapter);
-        } else {
-            mAdapter.setClients(clients);
-            mAdapter.notifyDataSetChanged();
-            // fixed after setting ViewPager's offScreenLimit
+        @Override
+        protected void onPostExecute(List<Client> clients) {
+            if (mSearchOpen && mSearchAdapter != null) {
+                mRecyclerView.setAdapter(mSearchAdapter);
+                return;
+            }
+
+            if (mAdapter == null) {
+                mAdapter = new ClientAdapter(clients);
+                mRecyclerView.setAdapter(mAdapter);
+            } else {
+                mAdapter.setClients(clients);
+                mAdapter.notifyDataSetChanged();
+                // fixed after setting ViewPager's offScreenLimit
 //            mRecyclerView.setAdapter(mAdapter);
+            }
         }
     }
 
@@ -240,22 +256,39 @@ public class ClientListFragment extends Fragment
             searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                 @Override
                 public boolean onQueryTextSubmit(String query) {
-                    List<Client> result = ClientManager.get(getActivity()).getSearchResult(query);
-                    mSearchAdapter = new ClientSearchAdapter(result);
-                    mRecyclerView.setAdapter(mSearchAdapter);
-
-                    return true;
+                    return false;
                 }
 
                 @Override
                 public boolean onQueryTextChange(String newText) {
-                    return false;
+                    new AsyncSearchTask().execute(newText);
+                    return true;
                 }
             });
 
 
         }
 
+    }
+
+    private class AsyncSearchTask extends AsyncTask<String, Void, List<Client>> {
+
+        @Override
+        protected List<Client> doInBackground(String... params) {
+            if (params == null || params.length == 0) {
+                Log.i("ClientListFragment", "wrong query arguments");
+                return null;
+            }
+
+            String query = params[0];
+            return ClientManager.get(getActivity()).getSearchResult(query);
+        }
+
+        @Override
+        protected void onPostExecute(List<Client> clients) {
+            mSearchAdapter = new ClientSearchAdapter(clients, ClientListFragment.this);
+            mRecyclerView.setAdapter(mSearchAdapter);
+        }
     }
 
 /** action mode */
@@ -394,7 +427,12 @@ public class ClientListFragment extends Fragment
     private class ClientListGestureListener extends GestureDetector.SimpleOnGestureListener {
         @Override
         public boolean onSingleTapConfirmed(MotionEvent e) {
+            if (mSearchOpen) {
+                return false;
+            }
+
             View view = mRecyclerView.findChildViewUnder(e.getX(), e.getY());
+
             int idx =  mRecyclerView.getChildAdapterPosition(view);
             if (idx < 0) {
                 return super.onSingleTapConfirmed(e);

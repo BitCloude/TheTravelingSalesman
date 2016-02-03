@@ -55,7 +55,6 @@ public class MyMessage implements Comparable<MyMessage> {
 
     public static MyMessage fromCursor(Cursor cursor, int type) {
         MyMessage msg = new MyMessage();
-        // // TODO: more attributes
         msg.body = cursor.getString(cursor.getColumnIndex(Cols.BODY));
         msg.address = cursor.getString(cursor.getColumnIndex(Cols.ADDRESS));
         String date = cursor.getString(cursor.getColumnIndex(Cols.DATE));

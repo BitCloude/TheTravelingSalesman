@@ -1,13 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    >
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone"
+        android:id="@+id/yearChanged"
+        android:background="@color/YearBackground"
+        >
+
+        <TextView
+            android:id="@+id/year"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="2014"
+            android:textColor="#ffffff"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:gravity="center" />
+        <include layout = "@layout/view_divider_horizontal"
+            />
+    </LinearLayout>
+<LinearLayout
     android:baselineAligned="true"
     android:layout_width="match_parent"
-    android:layout_height="62dp"
+    android:layout_height="wrap_content"
     android:padding="8dp"
     android:orientation="horizontal"
     android:weightSum="8"
-    android:background="@drawable/statelist_item_background"
+    android:background="@drawable/state_list_item_background"
     >
 
     <LinearLayout
@@ -43,27 +70,42 @@
 
     <LinearLayout
         android:layout_width="0dp"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginEnd="4dp"
         android:layout_marginStart="4dp"
         android:layout_weight="5.6"
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/task_title"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Large Text"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="@color/TextPrimary"
-            android:maxLines="1" />
+            android:text="Text"
+            android:id="@+id/clientName" />
+
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scrollbars="none"
+            >
+            <TextView
+                android:id="@+id/task_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Medium title"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/TextPrimary"
+                android:maxLines="1" />
+
+        </HorizontalScrollView>
+
 
         <TextView
             android:id="@+id/task_detail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:maxLines="2"
-            android:text="task detail"
+            android:text="task detaildffffffffffffffffffffffffffffffffffffffffffffffffffffff"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="@color/TextSecondary" />
     </LinearLayout>
@@ -116,3 +158,4 @@
 
 </LinearLayout>
 
+    </LinearLayout>

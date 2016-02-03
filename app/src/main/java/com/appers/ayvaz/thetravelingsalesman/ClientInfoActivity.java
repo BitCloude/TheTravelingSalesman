@@ -7,7 +7,6 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -26,7 +25,6 @@ import android.widget.Toast;
 
 import com.appers.ayvaz.thetravelingsalesman.models.Client;
 import com.appers.ayvaz.thetravelingsalesman.models.ClientManager;
-import com.appers.ayvaz.thetravelingsalesman.dialog.DeleteAlertDialogFragment;
 import com.appers.ayvaz.thetravelingsalesman.utils.CommUtils;
 import com.appers.ayvaz.thetravelingsalesman.utils.PictureUtils;
 
@@ -95,6 +93,9 @@ public class ClientInfoActivity extends AppCompatActivity {
 
     private void showPhoto() {
         File file = ClientManager.get(this).getPhotoFile(mClient, false);
+        if (file == null || !file.exists()) {
+            return;
+        }
         Bitmap bitmap = PictureUtils.getScaledBitmap(
                 file.getPath(), this);
         mImageView.setImageBitmap(bitmap);
@@ -124,28 +125,33 @@ public class ClientInfoActivity extends AppCompatActivity {
 
         }
 
-        if (mClient.getFirstPhone() != null && !mClient.getFirstPhone().equals("")) {
+        if (!TextUtils.isEmpty(mClient.getFirstPhone())) {
             addToView(R.layout.view_client_phone, 0);
             bindPhone(mCommContainer, mClient.getFirstPhone());
         }
 
-        if (mClient.getSecondPhone() != null && !mClient.getSecondPhone().equals("")) {
+        if (!TextUtils.isEmpty(mClient.getSecondPhone())) {
             addToView(R.layout.view_client_phone, 0);
             bindPhone(mCommContainer, mClient.getSecondPhone());
         }
 
-        if (mClient.getEmail() != null && !mClient.getEmail().equals("")) {
+        if (!TextUtils.isEmpty(mClient.getEmail())) {
             addToView(R.layout.view_client_email, 0);
             bindEmail(mCommContainer);
         }
 
 
-        if (mClient.getCompany() != null && !mClient.getCompany().equals("")) {
+        if (!TextUtils.isEmpty(mClient.getCompany())) {
             addToView(R.layout.view_client_other_info, 1);
             bindOtherInfo(mOtherContainer, getResources().getString(R.string.company), mClient.getCompany());
         }
 
-        if (mClient.getNote() != null && !mClient.getNote().equals("")) {
+        if (!TextUtils.isEmpty(mClient.getLinkedIn())) {
+            addToView(R.layout.view_client_linkedin_row, 1);
+            bindLinkedIn(mOtherContainer, mClient.getLinkedInFull());
+        }
+
+        if (!TextUtils.isEmpty(mClient.getNote())) {
             addToView(R.layout.view_client_other_info, 1);
             bindOtherInfo(mOtherContainer, getResources().getString(R.string.note), mClient.getNote());
         }
@@ -156,8 +162,37 @@ public class ClientInfoActivity extends AppCompatActivity {
             bindOtherInfo(mOtherContainer, getResources().getString(R.string.address), mClient.getAddress());
         }
 
-        //// TODO: 009 01/09 other fields
+        if (!TextUtils.isEmpty(mClient.getDesignation())) {
+            addToView(R.layout.view_client_other_info, 1);
+            bindOtherInfo(mOtherContainer, getResources().getString(R.string.designation),
+                    mClient.getDesignation());
+        }
 
+        if (!TextUtils.isEmpty(mClient.getGroup())) {
+            addToView(R.layout.view_client_other_info, 1);
+            bindOtherInfo(mOtherContainer, getResources().getString(R.string.group),
+                    mClient.getGroup());
+        }
+
+    }
+
+    private void bindLinkedIn(ViewGroup parent, String linkedIn) {
+        View v = parent.getChildAt(parent.getChildCount() - 1);
+        TextView field = (TextView) v.findViewById(R.id.content);
+        field.setText(linkedIn);
+
+
+        ImageButton button = (ImageButton) v.findViewById(R.id.linkedInButt);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_VIEW,
+                        Uri.parse(mClient.getLinkedIn()));
+
+                startActivity(intent);
+
+            }
+        });
     }
 
     private void bindOtherInfo(ViewGroup parent, String name, String content) {
@@ -188,7 +223,7 @@ public class ClientInfoActivity extends AppCompatActivity {
 
     private void bindPhone(ViewGroup parent, String number) {
         View view = parent.getChildAt(parent.getChildCount()-1);
-        final TextView num = (TextView) view.findViewById(R.id.clientPhone);
+        final TextView num = (TextView) view.findViewById(R.id.client_email);
         num.setText(number);
         ImageButton call = (ImageButton) view.findViewById(R.id.callButton);
         ImageButton text = (ImageButton) view.findViewById(R.id.textButton);
@@ -213,7 +248,7 @@ public class ClientInfoActivity extends AppCompatActivity {
 
         if (container == null) {
             if (group == 1 && mCommContainer != null) {
-                mInflater.inflate(R.layout.view_divider_vertical, mContainer);
+                mInflater.inflate(R.layout.view_divider_horizontal, mContainer);
             }
 
 

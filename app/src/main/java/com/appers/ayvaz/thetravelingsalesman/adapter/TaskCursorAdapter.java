@@ -47,7 +47,6 @@ public class TaskCursorAdapter extends CursorRecyclerViewAdapter<TaskCursorAdapt
 
     @Override
     public void onBindViewHolder(ViewHolder holder, Cursor cursor) {
-        // // TODO: 011 01/11 to something with cursor
         Task task = Task.fromCursor(cursor);
         holder.setTask(task);
 
@@ -94,7 +93,7 @@ public class TaskCursorAdapter extends CursorRecyclerViewAdapter<TaskCursorAdapt
 
         @Override
         public void onClick(View v) {
-            Uri uri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, mTask.getId());
+            Uri uri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, mTask.getEventID());
             Intent intent = new Intent(Intent.ACTION_VIEW)
                     .setData(uri);
             v.getContext().startActivity(intent);

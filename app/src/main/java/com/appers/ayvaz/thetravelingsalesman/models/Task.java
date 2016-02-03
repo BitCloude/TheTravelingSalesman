@@ -1,13 +1,14 @@
 package com.appers.ayvaz.thetravelingsalesman.models;
 
 import android.database.Cursor;
-import android.provider.CalendarContract;
 import android.provider.CalendarContract.Events;
 
 import com.appers.ayvaz.thetravelingsalesman.utils.DateTimeHelper;
 
 import java.util.Calendar;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.UUID;
 
 /**
  * Created by D on 12/13/2015.
@@ -16,17 +17,18 @@ public class Task {
 
 
 
-    private long mId;
-
-
-
-
+    private long eventID;
     private Date startTime;
     private Date endTime;
     private boolean hasAlarm;
     private String notes;
     private String title;
     private String location;
+    private boolean hasAttendee;
+    private Client client;
+
+
+    public UUID getClientID() { return client.getId(); }
 
     public String getTitle() {
         return title;
@@ -48,9 +50,7 @@ public class Task {
         return notes != null && !notes.equals("");
     }
 
-    private boolean hasAttendee;
 
-    private Client mClient;
 
 
 
@@ -75,15 +75,15 @@ public class Task {
     }
 
     public Task(long eventId) {
-        mId = eventId;
+        this.eventID = eventId;
     }
 
     public Client getClient() {
-        return mClient;
+        return client;
     }
 
-    public long getId() {
-        return mId;
+    public long getEventID() {
+        return eventID;
     }
 
     public Date getStartTime() {
@@ -96,8 +96,9 @@ public class Task {
     }
 
     public void setClient(Client client) {
-        mClient = client;
+        this.client = client;
     }
+
 
     public String getLocation() {return location;}
 
@@ -114,7 +115,7 @@ public class Task {
     public static Task fromCursor(Cursor eventCursor) {
         Task task = new Task();
 
-        task.mId = eventCursor.getLong(eventCursor.getColumnIndex(
+        task.eventID = eventCursor.getLong(eventCursor.getColumnIndex(
                 Events._ID));
         task.startTime = DateTimeHelper.fromContentResolver(eventCursor.getString(
                 eventCursor.getColumnIndex(Events.DTSTART)));
@@ -136,7 +137,30 @@ public class Task {
     }
 
 
+    public static class TitleComparator implements Comparator<Task> {
+
+        @Override
+        public int compare(Task lhs, Task rhs) {
+            return lhs.getTitle().compareTo(rhs.getTitle());
+        }
+    }
+
+    public static class DateTimeComparator implements Comparator<Task> {
 
 
+        @Override
+        public int compare(Task lhs, Task rhs) {
+            return lhs.getStartTime().compareTo(rhs.getStartTime());
+        }
+    }
 
+    public static class TimeComparator implements Comparator<Task> {
+        @Override
+        public int compare(Task lhs, Task rhs) {
+            return DateTimeHelper.compare(lhs.getStartTime(), rhs.getStartTime());
+        }
+
+    }
 }
+
+

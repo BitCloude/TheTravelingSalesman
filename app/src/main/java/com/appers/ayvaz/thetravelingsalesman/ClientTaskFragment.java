@@ -116,7 +116,7 @@ public class ClientTaskFragment extends Fragment implements ClientActivity.Clien
         }
 
         if (mAdapter == null) {
-            mAdapter = new TaskAdapter(list);
+            mAdapter = new TaskAdapter(list, getActivity());
             mRecyclerView.setAdapter(mAdapter);
         } else {
             mAdapter.setData(list);

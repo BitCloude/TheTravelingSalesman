@@ -8,7 +8,6 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
@@ -20,6 +19,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -55,21 +55,27 @@ public class ClientEditFragment extends Fragment {
     private static final String DIALOG_DELETE = "DialogDelete";
     private static final String DIALOG_PHOTO = "DialogPhoto";
     @Bind(R.id.firstName)
-    TextView mFirstName;
+    EditText mFirstName;
     @Bind(R.id.lastName)
-    TextView mLastName;
-    @Bind(R.id.clientPhone)
-    TextView mEmail;
+    EditText mLastName;
+    @Bind(R.id.client_email)
+    EditText mEmail;
     @Bind(R.id.company)
-    TextView mCompany;
+    EditText mCompany;
     @Bind(R.id.mobile)
-    TextView mPhoneFirst;
+    EditText mPhoneFirst;
     @Bind(R.id.secondPhone)
-    TextView mPhoneSecond;
+    EditText mPhoneSecond;
     @Bind(R.id.note)
-    TextView mNote;
+    EditText mNote;
     @Bind(R.id.address)
-    TextView mAddress;
+    EditText mAddress;
+    @Bind(R.id.linkedIn) EditText mLinkedIn;
+    @Bind(R.id.designation) EditText mDesignation;
+    @Bind(R.id.linkedInDomain)
+    TextView mDomain;
+
+
     @Bind(R.id.imageView)
     ImageView mImageView;
     @Bind(R.id.deletePhoto)
@@ -78,6 +84,7 @@ public class ClientEditFragment extends Fragment {
     private Client mClient;
     private File mPhotoFile, mPhotoTmp;
     private MenuItem mStar, mDelete;
+
 
 
     public ClientEditFragment() {
@@ -259,11 +266,17 @@ public class ClientEditFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case android.R.id.home:
-                Intent upIntent = ClientInfoActivity.newIntent(getActivity(), mClientId);
-                upIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(upIntent);
-                getActivity().finish();
+            case R.id.action_cancel:
+                AlertDialog.Builder cancelBuilder = new AlertDialog.Builder(getContext())
+                        .setMessage("Change will be discarded.")
+                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                getActivity().finish();
+                            }
+                        })
+                        .setNegativeButton(android.R.string.cancel, null);
+                cancelBuilder.create().show();
                 return true;
             case R.id.action_done:
                 updateClient();
@@ -331,10 +344,15 @@ public class ClientEditFragment extends Fragment {
         mClient.setNote(mNote.getText().toString());
         mClient.setAddress(mAddress.getText().toString());
         mClient.setCompany(mCompany.getText().toString());
-        // // TODO: 028 12/28 set other attributes
+        mClient.setLinkedIn(mLinkedIn.getText().toString());
+        mClient.setDesignation(mDesignation.getText().toString());
     }
 
     private void updateUI() {
+        if (mClientId == null) {
+            return;
+        }
+
         mFirstName.setText(mClient.getFirstName());
         mLastName.setText(mClient.getLastName());
         mCompany.setText(mClient.getCompany());
@@ -343,7 +361,10 @@ public class ClientEditFragment extends Fragment {
         mAddress.setText(mClient.getAddress());
         mEmail.setText(mClient.getEmail());
         mPhoneSecond.setText(mClient.getSecondPhone());
-        // // TODO: 007 01/07 set other attributes
+        mLinkedIn.setText(mClient.getLinkedIn());
+        mDesignation.setText(mClient.getDesignation());
+
+        mDomain.setText(Client.LINKEDIN_DOMAIN);
 
     }
 

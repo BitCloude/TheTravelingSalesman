@@ -9,4 +9,8 @@
 
     <!-- added -->
     <dimen name="cardview_margin">8dp</dimen>
+
+    <dimen name="report_header_height">40dp</dimen>
+
+
 </resources>

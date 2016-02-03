@@ -14,7 +14,18 @@
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary" />
 
-    <include layout="@layout/view_client_header"        />
+    <include
+        android:id="@+id/newTask"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_marginRight="6dp"
+        android:layout_marginLeft="6dp"
+        layout="@layout/view_client_new_task"/>
+
+    <include
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        layout="@layout/view_tab"/>
 
 
 </android.support.design.widget.AppBarLayout>

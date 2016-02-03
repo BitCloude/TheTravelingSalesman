@@ -78,7 +78,8 @@
         android:hint="@string/phone"
         android:inputType="phone"
         android:layout_below="@+id/phoneLabel"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:minLines="1" />
     <TextView
         android:id="@+id/phoneLabel2"
         android:layout_width="wrap_content"
@@ -97,7 +98,8 @@
         android:hint="@string/phone"
         android:inputType="phone"
         android:layout_below="@+id/mobile"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:minLines="1" />
 </RelativeLayout>
 
 
@@ -105,14 +107,14 @@
         android:id="@+id/emailLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/clientPhone"
-        android:layout_alignBottom="@+id/clientPhone"
+        android:layout_alignBaseline="@+id/client_email"
+        android:layout_alignBottom="@+id/client_email"
         android:layout_alignParentStart="true"
         android:text="@string/email"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
     <EditText
-        android:id="@+id/clientPhone"
+        android:id="@+id/client_email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/phoneLayout"
@@ -137,13 +139,13 @@
         android:id="@+id/address"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/clientPhone"
-        android:layout_below="@+id/clientPhone"
+        android:layout_alignStart="@+id/client_email"
+        android:layout_below="@+id/client_email"
         android:ems="10"
         android:hint="@string/address"
         android:inputType="textPostalAddress"
-        android:layout_alignEnd="@+id/clientPhone"
-        android:minLines="2" />
+        android:layout_alignEnd="@+id/client_email"
+        android:minLines="5" />
 
     <TextView
         android:id="@+id/companyLabel"
@@ -178,10 +180,10 @@
         android:id="@+id/designation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/company"
         android:layout_below="@+id/company"
         android:hint="@string/designation"
-        android:layout_alignEnd="@+id/company" />
+        android:layout_alignEnd="@+id/company"
+        android:layout_alignStart="@+id/company" />
 
     <TextView
         android:id="@+id/notesLabel"
@@ -226,25 +228,38 @@
         android:layout_height="wrap_content"
         android:text="@string/linkedIn"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:layout_alignBaseline="@+id/linkedIn"
-        android:layout_alignBottom="@+id/linkedIn"
-        android:layout_alignEnd="@+id/designLabel"
+        android:layout_below="@+id/designation"
         android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="https://www.linkedin.com/"
+        android:id="@+id/linkedInDomain"
+        android:layout_above="@+id/notesLabel"
+        android:layout_alignParentStart="true"
+        android:paddingBottom="10dp"
+        android:textColor="#6897dd"
+        android:textSize="16sp" />
 
     <EditText
         android:id="@+id/linkedIn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/linkedIn"
-        android:layout_below="@+id/designation"
-        android:layout_alignStart="@+id/designation"
-        android:layout_alignEnd="@+id/group" />
+        android:hint="@string/linkedInHint"
+        android:layout_below="@+id/linkedinLabel"
+        android:lines="1"
+        android:inputType="textUri"
+        android:layout_marginLeft="4dp"
+        android:layout_alignEnd="@+id/designation"
+        android:layout_toEndOf="@+id/linkedInDomain" />
 
     <FrameLayout
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:layout_alignTop="@+id/imageView"
-        android:layout_alignEnd="@+id/imageView">
+        android:layout_alignEnd="@+id/imageView"
+        android:id="@+id/frameLayout">
 
         <ImageButton
             android:layout_width="match_parent"
@@ -254,6 +269,8 @@
             android:visibility="invisible"
             android:layout_gravity="center" />
     </FrameLayout>
+
+
 
 </RelativeLayout>
 

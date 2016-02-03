@@ -111,7 +111,7 @@ public class ClientManager {
         if (range == ClientListFragment.RANGE_FAVORITE) {
             whereClause = Cols.STARED + " = 1";
         } else if (range == ClientListFragment.RANGE_RECENT) {
-            Toast.makeText(mContext, "Not implemented", Toast.LENGTH_SHORT).show();
+            Log.i("client", "recent not implemented");
         }
 
         try (ClientCursorWrapper cursor = queryClients(whereClause, whereArgs,
@@ -127,13 +127,13 @@ public class ClientManager {
     }
 
     public void addClient(Client item) {
-        ContentValues values = getContentValues(item);
+        ContentValues values = item.getContentValues();//getContentValues(item);
         mDatabase.insert(NAME, null, values);
     }
 
     public void updateClient(Client c) {
         String uuidString = c.getId().toString();
-        ContentValues values = getContentValues(c);
+        ContentValues values = c.getContentValues();//getContentValues(c);
 
         mDatabase.update(NAME, values,
                 Cols.UUID + " =  ?",
