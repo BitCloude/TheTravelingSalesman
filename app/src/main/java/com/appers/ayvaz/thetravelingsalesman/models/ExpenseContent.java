@@ -42,7 +42,7 @@ public class ExpenseContent {
 
     public static String CalendarToString(Calendar calendar)
     {
-        DateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
+        DateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
         String stringCalender = formatter.format(calendar.getTime());
         return stringCalender;
     }
@@ -83,7 +83,7 @@ public class ExpenseContent {
         List<Expense> expenses = new ArrayList<>();
         String whereClause = null;
         String[] whereArgs = null;
-        String sortOrder = null;
+        String sortOrder = DbSchema.ExpenseTable.Cols.EXPENSE_DATE_FROM + " DESC";
 
 
         try (ExpenseCursorWrapper cursor = queryExpenses(whereClause, whereArgs,
@@ -102,7 +102,7 @@ public class ExpenseContent {
         List<Expense> expenses = new ArrayList<>();
         String whereClause  = DbSchema.ExpenseTable.Cols.EXPENSE_CLIENT_ID + " = ?";
         String[] whereArgs = new String[]{uuid.toString()};
-        String sortOrder = null;
+        String sortOrder = DbSchema.ExpenseTable.Cols.EXPENSE_DATE_FROM + " DESC";
 
         try (ExpenseCursorWrapper cursor = queryExpenses(whereClause, whereArgs,
                 sortOrder)) {

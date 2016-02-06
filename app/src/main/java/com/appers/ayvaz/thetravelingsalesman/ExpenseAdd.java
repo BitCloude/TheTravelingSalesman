@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -43,8 +44,8 @@ Spinner spinnerType;
     List<Client> clientList;
     TripContent tripContent;
     List<Trip> tripList;
-    static Calendar dateFrom = Calendar.getInstance();
-    static Calendar dateTo = Calendar.getInstance();
+    static Calendar dateFrom;
+    static Calendar dateTo;
     AutoCompleteTextView autoCompleteTextViewClients, autoCompleteTextViewTrips;
 
     Expense expense_main;
@@ -84,6 +85,9 @@ Spinner spinnerType;
 
         tripContent= TripContent.get(getApplicationContext());
 
+        dateTo = Calendar.getInstance();
+        dateFrom = Calendar.getInstance();
+
         textDateFrom.setText(String.format("%tm/%td/%tY", dateFrom,dateFrom,dateFrom));
         textDateTo.setText(String.format("%tm/%td/%tY", dateTo, dateTo, dateTo));
 
@@ -109,12 +113,9 @@ Spinner spinnerType;
                     autoCompleteTextViewTrips.setText(selectedTrip.toString());
                 }
             }}
-            textDateFrom.setText(String.format("%tm/%td/%tY", dateFrom,dateFrom,dateFrom));
-            textDateTo.setText(String.format("%tm/%td/%tY", dateTo, dateTo, dateTo));
-        } else{
-            textDateFrom.setText(String.format("%tm/%td/%tY", dateFrom,dateFrom,dateFrom));
-            textDateTo.setText(String.format("%tm/%td/%tY", dateTo, dateTo, dateTo));
         }
+        textDateFrom.setText(String.format("%tm/%td/%tY", dateFrom,dateFrom,dateFrom));
+        textDateTo.setText(String.format("%tm/%td/%tY", dateTo, dateTo, dateTo));
 
         spinnerType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -213,7 +214,12 @@ Spinner spinnerType;
             case R.id.action_settings:
                 return true;
             case 11:
-                saveData();
+                if(saveData()){
+                    Intent intent = new Intent(getApplicationContext(), TripExpMan.class);
+                    intent.putExtra("ORIGIN", "EXPENSE");
+                    intent.putExtra("CLIENT", selectedClient.getId().toString());
+                    startActivity(intent);
+                }
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -253,9 +259,9 @@ Spinner spinnerType;
         if(selectedTrip!=null)
             autoCompleteTextViewTrips.setText(selectedTrip.toString());
 
-        textDateFrom.setText(ExpenseContent.CalendarToString(expense.getDate_from()));
+        //textDateFrom.setText(ExpenseContent.CalendarToString(expense.getDate_from()));
         dateFrom=expense.getDate_from();
-        textDateTo.setText(ExpenseContent.CalendarToString(expense.getDate_to()));
+        //textDateTo.setText(ExpenseContent.CalendarToString(expense.getDate_to()));
         dateTo = expense.getDate_to();
         expenseType = expense.getType();
         spinnerSet();
@@ -270,12 +276,28 @@ Spinner spinnerType;
     }
 
 
-    public void saveData(){
+    public boolean saveData(){
 
         boolean edit = true;
         if(expense_main == null){
             expense_main= new Expense();
             edit = false;
+        }
+        if(selectedClient != null && !autoCompleteTextViewClients.getText().toString().equals(""))
+            expense_main.setClient_id(selectedClient.getId());
+        else {
+            autoCompleteTextViewClients.setHintTextColor(ContextCompat.getColor(getApplicationContext(), R.color.hint_text_red));
+            return false;
+        }
+
+
+        if(TripContent.compareCalendars(dateFrom,dateTo) != -1) {
+            expense_main.setDate_from(dateFrom);
+            expense_main.setDate_to(dateTo);
+        }
+        else{
+            Toast.makeText(getApplicationContext(),"Error: Starting date is after ending date", Toast.LENGTH_LONG).show();
+            return false;
         }
         expense_main.setAmount(editAmount.getText().toString());
         expense_main.setDescription(editDescription.getText().toString());
@@ -285,8 +307,6 @@ Spinner spinnerType;
         else
             expense_main.setTrip_id(0);
         expense_main.setType(expenseType);
-        expense_main.setDate_from(dateFrom);
-        expense_main.setDate_to(dateTo);
 
       //  mTrip.setBoarding(editTravelBoardingPass.getText().toString());
         //mTrip.setTrip_to(editTravelTo.getText().toString());
@@ -298,11 +318,8 @@ Spinner spinnerType;
         else
             expenseContent.addExpense(expense_main);
 
-        Intent intent = new Intent(getApplicationContext(), TripExpMan.class);
-        intent.putExtra("ORIGIN", "EXPENSE");
-        intent.putExtra("CLIENT", selectedClient.getId().toString());
-        startActivity(intent);
 
+        return  true;
 
     }
 
@@ -377,8 +394,9 @@ Spinner spinnerType;
                     if (resultCode == Activity.RESULT_OK) {
                         Bundle bundle = new Bundle();
                         bundle = data.getExtras();
-                        dateTo = (Calendar) bundle.get("com.appers.avyaz.thetravelingsalesman.task.date");
-                        textDateTo.setText(String.format("%tm/%td/%tY", dateTo, dateTo, dateTo));
+                       dateTo = (Calendar) bundle.get("com.appers.avyaz.thetravelingsalesman.task.date");
+                            textDateTo.setText(String.format("%tm/%td/%tY", dateTo, dateTo, dateTo));
+
                     } else if (resultCode == Activity.RESULT_CANCELED){
                         Toast.makeText(getActivity(),"Error Date To",Toast.LENGTH_LONG).show();
                     }

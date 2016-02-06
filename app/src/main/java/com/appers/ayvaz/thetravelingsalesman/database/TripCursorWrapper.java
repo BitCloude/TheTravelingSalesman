@@ -33,7 +33,7 @@ public class TripCursorWrapper extends CursorWrapper {
 
     public static Calendar stringToCalendar(String stringDate)
     {
-        DateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
+        DateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
         Calendar calendar = Calendar.getInstance();
         try {
             calendar.setTime(formatter.parse(stringDate));

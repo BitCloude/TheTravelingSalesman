@@ -9,6 +9,7 @@ import com.appers.ayvaz.thetravelingsalesman.database.DatabaseHelper;
 import com.appers.ayvaz.thetravelingsalesman.database.DatabaseHelperTravExp;
 import com.appers.ayvaz.thetravelingsalesman.database.DbSchema;
 import com.appers.ayvaz.thetravelingsalesman.database.TripCursorWrapper;
+import com.wefika.calendar.manager.CalendarManager;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -39,9 +40,51 @@ public class TripContent {
 
         return content;
     }
+    public static int compareCalendars(Calendar a, Calendar b){
+
+        int A_IS_BEFORE = 1;
+        int BOTH_EQUAL = 0;
+        int A_IS_AFTER = -1;
+
+        if(a.get(Calendar.YEAR) < b.get(Calendar.YEAR)){
+            return A_IS_BEFORE;
+        }
+        else if(a.get(Calendar.YEAR) > b.get(Calendar.YEAR)){
+            return A_IS_AFTER;
+        }
+        else{
+
+            if(a.get(Calendar.MONTH) < b.get(Calendar.MONTH)){
+                return A_IS_BEFORE;
+            }
+            else if(a.get(Calendar.MONTH) > b.get(Calendar.MONTH)){
+                return A_IS_AFTER;
+            }
+            else{
+
+                if(a.get(Calendar.DAY_OF_MONTH) < b.get(Calendar.DAY_OF_MONTH)){
+                    return A_IS_BEFORE;
+                }
+                else if(a.get(Calendar.DAY_OF_MONTH) > b.get(Calendar.DAY_OF_MONTH)){
+                    return A_IS_AFTER;
+                }
+                else {
+                    return BOTH_EQUAL;
+                }
+
+            }
+
+        }
+
+    }
+
+
+
+
+
     public static String CalendarToString(Calendar calendar)
     {
-        DateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
+        DateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
         String stringCalender = formatter.format(calendar.getTime());
         return stringCalender;
     }
@@ -83,7 +126,7 @@ public class TripContent {
         List<Trip> trips = new ArrayList<>();
         String whereClause = null;
         String[] whereArgs = null;
-        String sortOrder = null;
+        String sortOrder = DbSchema.TripTable.Cols.TRIP_DATE_FROM + " DESC";
 
 
         try (TripCursorWrapper cursor = queryTrips(whereClause, whereArgs,
@@ -102,7 +145,7 @@ public class TripContent {
         List<Trip> trips = new ArrayList<>();
         String whereClause  = DbSchema.TripTable.Cols.TRIP_CLIENT_ID + " = ?";
         String[] whereArgs = new String[]{uuid.toString()};
-        String sortOrder = null;
+        String sortOrder = DbSchema.TripTable.Cols.TRIP_DATE_FROM + " DESC";
 
 
 

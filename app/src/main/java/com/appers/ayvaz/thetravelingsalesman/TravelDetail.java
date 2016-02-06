@@ -55,8 +55,8 @@ public class TravelDetail extends AppCompatActivity {
     String tripType;
     ClientManager clientManager;
     List<Client> clientList;
-    static Calendar dateFrom = Calendar.getInstance();
-    static Calendar dateTo = Calendar.getInstance();
+    static Calendar dateFrom;
+    static Calendar dateTo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,8 +109,8 @@ public class TravelDetail extends AppCompatActivity {
         });
 
 
-
-
+        dateFrom= Calendar.getInstance();
+        dateTo = Calendar.getInstance();
 
         clientManager= ClientManager.get(getApplicationContext());
         clientList = clientManager.getClients();
@@ -135,13 +135,9 @@ public class TravelDetail extends AppCompatActivity {
             UUID clientUUID = UUID.fromString(intentRecieved.getStringExtra("CLIENT"));
             selection =clientManager.getClient(clientUUID);
             autoCompleteTextView.setText(selection.toString());
-            textDateFrom.setText(String.format("%tm/%td/%tY", dateFrom,dateFrom,dateFrom));
-            textDateTo.setText(String.format("%tm/%td/%tY", dateTo, dateTo, dateTo));
         }
-        else{
-            textDateFrom.setText(String.format("%tm/%td/%tY", dateFrom,dateFrom,dateFrom));
-            textDateTo.setText(String.format("%tm/%td/%tY", dateTo, dateTo, dateTo));
-        }
+        textDateFrom.setText(String.format("%tm/%td/%tY", dateFrom,dateFrom,dateFrom));
+        textDateTo.setText(String.format("%tm/%td/%tY", dateTo, dateTo, dateTo));
 
 
         //String[] clientNames = loadClientList(clientList);
@@ -151,7 +147,7 @@ public class TravelDetail extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 selection= (Client)parent.getItemAtPosition(position);
-                Toast.makeText(getApplicationContext(), selection.getFirstName(),Toast.LENGTH_LONG).show();
+              //  Toast.makeText(getApplicationContext(), selection.getFirstName(),Toast.LENGTH_LONG).show();
             }
         });
 
@@ -247,9 +243,9 @@ public class TravelDetail extends AppCompatActivity {
         editTravelFrom.setText(trip.getTrip_from());
         editTravelBoardingPass.setText(trip.getBoarding());
         editTravelDescription.setText(trip.getDescription());
-        textDateFrom.setText(TripContent.CalendarToString(trip.getDate_from()));
+        //textDateFrom.setText(TripContent.CalendarToString(trip.getDate_from()));
         dateFrom=trip.getDate_from();
-        textDateTo.setText(TripContent.CalendarToString(trip.getDate_to()));
+        //textDateTo.setText(TripContent.CalendarToString(trip.getDate_to()));
         dateTo = trip.getDate_to();
         tripType = trip.getType();
         if(tripType!=null)
@@ -278,12 +274,18 @@ public class TravelDetail extends AppCompatActivity {
             autoCompleteTextView.setHintTextColor(ContextCompat.getColor(getApplicationContext(), R.color.hint_text_red));
             return false;
         }
+        if(TripContent.compareCalendars(dateFrom,dateTo) != -1) {
+            trip_main.setDate_from(dateFrom);
+            trip_main.setDate_to(dateTo);
+        }
+        else{
+            Toast.makeText(getApplicationContext(),"Error: Starting date is after ending date", Toast.LENGTH_LONG).show();
+            return false;
+        }
         trip_main.setTrip_from(editTravelFrom.getText().toString());
         trip_main.setTrip_to(editTravelTo.getText().toString());
         trip_main.setDescription(editTravelDescription.getText().toString());
         trip_main.setBoarding(editTravelBoardingPass.getText().toString());
-        trip_main.setDate_from(dateFrom);
-        trip_main.setDate_to(dateTo);
         trip_main.setType(tripType);
 
         TripContent tripContent = TripContent.get(getApplicationContext());
@@ -407,8 +409,13 @@ public class TravelDetail extends AppCompatActivity {
                     if (resultCode == Activity.RESULT_OK) {
                         Bundle bundle = new Bundle();
                         bundle = data.getExtras();
-                        dateTo = (Calendar) bundle.get("com.appers.avyaz.thetravelingsalesman.task.date");
-                        textDateTo.setText(String.format("%tm/%td/%tY", dateTo, dateTo, dateTo));
+                        Calendar tempDate = (Calendar) bundle.get("com.appers.avyaz.thetravelingsalesman.task.date");
+                        if(TripContent.compareCalendars(dateFrom,tempDate) != -1 ) {
+                            dateTo = tempDate;
+                            textDateTo.setText(String.format("%tm/%td/%tY", dateTo, dateTo, dateTo));
+                        }
+                        else
+                            Toast.makeText(getActivity(),"Completion date(To) cannot be before starting date(From) ",Toast.LENGTH_LONG).show();
                     } else if (resultCode == Activity.RESULT_CANCELED){
                         Toast.makeText(getActivity(),"Error Date To",Toast.LENGTH_LONG).show();
                     }
