@@ -51,6 +51,7 @@ public class TravelDetail extends AppCompatActivity {
 
     RadioGroup radioGroup;
     RadioButton radPlane, radTrain, radCar;
+    boolean radPlaneWasChecked, radTrainWasChecked, radCarWasChecked;
 
     String tripType;
     ClientManager clientManager;
@@ -88,22 +89,26 @@ public class TravelDetail extends AppCompatActivity {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 if (checkedId == radCar.getId()) {
-                    tripType = "Road";
-                    radCar.setButtonDrawable(R.drawable.ic_travel_detail_car);
+                        tripType = "Road";
+
+                        radCar.setButtonDrawable(R.drawable.ic_travel_detail_car);
                     radPlane.setButtonDrawable(R.drawable.ic_travel_detail_plane_dark);
                     radTrain.setButtonDrawable(R.drawable.ic_travel_detail_train_dark);
+
                 } else if (checkedId == radPlane.getId()) {
-                    tripType = "Air";
-                    radPlane.setButtonDrawable(R.drawable.ic_travel_detail_plane);
+                        tripType = "Air";
+                         radPlane.setButtonDrawable(R.drawable.ic_travel_detail_plane);
                     radCar.setButtonDrawable(R.drawable.ic_travel_detail_car_dark);
                     radTrain.setButtonDrawable(R.drawable.ic_travel_detail_train_dark);
+
                 } else if (checkedId == radTrain.getId()) {
-                    tripType = "Rail";
-                    radTrain.setButtonDrawable(R.drawable.ic_travel_detail_train);
+
+                        tripType = "Rail";
+                        radTrain.setButtonDrawable(R.drawable.ic_travel_detail_train);
                     radCar.setButtonDrawable(R.drawable.ic_travel_detail_car_dark);
                     radPlane.setButtonDrawable(R.drawable.ic_travel_detail_plane_dark);
-                } else
-                    Toast.makeText(getApplicationContext(), "Radio Group error", Toast.LENGTH_LONG).show();
+
+                }
 
             }
         });
@@ -193,7 +198,6 @@ public class TravelDetail extends AppCompatActivity {
 
     }
     public void RadioCheck(String tripType){
-
         switch (tripType){
             case "Road":
                 radioGroup.check(radCar.getId());

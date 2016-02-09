@@ -1,44 +1,41 @@
 package com.appers.ayvaz.thetravelingsalesman.view;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.appers.ayvaz.thetravelingsalesman.R;
+import com.appers.ayvaz.thetravelingsalesman.models.Expense;
 import com.appers.ayvaz.thetravelingsalesman.models.Trip;
+import com.appers.ayvaz.thetravelingsalesman.models.TripContent;
 
 import java.util.Calendar;
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link TripsListFragment.OnFragmentInteractionListener} interface
+ * {@link ExpenseListFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link TripsListFragment#newInstance} factory method to
+ * Use the {@link ExpenseListFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class TripsListFragment extends Fragment {
+public class ExpenseListFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "TRIP";
-   // private static final String ARG_PARAM2 = "param2";
-   TextView date, trip_from_to,description ;
-    ImageView type;
+    private static final String ARG_PARAM1 = "EXPENSE";
+    TextView date, expense_trip,amount,type,description ;
 
     // TODO: Rename and change types of parameters
-    private Trip mTrip;
+    private Expense mExpense;
 
     private OnFragmentInteractionListener mListener;
 
-    public TripsListFragment() {
+    public ExpenseListFragment() {
         // Required empty public constructor
     }
 
@@ -46,14 +43,14 @@ public class TripsListFragment extends Fragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param trip Parameter 1.
-     * @return A new instance of fragment TripsListFragment.
+     * @param expense Parameter 1.
+     * @return A new instance of fragment ExpenseListFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static TripsListFragment newInstance(Trip trip) {
-        TripsListFragment fragment = new TripsListFragment();
+    public static ExpenseListFragment newInstance(Expense expense) {
+        ExpenseListFragment fragment = new ExpenseListFragment();
         Bundle args = new Bundle();
-        args.putParcelable(ARG_PARAM1, trip);
+        args.putParcelable(ARG_PARAM1, expense);
         fragment.setArguments(args);
         return fragment;
     }
@@ -62,7 +59,7 @@ public class TripsListFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mTrip = getArguments().getParcelable(ARG_PARAM1);
+            mExpense = getArguments().getParcelable(ARG_PARAM1);
         }
     }
 
@@ -70,56 +67,36 @@ public class TripsListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-       View v =  inflater.inflate(R.layout.fragment_trips_list, container, false);
-        date = (TextView) v.findViewById(R.id.fragment_trips_date);
-        trip_from_to = (TextView) v.findViewById(R.id.fragment_trips_from);
-        description = (TextView) v.findViewById(R.id.fragment_trips_description);
-        type = (ImageView) v.findViewById(R.id.fragment_trips_type);
+        View v =  inflater.inflate(R.layout.fragment_expense_list, container, false);
+        date = (TextView) v.findViewById(R.id.fragment_expense_date);
+        expense_trip = (TextView) v.findViewById(R.id.fragment_expense_trip);
+        description = (TextView) v.findViewById(R.id.fragment_expense_description);
+        amount = (TextView) v.findViewById(R.id.fragment_expense_amount);
+        type = (TextView) v.findViewById(R.id.fragment_expense_type);
 
-        Calendar dateFrom = mTrip.getDate_from();
+        Calendar dateFrom = mExpense.getDate_from();
+        if(dateFrom != null)
         date.setText(String.format("%tm/%td/%tY", dateFrom, dateFrom, dateFrom));
-        //trip_from_to.setText("From " + mTrip.getTrip_from() + " to " + mTrip.getTrip_to());
-        trip_from_to.setText(mTrip.toString());
-        description.setText(mTrip.getDescription());
-        if (mTrip.getType() != null) {
-        switch (mTrip.getType()){
-            case "Road":
-               // int car = getResources().getIdentifier("drawable/ic_travel_car_white", null, null);
-                type.setImageResource(R.drawable.ic_car_white);
-                type.setVisibility(View.VISIBLE);
-                break;
-            case "Rail":
-                //int train = getResources().getIdentifier("drawable/ic_travel_train", null, null);
-                type.setImageResource(R.drawable.ic_train_white);
-                type.setVisibility(View.VISIBLE);
-                break;
-            case "Air":
-                //int plane = getResources().getIdentifier("drawable/ic_travel_plane_light", null, null);
-                type.setImageResource(R.drawable.ic_plane_white);
-                type.setVisibility(View.VISIBLE);
-                break;
-        }
+        else
+        date.setText(null);
+        Trip trip = TripContent.get(getActivity()).getTrip(mExpense.getTrip_id());
+        if(trip!= null){
+        expense_trip.setText(trip.toString());}
+        else{
+        expense_trip.setText(null);}
+        amount.setText(mExpense.getAmount());
+        description.setText(mExpense.getDescription());
+        type.setText(mExpense.getType());
 
-        }else{
-            type.setVisibility(View.INVISIBLE);
-        }
-        v.setTag(mTrip);
+        v.setTag(mExpense);
         if (mListener != null) {
             mListener.onFragmentInteraction(v);
         }
 
-
         return v;
     }
 
-   /* // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-*/
-   @Override
+    @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         if (context instanceof OnFragmentInteractionListener) {
