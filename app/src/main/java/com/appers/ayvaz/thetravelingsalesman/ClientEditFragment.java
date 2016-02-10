@@ -83,7 +83,6 @@ public class ClientEditFragment extends Fragment {
     private UUID mClientId;
     private Client mClient;
     private File mPhotoFile, mPhotoTmp;
-    private MenuItem mStar, mDelete;
 
 
 
@@ -131,7 +130,6 @@ public class ClientEditFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_client_edit, container, false);
         ButterKnife.bind(this, view);
-//        mStar = mMenu.findItem(R.id.action_star);
 
         updateUI();
         updatePhotoView();

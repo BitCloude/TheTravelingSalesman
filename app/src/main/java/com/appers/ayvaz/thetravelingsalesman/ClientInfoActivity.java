@@ -35,7 +35,7 @@ import java.util.UUID;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class ClientInfoActivity extends AppCompatActivity {
+public class ClientInfoActivity extends BaseActivity {
 
     private final String DEBUG_TAG = "ClientInfoActivity: ";
     private static final String EXTRA_CLIENT_ID = "client_id";
