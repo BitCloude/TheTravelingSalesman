@@ -37,6 +37,10 @@
             <menu>
                 <group android:checkableBehavior="none">
                     <item
+                        android:id="@+id/nav_settings"
+                        android:title="@string/action_settings"
+                        />
+                    <item
                         android:title="@string/help"/>
                     <item
                         android:title="@string/exit"/>
