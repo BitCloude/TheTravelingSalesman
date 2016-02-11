@@ -2,6 +2,7 @@ package com.appers.ayvaz.thetravelingsalesman;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -28,12 +29,15 @@ import com.appers.ayvaz.thetravelingsalesman.models.Expense;
 import com.appers.ayvaz.thetravelingsalesman.models.ExpenseContent;
 import com.appers.ayvaz.thetravelingsalesman.models.Trip;
 import com.appers.ayvaz.thetravelingsalesman.models.TripContent;
+import com.appers.ayvaz.thetravelingsalesman.view.PhotoViewFragment;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.util.Calendar;
 import java.util.List;
 import java.util.UUID;
 
-public class ExpenseAdd extends AppCompatActivity {
+public class ExpenseAdd extends AppCompatActivity implements PhotoViewFragment.OnFragmentInteractionListener{
 Spinner spinnerType;
     String[] expenseTypesAr = {"Travel Bill", "Hotel Bill", "Restaurant Bill","Gift", "Other"};
     ImageButton buttonDateFrom, buttonDateTo, buttonCamera,buttonAddTravel;
@@ -52,6 +56,8 @@ Spinner spinnerType;
     Client selectedClient;
     Trip selectedTrip;
 
+    byte[] imageFinal = null;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +72,7 @@ Spinner spinnerType;
         buttonDateTo = (ImageButton) findViewById(R.id.ButtonCalenderTo);
         buttonAddTravel = (ImageButton) findViewById(R.id.buttonAddTravel);
         editAmount = (EditText) findViewById(R.id.EditAmount);
-        editDescription = (EditText) findViewById(R.id.expenseAddDescription);
+        editDescription = (EditText) findViewById(R.id.expenseAddEditDescription);
         //spinner = (Spinner) findViewById(R.id.spinnerTripSelect);
         spinnerType = (Spinner) findViewById(R.id.spinnerExpenseType);
         textDateFrom = (TextView) findViewById(R.id.EditDateFrom);
@@ -182,7 +188,7 @@ Spinner spinnerType;
         buttonCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(),"Camera",Toast.LENGTH_SHORT).show();
+                showPhoto(imageFinal, true);
             }
         });
 
@@ -248,6 +254,15 @@ Spinner spinnerType;
         autoCompleteTextViewTrips.setAdapter(adapterTrip);}
     }
 
+    public void showPhoto(byte[] imageByte, boolean addImage)
+    {
+        ExpenseContent expenseContent = ExpenseContent.get(getApplicationContext());
+        PhotoViewFragment photoViewFragment = PhotoViewFragment.newInstance(imageByte,addImage);
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.add(R.id.expense_photo_fragment_container, photoViewFragment).commit();
+    }
+
     public void loadData(Expense expense) {
         editAmount.setText(expense.getAmount());
         editDescription.setText(expense.getDescription());
@@ -265,7 +280,9 @@ Spinner spinnerType;
         dateTo = expense.getDate_to();
         expenseType = expense.getType();
         spinnerSet();
+        imageFinal = expense.getImage();
         expense_main = expense;
+        showPhoto(imageFinal,false);
     }
 
 
@@ -310,7 +327,7 @@ Spinner spinnerType;
 
       //  mTrip.setBoarding(editTravelBoardingPass.getText().toString());
         //mTrip.setTrip_to(editTravelTo.getText().toString());
-
+        expense_main.setImage(imageFinal);
 
         ExpenseContent expenseContent = ExpenseContent.get(getApplicationContext());
         if(edit)
@@ -321,6 +338,11 @@ Spinner spinnerType;
 
         return  true;
 
+    }
+
+    @Override
+    public void onFragmentInteraction(byte[] image) {
+        this.imageFinal = image;
     }
 
     public static class MyFragmentExp extends Fragment {

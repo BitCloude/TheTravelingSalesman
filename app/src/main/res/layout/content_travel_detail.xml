@@ -215,13 +215,22 @@
             android:minLines="5"
             android:textSize="15dp"
             android:layout_below="@id/travelDetailDescription"/>
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/trip_photo_fragment_container"
+            android:layout_below="@+id/travelDetailEditDescription"
+            android:layout_marginTop="10dp">
+
+        </FrameLayout>
 
         <Button
             android:id="@+id/travelDetailAddExpense"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="+ Expense"
-            android:layout_below="@id/travelDetailEditDescription"
+            android:layout_marginTop="10dp"
+            android:layout_below="@id/trip_photo_fragment_container"
             android:layout_centerHorizontal="true"/>
 
 

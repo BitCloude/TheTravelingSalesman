@@ -95,6 +95,10 @@ public class Trip implements Parcelable {
         dest.writeSerializable(date_to);
         dest.writeString(boarding);
         dest.writeString(description);
+        if(image != null)
+        dest.writeInt(image.length);
+        else
+        dest.writeInt(0);
         dest.writeByteArray(image);
 
     }
@@ -119,7 +123,11 @@ public class Trip implements Parcelable {
         this.date_to = (Calendar) in.readSerializable();
         this.boarding = in.readString();
         this.description = in.readString();
-        this.image = in.createByteArray();
+        this.image = new byte[in.readInt()];
+        if(this.image.length == 0){
+            this.image = null;
+        }else{
+        in.readByteArray(this.image);}
 
     }
 

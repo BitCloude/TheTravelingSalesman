@@ -166,13 +166,13 @@ public class TripExpMan extends NavigationDrawerActivity implements SectionsPage
             Intent intent = new Intent(getApplicationContext(), TravelDetail.class);
             intent.putExtra("TRIP", (Trip) obj);
             startActivity(intent);
-            Toast.makeText(getApplicationContext(),""+((Trip) obj).getId(),Toast.LENGTH_LONG).show();
+           // Toast.makeText(getApplicationContext(),""+((Trip) obj).getId(),Toast.LENGTH_LONG).show();
         }
         else if(obj instanceof Expense) {
             Intent intent = new Intent(getApplicationContext(), ExpenseAdd.class);
             intent.putExtra("EXPENSE", (Expense) obj);
             startActivity(intent);
-            Toast.makeText(getApplicationContext(),""+((Expense) obj).getId(),Toast.LENGTH_LONG).show();
+            //Toast.makeText(getApplicationContext(),""+((Expense) obj).getId(),Toast.LENGTH_LONG).show();
         }
 
     }

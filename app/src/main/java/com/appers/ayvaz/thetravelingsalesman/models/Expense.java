@@ -87,6 +87,10 @@ public class Expense implements Parcelable{
         dest.writeSerializable(date_from);
         dest.writeSerializable(date_to);
         dest.writeString(description);
+        if(image != null)
+        dest.writeInt(image.length);
+        else
+        dest.writeInt(0);
         dest.writeByteArray(image);
 
     }
@@ -110,7 +114,11 @@ public class Expense implements Parcelable{
         this.date_from = (Calendar) in.readSerializable();
         this.date_to = (Calendar) in.readSerializable();
         this.description = in.readString();
-        this.image = in.createByteArray();
+        this.image = new byte[in.readInt()];
+        if(this.image.length == 0){
+            this.image = null;
+        }else{
+            in.readByteArray(this.image);}
 
     }
 

@@ -5,12 +5,14 @@ import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,6 +23,8 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -31,16 +35,20 @@ import com.appers.ayvaz.thetravelingsalesman.models.Client;
 import com.appers.ayvaz.thetravelingsalesman.models.ClientManager;
 import com.appers.ayvaz.thetravelingsalesman.models.Trip;
 import com.appers.ayvaz.thetravelingsalesman.models.TripContent;
+import com.appers.ayvaz.thetravelingsalesman.utils.DbBitmapUtility;
+import com.appers.ayvaz.thetravelingsalesman.view.PhotoViewFragment;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.UUID;
 
-public class TravelDetail extends AppCompatActivity {
+public class TravelDetail extends AppCompatActivity implements PhotoViewFragment.OnFragmentInteractionListener {
 //Spinner spinnerTravelClient;
     String[] clients = {"Client 0", "Client 1", "Client 2","Client 3", "Client 4", "Client 5","Client 6", "Client 7", "Client 8","Client 9", "Client 10", "Client 11","Client 12", "Client 13", "Client 14","Client 15", "Client 16", "Client 17"};
-    ImageButton buttonDateFrom, buttonDateTo;
+    ImageButton buttonDateFrom, buttonDateTo, cameraButton;
     Trip trip_main = null;
     Client selection=null;
     EditText editTravelFrom, editTravelTo, editTravelBoardingPass, editTravelDescription;
@@ -48,6 +56,7 @@ public class TravelDetail extends AppCompatActivity {
     AutoCompleteTextView autoCompleteTextView;
     Button addExpense;
 
+    byte[] imageFinal;
 
     RadioGroup radioGroup;
     RadioButton radPlane, radTrain, radCar;
@@ -75,6 +84,7 @@ public class TravelDetail extends AppCompatActivity {
         textDateTo = (TextView) findViewById(R.id.travelDetailEditDateTo);
         buttonDateFrom = (ImageButton) findViewById(R.id.travelDetailButtonCalenderFrom);
         buttonDateTo = (ImageButton) findViewById(R.id.travelDetailButtonCalenderTo);
+        cameraButton = (ImageButton) findViewById(R.id.cameraTravelButton);
         autoCompleteTextView = (AutoCompleteTextView) findViewById(R.id.travelDetailAutoCompleteTextView);
         editTravelDescription = (EditText) findViewById(R.id.travelDetailEditDescription);
         editTravelBoardingPass = (EditText) findViewById(R.id.travelDetailBoardingEdit);
@@ -124,7 +134,7 @@ public class TravelDetail extends AppCompatActivity {
         textDateTo.setText(String.format("%tm/%td/%tY", dateTo, dateTo, dateTo));
 
         FragmentManager fm = getSupportFragmentManager();
-        android.support.v4.app.FragmentTransaction fragmentTransaction = fm.beginTransaction();
+        final android.support.v4.app.FragmentTransaction fragmentTransaction = fm.beginTransaction();
         MyFragment fragmentFrom = new MyFragment();
         fragmentTransaction.add(fragmentFrom,"HELPER").commit();
 
@@ -179,6 +189,12 @@ public class TravelDetail extends AppCompatActivity {
 
             }
         });
+        cameraButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showPhoto(imageFinal, true);
+            }
+        });
 
         addExpense.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -210,6 +226,14 @@ public class TravelDetail extends AppCompatActivity {
                 break;
 
         }
+    }
+    public void showPhoto(byte[] imageByte, boolean addImage)
+    {
+        //TripContent tripContent = TripContent.get(getApplicationContext());
+        PhotoViewFragment photoViewFragment = PhotoViewFragment.newInstance(imageByte,addImage);
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.add(R.id.trip_photo_fragment_container, photoViewFragment).commit();
     }
 
     public static void dateRecieved(Calendar date, int dateSel){
@@ -254,8 +278,12 @@ public class TravelDetail extends AppCompatActivity {
         tripType = trip.getType();
         if(tripType!=null)
         RadioCheck(tripType);
-
+        imageFinal = trip.getImage();
         trip_main = trip;
+        if(imageFinal != null){
+        showPhoto(imageFinal,false);
+        Toast.makeText(getApplicationContext(),"loaded image", Toast.LENGTH_SHORT).show();}
+
     }
 
     public Trip getData(Intent i){
@@ -291,6 +319,8 @@ public class TravelDetail extends AppCompatActivity {
         trip_main.setDescription(editTravelDescription.getText().toString());
         trip_main.setBoarding(editTravelBoardingPass.getText().toString());
         trip_main.setType(tripType);
+        trip_main.setImage(imageFinal);
+
 
         TripContent tripContent = TripContent.get(getApplicationContext());
         if(edit)
@@ -341,8 +371,13 @@ public class TravelDetail extends AppCompatActivity {
         //return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onFragmentInteraction(byte[] image) {
+       this.imageFinal = image;
+    }
 
-   public static class MyFragment extends Fragment {
+
+    public static class MyFragment extends Fragment {
 
 
         int mStackLevel = 0;

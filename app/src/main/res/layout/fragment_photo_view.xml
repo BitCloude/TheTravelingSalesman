@@ -1,0 +1,31 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context="com.appers.ayvaz.thetravelingsalesman.view.PhotoViewFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/fragment_photo_view"
+        android:layout_gravity="start|top" />
+
+    <FrameLayout
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_alignTop="@+id/fragment_photo_view"
+        android:layout_alignEnd="@+id/fragment_photo_view"
+        android:id="@+id/frameLayout">
+
+        <ImageButton
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/fragment_photo_delete"
+            android:src="@drawable/ic_cancel_black_18dp"
+            android:visibility="invisible"
+            android:layout_gravity="center" />
+    </FrameLayout>
+</FrameLayout>
