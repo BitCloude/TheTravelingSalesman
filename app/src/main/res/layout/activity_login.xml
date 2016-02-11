@@ -70,7 +70,7 @@
                     android:singleLine="true" />
 
             </android.support.design.widget.TextInputLayout>
-            <android.support.design.widget.TextInputLayout
+            <!--android.support.design.widget.TextInputLayout
                 android:id="@+id/passwordConfirmationLayout"
                 android:visibility="gone"
                 android:layout_width="match_parent"
@@ -92,7 +92,7 @@
                     android:maxLines="1"
                     android:singleLine="true" />
 
-            </android.support.design.widget.TextInputLayout>
+            </android.support.design.widget.TextInputLayout-->
 
             <Button
                 android:id="@+id/sign_in_button"
@@ -102,16 +102,16 @@
                 android:layout_marginTop="16dp"
                 android:text="@string/action_sign_in_short"
                 android:textStyle="bold"
-                android:backgroundTint="#fdb045"
-                android:textColor="#ffffff" />
+                android:textColor="#ffffff"
+                android:background="#fdb045" />
 
         </LinearLayout>
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Forget password?"
-        android:id="@+id/forgetButton"
+        android:text="Forgot password?"
+        android:id="@+id/forgotButton"
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
         android:background="@android:color/transparent"
@@ -124,5 +124,18 @@
         android:layout_above="@+id/login_form"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="30dp" />
+
+    <Button
+        style="?android:textAppearanceSmall"
+        android:id="@+id/laterButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/action_later"
+        android:textStyle="bold"
+        android:textColor="#ffffff"
+        android:layout_below="@+id/login_form"
+        android:layout_alignParentStart="true"
+        android:visibility="visible"
+        android:background="#7abe66" />
 
 </RelativeLayout>

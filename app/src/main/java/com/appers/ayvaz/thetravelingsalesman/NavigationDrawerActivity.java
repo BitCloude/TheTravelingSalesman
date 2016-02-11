@@ -20,6 +20,8 @@ import android.widget.TextView;
 
 import com.appers.ayvaz.thetravelingsalesman.utils.LoginUtils;
 
+import java.util.Set;
+
 public abstract class NavigationDrawerActivity extends BaseActivity {
 
     DrawerLayout mDrawerLayout;
@@ -86,6 +88,9 @@ public abstract class NavigationDrawerActivity extends BaseActivity {
     }
 
     protected void checkMenu(int menuId) {
+        if (menuId < 0) {
+            return;
+        }
         MenuItem currentItem = mNavigationView.getMenu().findItem(menuId);
         currentItem.setChecked(true);
     }
@@ -93,8 +98,8 @@ public abstract class NavigationDrawerActivity extends BaseActivity {
 
     private void selectItem(int itemId) {
 
-        if (itemId == R.id.nav_report_task) {
-            startActivity(ReportTaskActivity.newIntent(this, ReportTaskActivity.REPORT_TYPE_TASK));
+        if (itemId == R.id.nav_reports) {
+            startActivity(new Intent(this, ReportsActivity.class));
         } else if (itemId == R.id.nav_trip) {
             startActivity(new Intent(this, TripExpMan.class));
         } else if (itemId == R.id.nav_tasks) {
@@ -103,6 +108,8 @@ public abstract class NavigationDrawerActivity extends BaseActivity {
             startActivity(new Intent(this, NotificationActivity.class));
         } else if (itemId == R.id.nav_clients) {
             startActivity(new Intent(this, LandingActivity.class));
+        } else if (itemId == R.id.nav_settings) {
+            startActivity(new Intent(this, SettingsActivity.class));
         }
 
     }

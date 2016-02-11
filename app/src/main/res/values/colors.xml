@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#1ABA9A</color>
+    <color name="colorPrimary">#00bad3</color>
     <color name="colorPrimaryDark">#0388d1</color>
     <color name="selectedItem">#FFF176</color>
     <color name="colorAccent">#FFF176</color>
@@ -16,4 +16,6 @@
     <color name="YearBackground">#188ec8</color>
     <color name="HeaderBackground">#ffffff</color>
     <color name="LightButton">#d3f0ea</color>
+
+    <color name="OkButton">#fdb045</color>
 </resources>
