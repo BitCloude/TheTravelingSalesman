@@ -1,13 +1,11 @@
 package com.appers.ayvaz.thetravelingsalesman;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.annotation.TargetApi;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 
-import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.KeyEvent;
@@ -41,6 +39,8 @@ public class LoginActivity extends AppCompatActivity {
 
     private SharedPreferences mSharedPreferences;
 
+    private int mBackCount = 0;
+
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
@@ -49,11 +49,13 @@ public class LoginActivity extends AppCompatActivity {
     // UI references.
     @Bind(R.id.username) EditText mUserNameView;
     @Bind(R.id.password) EditText mPasswordView;
-    @Bind(R.id.passwordConfirmation) EditText mPasswordConfirmView;
+//    @Bind(R.id.passwordConfirmation) EditText mPasswordConfirmView;
     @Bind(R.id.sign_in_button) Button mSignInButton;
-    @Bind(R.id.login_progress) View mProgressView;
+//    @Bind(R.id.login_progress) View mProgressView;
     @Bind(R.id.login_form) View mLoginFormView;
-    @Bind(R.id.passwordConfirmationLayout) View mConfirmation;
+//    @Bind(R.id.passwordConfirmationLayout) View mConfirmation;
+    @Bind(R.id.laterButton) Button mLaterButton;
+    @Bind(R.id.forgotButton) Button mForgotButton;
     private boolean mModeRegister;
 
     @Override
@@ -75,30 +77,12 @@ public class LoginActivity extends AppCompatActivity {
 
 
 
-        mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
-                if (!mModeRegister && (id == R.id.login || id == EditorInfo.IME_NULL)) {
-                    attemptLogin();
-                    return true;
-                }
-
-                if (mModeRegister && !TextUtils.isEmpty(textView.getText().toString())){
-                    mConfirmation.setVisibility(View.VISIBLE);
-                }
-
-                return false;
-            }
-        });
-
-
-
-
         mSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (mModeRegister) {
-                    register();
+                    createUser();
+
                 } else {
                     attemptLogin();
                 }
@@ -108,16 +92,82 @@ public class LoginActivity extends AppCompatActivity {
 
 
         if (mModeRegister) {
-
             mSignInButton.setText(R.string.action_register);
+            mPasswordView.setVisibility(View.GONE);
+            mLaterButton.setVisibility(View.VISIBLE);
+            mLaterButton.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    finish();
+                }
+            });
+            mForgotButton.setVisibility(View.GONE);
         } else {
+            mPasswordView.setVisibility(View.VISIBLE);
             mUserNameView.setText(mSharedPreferences.getString(KEY_USERNAME, "(No name)"));
             mUserNameView.setEnabled(false);
-            mPasswordConfirmView.setVisibility(View.GONE);
             mSignInButton.setText(R.string.action_sign_in_short);
+            mLaterButton.setVisibility(View.GONE);
+            mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+                @Override
+                public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
+                    if (!mModeRegister && (id == R.id.login || id == EditorInfo.IME_NULL)) {
+                        attemptLogin();
+                        return true;
+                    }
+
+//                if (mModeRegister && !TextUtils.isEmpty(textView.getText().toString())){
+//                    mConfirmation.setVisibility(View.VISIBLE);
+//                }
+
+                    return false;
+                }
+            });
+            mForgotButton.setVisibility(View.VISIBLE);
+            mForgotButton.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(new Intent(LoginActivity.this, ForgotPasswordActivity.class));
+                }
+            });
         }
 
 
+    }
+
+    private void createUser() {
+        String name = mUserNameView.getText().toString();
+        if (!LoginUtils.isNameValid(name)) {
+            mUserNameView.setError(getString(R.string.error_invalid_username));
+            mUserNameView.requestFocus();
+            return;
+        }
+        saveUsername(name);
+
+        new AlertDialog.Builder(LoginActivity.this)
+                .setTitle(getString(R.string.welcome, name))
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent = new Intent(LoginActivity.this, SettingsActivity.class);
+                        startActivity(intent);
+                    }
+                }).setNegativeButton(R.string.not_now, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                enterApplication();
+            }
+        })
+                .setMessage(R.string.message_create_password)
+                .create().show();
+
+
+    }
+
+    private void saveUsername(String name) {
+        mSharedPreferences.edit()
+                .putString(LoginUtils.KEY_USERNAME, name)
+                .apply();
     }
 
 //    private void populateAutoComplete() {
@@ -146,7 +196,7 @@ public class LoginActivity extends AppCompatActivity {
         focusView = mPasswordView;
 
         // Check for a valid password, if the user entered one.
-        if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
+        if (!TextUtils.isEmpty(password) && !LoginUtils.isPasswordValid(password)) {
             mPasswordView.setError(getString(R.string.error_incorrect_password));
             focusView.requestFocus();
         } else {
@@ -155,7 +205,7 @@ public class LoginActivity extends AppCompatActivity {
 
             if (isValidated()) {
                 unlock();
-                enterApplication();
+                finish();
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
                 focusView.requestFocus();
@@ -180,19 +230,12 @@ public class LoginActivity extends AppCompatActivity {
                 confirm.equals(mPasswordView.getText().toString());
     }
 
-    private boolean isNameValid(String name) {
-
-        return TextUtils.isEmpty(name) || name.length() < 32;
-    }
-
-    private boolean isPasswordValid(String password) {
-
-        return password.length() >= 4 && password.length() <= 16;
-    }
 
     /**
      * Shows the progress UI and hides the login form.
      */
+
+    /*
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
     private void showProgress(final boolean show) {
         // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
@@ -227,11 +270,21 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
+*/
+
+    private void enterApplication() {
+        Intent intent = new Intent(this, LandingActivity.class);
+        startActivity(intent);
+
+    }
+
+    private void unlock() {
+        mSharedPreferences.edit().putBoolean(LoginUtils.KEY_LOCKED, false).apply();
+    }
 
 
 
-
-    private void register() {
+    /* private void register() {
         mSignInButton.setClickable(false);
 
 
@@ -253,7 +306,7 @@ public class LoginActivity extends AppCompatActivity {
         View focusView = null;
 
         // Check for a valid password, if the user entered one.
-        if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
+        if (!TextUtils.isEmpty(password) && !LoginUtils.isPasswordValid(password)) {
             mPasswordView.setError(getString(R.string.error_invalid_password));
             focusView = mPasswordView;
             cancel = true;
@@ -267,8 +320,8 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         // Check for a valid email address.
-        if (!isNameValid(username)) {
-            mUserNameView.setError(getString(R.string.error_invalid_email));
+        if (!LoginUtils.isNameValid(username)) {
+            mUserNameView.setError(getString(R.string.error_invalid_username));
             focusView = mUserNameView;
             cancel = true;
         }
@@ -300,18 +353,13 @@ public class LoginActivity extends AppCompatActivity {
 
 
     }
+*/
 
-    private void enterApplication() {
-//        Intent intent = new Intent(this, LandingActivity.class);
-//        startActivity(intent);
-        finish();
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mBackCount = 0;
     }
-
-    private void unlock() {
-        mSharedPreferences.edit().putBoolean(LoginUtils.LOCKED, false).apply();
-    }
-
-
 
     /**
      * Represents an asynchronous login/registration task used to authenticate
@@ -355,5 +403,23 @@ public class LoginActivity extends AppCompatActivity {
             showProgress(false);
         }
     }*/
+
+
+    private void lock() {
+        mSharedPreferences.edit().putBoolean(LoginUtils.KEY_LOCKED, true).apply();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (mBackCount == 0) {
+            ++mBackCount;
+            Toast.makeText(this, R.string.message_exit, Toast.LENGTH_SHORT).show();
+        } else {
+            finishAffinity();
+            lock();
+        }
+
+
+    }
 }
 

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.appers.ayvaz.thetravelingsalesman.utils.LoginUtils;
@@ -15,6 +16,8 @@ public class BaseActivity extends AppCompatActivity {
     private static final String DEBUG_TAG = "Base Activity";
     SharedPreferences mSharedPreferences;
     Calendar mCalendar;
+    boolean mLocked;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,11 +26,17 @@ public class BaseActivity extends AppCompatActivity {
 
     }
 
-    private void lock() {
-        mSharedPreferences.edit().putBoolean(LoginUtils.LOCKED, true).apply();
-    }
+
 
     private boolean isLocked() {
+        if (TextUtils.isEmpty(mSharedPreferences.getString(LoginUtils.KEY_PASSWORD, ""))) {
+            return false;
+        }
+
+        if (mSharedPreferences.getBoolean(LoginUtils.KEY_LOCKED, false)) {
+            return true;
+        }
+
         long timeLeft = mSharedPreferences.getLong(LoginUtils.TIME_LEFT, 0);
         long timeNow = Calendar.getInstance().getTimeInMillis();
 
@@ -53,6 +62,17 @@ public class BaseActivity extends AppCompatActivity {
         if (isLocked()) {
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
+            mLocked = true;
+        } else {
+            mLocked = false;
         }
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mLocked = false;
+    }
+
+
 }

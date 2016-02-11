@@ -1,5 +1,6 @@
 package com.appers.ayvaz.thetravelingsalesman.utils;
 
+import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
 
@@ -32,9 +33,15 @@ public class LoginUtils{
     private static final String PBE = "PBEWithMD5AndDES";
     public static final String PREF_NAME = "loginInfomation";
     public static final String KEY_USERNAME = "username";
-    public static final String LOCKED = "locked";
+    public static final String KEY_PASSWORD = "password";
+    public static final String KEY_LOCKED = "locked";
     public static final String TIME_LEFT = "time_left";
-    public static final long MAX_TIME_LEFT = 10 * 1000;
+    public static final long MAX_TIME_LEFT = 30 * 1000;
+    public static final int MAX_QUESTION_CHAR = 64;
+    public static final String KEY_QUESTION = "securityQuestion";
+    public static final String KEY_ANSWER = "answer";
+    public static final int MIN_ANSWER_CHAR = 5;
+    public static final int MAX_ANSWER_CHAR = 24;
 
 
     public static String encrypt(String password) {
@@ -68,6 +75,18 @@ public class LoginUtils{
         }
 
     }
+
+    public static boolean isNameValid(String name) {
+
+        return TextUtils.isEmpty(name) || name.length() < 32;
+    }
+
+    public static boolean isPasswordValid(String password) {
+
+        return password.length() >= 4 && password.length() <= 16;
+    }
+
+
 
 
 }
