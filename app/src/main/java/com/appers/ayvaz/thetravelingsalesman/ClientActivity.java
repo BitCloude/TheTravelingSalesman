@@ -34,7 +34,7 @@ import java.util.UUID;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class ClientActivity extends AppCompatActivity
+public class ClientActivity extends BaseActivity
         {
 
 

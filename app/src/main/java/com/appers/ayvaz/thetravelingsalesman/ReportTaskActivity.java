@@ -37,9 +37,6 @@ public class ReportTaskActivity extends SingleFragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        ids[REPORT_TYPE_EXPENSE] = R.id.nav_report_expense;
-        ids[REPORT_TYPE_TASK] = R.id.nav_report_task;
-
         Intent intent = getIntent();
         mThisType = intent.getIntExtra(EXTRA_REPORT_TYPE, 0);
 

@@ -38,11 +38,11 @@ import butterknife.ButterKnife;
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
 
     private final String DEBUG_TAG = "TaskAdapter: ";
-    private final static int TYPE_CLIENT = 0;
-    private final static int TYPE_DATE = 1;
+
     private int mSelected = -1;
     private boolean withYear = false;
     private Context mContext;
+
     List<Task> mTasks;
 
 
@@ -97,10 +97,13 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
         return new ViewHolder(view);
     }
 
+
+
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         Task task = mTasks.get(position);
         holder.setTask(task);
+
 
         if (!withYear) {
             return;
@@ -173,6 +176,8 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
             itemView.setOnCreateContextMenuListener(this);
 
         }
+
+
 
         void setTask(Task task) {
             mTask = task;

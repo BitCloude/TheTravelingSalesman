@@ -134,4 +134,52 @@
     <string name="report_nothing_to_save">Nothing to export.</string>
     <string name="client_not_selected">(Not Selected)</string>
     <string name="title_activity_report_expense">Report Expense</string>
+    <string name="title_activity_login">Sign in</string>
+
+    <!-- Strings related to login -->
+    <string name="prompt_username">Username</string>
+    <string name="prompt_password">Password</string>
+    <string name="prompt_password_old">Old password</string>
+    <string name="prompt_password_new">New password</string>
+    <string name="prompt_password_new_label">Leave blank if don\'t want to change</string>
+    <string name="prompt_password_confirmation">Confirm new password</string>
+    <string name="action_register">Register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="error_invalid_username">This email address is invalid</string>
+    <string name="error_invalid_password">Password should be between 4 and 16 characters</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email
+        completions."
+    </string>
+    <string name="change_password">Change password</string>
+    <string name="error_invalid_confirm_password">Password doesn\'t match</string>
+    <string name="error_wrong_password">Wrong password</string>
+    <string name="register_success">You have created a password.</string>
+    <string name="no_name">(No Name)</string>
+    <string name="message_settings_changes">Settings changed.</string>
+    <string name="title_activity_settings">Settings</string>
+    <string name="write_security_question">Write a question</string>
+    <string name="security_question_answer">Answer</string>
+    <string name="security_questions">Security Questions</string>
+    <string name="action_later">Later</string>
+    <string name="message_create_password">Would you like to create a password?</string>
+    <string name="not_now">Not now</string>
+    <string name="welcome">Hi, %s</string>
+    <string name="change_question">Change security question</string>
+    <string name="error_invalid_question">Question longer than %s words.</string>
+    <string name="error_invalid_question_empty">Empty question.</string>
+    <string name="error_invalid_answer">Answer should be between 5 and 24 characters.</string>
+    <string name="message_exit">Press again to exit.</string>
+    <string name="security_question">Security question</string>
+    <string name="answer">Answer</string>
+    <string name="error_incorrect_answer">Wrong answer</string>
+    <string name="message_recreate_password">You will create a new password.</string>
+
+    <string-array name="security_questions">
+        <item>When you were young, what did you want to be when you grew up?</item>
+        <item>Who was your childhood hero?</item>
+        <item>Name of your elementary \/ primary school?</item>
+        <item>Write your own question</item>
+    </string-array>
 </resources>

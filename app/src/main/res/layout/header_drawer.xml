@@ -17,18 +17,18 @@
         android:text="Welcome"/>
 
     <TextView
-        android:id="@+id/id_username"
+        android:id="@+id/nav_username"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@id/id_link"
-        android:text="Username here"/>
+        android:text="Username"/>
 
-    <ImageView
+    <!--ImageView
         android:layout_width="72dp"
         android:layout_height="72dp"
-        android:layout_above="@id/id_username"
+        android:layout_above="@id/username"
         android:layout_marginBottom="16dp"
-        android:src="@drawable/ic_account_circle_black_24dp"/>
+        android:src="@drawable/ic_account_circle_black_24dp"/-->
 
 
 </RelativeLayout>

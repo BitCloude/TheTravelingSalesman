@@ -29,6 +29,6 @@ public class ReportExpenseActivity extends SingleFragmentActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        checkMenu(R.id.nav_report_expense);
+        checkMenu(R.id.nav_reports);
     }
 }

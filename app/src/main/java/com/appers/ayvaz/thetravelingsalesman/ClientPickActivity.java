@@ -30,7 +30,7 @@ import java.util.UUID;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class ClientPickActivity extends AppCompatActivity
+public class ClientPickActivity extends BaseActivity
         implements ClientSearchAdapter.OnClientPickListener {
 
     @Bind(R.id.recyclerView)
