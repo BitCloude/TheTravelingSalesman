@@ -59,7 +59,7 @@ public class TaskManager {
     private LocalDate selectedDate;
 
     private TaskManager(Context context) {
-        mContext = context;
+        mContext = context.getApplicationContext();
         mDatabase = new DatabaseHelper(mContext)
                 .getWritableDatabase();
     }
@@ -448,6 +448,53 @@ public class TaskManager {
         }
     }
 
+    public MyCalendar [] getCalendar() {
+
+        String projection[] = {"_id", "calendar_displayName"};
+        Uri calendars;
+        calendars = Uri.parse("content://com.android.calendar/calendars");
+
+        ContentResolver contentResolver = mContext.getContentResolver();
+        Cursor managedCursor = contentResolver.query(calendars, projection, null, null, null);
+        MyCalendar[] m_calendars = new MyCalendar[0];
+
+        if (managedCursor != null && managedCursor.moveToFirst()){
+             m_calendars = new MyCalendar[managedCursor.getCount()];
+            String calName;
+            String calID;
+            int cont= 0;
+            int nameCol = managedCursor.getColumnIndex(projection[1]);
+            int idCol = managedCursor.getColumnIndex(projection[0]);
+            do {
+                calName = managedCursor.getString(nameCol);
+                calID = managedCursor.getString(idCol);
+                m_calendars[cont] = new MyCalendar(calName, calID);
+                cont++;
+            } while(managedCursor.moveToNext());
+            managedCursor.close();
+        }
+        return m_calendars;
+
+    }
+
+}
+
+class MyCalendar {
+    private String name;
+    private String id;
+
+    public MyCalendar(String name, String id) {
+        this.name = name;
+        this.id = id;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
 }
 
 
