@@ -4,12 +4,14 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Environment;
+import android.util.Log;
 
 import com.appers.ayvaz.thetravelingsalesman.database.DatabaseHelper;
-import com.appers.ayvaz.thetravelingsalesman.database.DatabaseHelperTravExp;
 import com.appers.ayvaz.thetravelingsalesman.database.DbSchema;
 import com.appers.ayvaz.thetravelingsalesman.database.ExpenseCursorWrapper;
 
+import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -57,7 +59,7 @@ public class ExpenseContent {
         values.put(DbSchema.ExpenseTable.Cols.EXPENSE_DATE_FROM, CalendarToString(expense.getDate_from()));
         values.put(DbSchema.ExpenseTable.Cols.EXPENSE_DATE_TO, CalendarToString(expense.getDate_to()));
         values.put(DbSchema.ExpenseTable.Cols.EXPENSE_DESCRIPTION, expense.getDescription());
-        values.put(DbSchema.ExpenseTable.Cols.EXPENSE_IMAGE, expense.getImage());
+        values.put(DbSchema.ExpenseTable.Cols.EXPENSE_IMAGE_FILE, expense.getImageFile());
 
         return values;
     }
@@ -116,9 +118,9 @@ public class ExpenseContent {
         return expenses;
     }
 
-    public void addExpense(Expense item) {
+    public int addExpense(Expense item) {
         ContentValues values = getContentValues(item);
-        mDatabase.insert(DbSchema.ExpenseTable.NAME, null, values);
+        return (int) mDatabase.insert(DbSchema.ExpenseTable.NAME, null, values);
     }
 
     public void updateExpense(Expense expense) {
@@ -139,6 +141,24 @@ public class ExpenseContent {
         return new ExpenseCursorWrapper(cursor);
     }
 
+    public File getPhotoFile(Expense expense, boolean tmp) {
+        File externalFilesDir = mContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+
+        if (externalFilesDir == null) {
+            return null;
+        }
+
+        Log.i("......", "Path: " + externalFilesDir.getPath());
+        return new File(externalFilesDir, expense.getPhotoFileName(tmp));
+    }
+
+    private int getMaxID()
+    {
+        Cursor cursor = mDatabase.rawQuery("SELECT MAX(expense_id) FROM DbSchema.ExpenseTable.NAME", null);
+        cursor.moveToFirst();
+        int maxID = Integer.valueOf(cursor.getString(0));
+        return maxID;
+    }
 
     public boolean delete(int id) {
         String whereClause = DbSchema.ExpenseTable.Cols.EXPENSE_ID + " = ?";

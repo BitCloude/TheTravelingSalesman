@@ -52,11 +52,12 @@ Spinner spinnerType;
     static Calendar dateTo;
     AutoCompleteTextView autoCompleteTextViewClients, autoCompleteTextViewTrips;
 
+    int id_expense_main = -1;
+    File photoFile, tempFile;
+
     Expense expense_main;
     Client selectedClient;
     Trip selectedTrip;
-
-    byte[] imageFinal = null;
 
 
     @Override
@@ -105,7 +106,7 @@ Spinner spinnerType;
 
         Intent intentRecieved = getIntent();
         if(intentRecieved != null && intentRecieved.hasExtra("EXPENSE"))
-            loadData(getData(intentRecieved));
+            loadData(getData(intentRecieved),(savedInstanceState == null));
         else if(intentRecieved !=null && intentRecieved.hasExtra("CLIENT")){
             UUID clientUUID = UUID.fromString(intentRecieved.getStringExtra("CLIENT"));
             selectedClient =clientManager.getClient(clientUUID);
@@ -188,7 +189,11 @@ Spinner spinnerType;
         buttonCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showPhoto(imageFinal, true);
+                if(saveData(false)) {
+                    ExpenseContent expenseContent = ExpenseContent.get(getApplicationContext());
+                    showPhoto(expenseContent.getPhotoFile(expense_main, false),expenseContent.getPhotoFile(expense_main, true), false);
+
+                }
             }
         });
 
@@ -220,7 +225,7 @@ Spinner spinnerType;
             case R.id.action_settings:
                 return true;
             case 11:
-                if(saveData()){
+                if(saveData(savePhoto())) {
                     Intent intent = new Intent(getApplicationContext(), TripExpMan.class);
                     intent.putExtra("ORIGIN", "EXPENSE");
                     intent.putExtra("CLIENT", selectedClient.getId().toString());
@@ -254,16 +259,27 @@ Spinner spinnerType;
         autoCompleteTextViewTrips.setAdapter(adapterTrip);}
     }
 
-    public void showPhoto(byte[] imageByte, boolean addImage)
+    public void showPhoto(File photoFile, File tempFile, boolean load)
     {
-        ExpenseContent expenseContent = ExpenseContent.get(getApplicationContext());
-        PhotoViewFragment photoViewFragment = PhotoViewFragment.newInstance(imageByte,addImage);
+        //ExpenseContent expenseContent = ExpenseContent.get(getApplicationContext());
+        PhotoViewFragment photoViewFragment = PhotoViewFragment.newInstance(photoFile,tempFile,load);
         FragmentManager fragmentManager = getSupportFragmentManager();
         android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.add(R.id.expense_photo_fragment_container, photoViewFragment).commit();
     }
 
-    public void loadData(Expense expense) {
+    private boolean savePhoto() {
+        if (tempFile != null && tempFile.exists()) {
+            if ((!photoFile.exists() || photoFile.delete()) && tempFile.renameTo(photoFile)) {
+                return true;
+            }
+            Toast.makeText(getApplicationContext(), "Photo not saved", Toast.LENGTH_LONG).show();
+
+        }
+        return false;
+    }
+
+    public void loadData(Expense expense,boolean savedInstance) {
         editAmount.setText(expense.getAmount());
         editDescription.setText(expense.getDescription());
         selectedClient = clientManager.getClient(expense.getClient_id());
@@ -280,9 +296,16 @@ Spinner spinnerType;
         dateTo = expense.getDate_to();
         expenseType = expense.getType();
         spinnerSet();
-        imageFinal = expense.getImage();
         expense_main = expense;
-        showPhoto(imageFinal,false);
+        id_expense_main = expense_main.getId();
+
+        if(expense.getImageFile() != null){
+            photoFile = new File(expense.getImageFile());}
+
+        if(savedInstance)
+        showPhoto(ExpenseContent.get(getApplicationContext()).getPhotoFile(expense_main,false),ExpenseContent.get(getApplicationContext()).getPhotoFile(expense_main,true),true);
+
+        Toast.makeText(getApplicationContext(),"loaded image", Toast.LENGTH_SHORT).show();;
     }
 
 
@@ -293,7 +316,7 @@ Spinner spinnerType;
     }
 
 
-    public boolean saveData(){
+    public boolean saveData(boolean savePhoto){
 
         boolean edit = true;
         if(expense_main == null){
@@ -327,13 +350,22 @@ Spinner spinnerType;
 
       //  mTrip.setBoarding(editTravelBoardingPass.getText().toString());
         //mTrip.setTrip_to(editTravelTo.getText().toString());
-        expense_main.setImage(imageFinal);
+
+        if(savePhoto()){
+            expense_main.setImageFile(photoFile.getAbsolutePath());
+        } else if(photoFile == null || !photoFile.exists())
+            expense_main.setImageFile(null);
+
 
         ExpenseContent expenseContent = ExpenseContent.get(getApplicationContext());
-        if(edit)
-            expenseContent.updateExpense(expense_main);
+        if(edit || expense_main.getId() != -1){
+            expenseContent.updateExpense(expense_main);}
+        else if(id_expense_main == -1){
+            id_expense_main = expenseContent.addExpense(expense_main);
+             expense_main.setId(id_expense_main);}
         else
-            expenseContent.addExpense(expense_main);
+            Toast.makeText(getApplicationContext(),"Error: Save Error", Toast.LENGTH_LONG).show();
+
 
 
         return  true;
@@ -341,8 +373,9 @@ Spinner spinnerType;
     }
 
     @Override
-    public void onFragmentInteraction(byte[] image) {
-        this.imageFinal = image;
+    public void onFragmentInteraction(File photoFile, File tempFile) {
+        this.photoFile = photoFile;
+        this.tempFile = tempFile;
     }
 
     public static class MyFragmentExp extends Fragment {

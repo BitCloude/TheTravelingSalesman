@@ -46,7 +46,7 @@ public class DbSchema {
             public static final String EXPENSE_DATE_FROM = "expense_date_from";
             public static final String EXPENSE_DATE_TO = "expense_date_to";
             public static final String EXPENSE_DESCRIPTION = "expense_description";
-            public static final String EXPENSE_IMAGE = "image";
+            public static final String EXPENSE_IMAGE_FILE = "image_file";
 
         }
     }
@@ -64,7 +64,7 @@ public class DbSchema {
             public static final String TRIP_DATE_FROM = "trip_date_from";
             public static final String TRIP_DATE_TO = "trip_date_to";
             public static final String TRIP_DESCRIPTION = "trip_description";
-            public static final String TRIP_IMAGE = "image";
+            public static final String TRIP_IMAGE_FILE = "image_file";
         }
     }
 }

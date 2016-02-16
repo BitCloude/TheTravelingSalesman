@@ -4,12 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Debug;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -24,7 +20,6 @@ import android.widget.Toast;
 import com.appers.ayvaz.thetravelingsalesman.R;
 import com.appers.ayvaz.thetravelingsalesman.dialog.DeleteAlertDialogFragment;
 import com.appers.ayvaz.thetravelingsalesman.dialog.PickOrTakePhotoFragment;
-import com.appers.ayvaz.thetravelingsalesman.utils.DbBitmapUtility;
 import com.appers.ayvaz.thetravelingsalesman.utils.PictureUtils;
 
 import java.io.File;
@@ -42,8 +37,9 @@ import java.io.InputStream;
 public class PhotoViewFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "image_byte_array";
-    private static final String ARG_PARAM2 = "boolean_add_photo";
+    private static final String ARG_PARAM1 = "photo_file";
+    private static final String ARG_PARAM2 = "photo_file_temp";
+    private static final String ARG_PARAM3 = "load_or_add";
     public static final String EXTRA_PICK_OR_CAPTURE = "pick_or_capture";
     private static final int REQUEST_IMAGE_CAPTURE = 1;
     private static final int REQUEST_DELETE = 2;
@@ -52,15 +48,14 @@ public class PhotoViewFragment extends Fragment {
     private static final String DIALOG_DELETE = "DialogDelete";
     private static final String DIALOG_PHOTO = "DialogPhoto";
     private File mPhotoFile, mPhotoTmp;
+    private boolean load;
     private ImageView imageView;
     private ImageButton mDelPhoto;
-    private Bitmap image;
-    private Bitmap imageTemp;
-    private File tempFile;
 
     // TODO: Rename and change types of parameters
-    private byte[] mParam1;
-    private boolean mParam2;
+    private File mParam1;
+    private File mParam2;
+    private  boolean mParam3;
 
     private OnFragmentInteractionListener mListener;
 
@@ -73,14 +68,17 @@ public class PhotoViewFragment extends Fragment {
      * this fragment using the provided parameters.
      *
      * @param param1 Parameter 1.
+     * @param param2 Parameter 2.
+     * @param param2 Parameter 3.
      * @return A new instance of fragment PhotoViewFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static PhotoViewFragment newInstance(byte[] param1, boolean param2) {
+    public static PhotoViewFragment newInstance(File param1, File param2, boolean param3) {
         PhotoViewFragment fragment = new PhotoViewFragment();
         Bundle args = new Bundle();
-        args.putByteArray(ARG_PARAM1, param1);
-        args.putBoolean(ARG_PARAM2, param2);
+        args.putSerializable(ARG_PARAM1, param1);
+        args.putSerializable(ARG_PARAM2, param2);
+        args.putBoolean(ARG_PARAM3,param3);
         fragment.setArguments(args);
         return fragment;
     }
@@ -89,24 +87,14 @@ public class PhotoViewFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getByteArray(ARG_PARAM1);
-            mParam2 = getArguments().getBoolean(ARG_PARAM2);
+            mParam1 = (File) getArguments().getSerializable(ARG_PARAM1);
+            mParam2 = (File) getArguments().getSerializable(ARG_PARAM2);
+            mParam3 = getArguments().getBoolean(ARG_PARAM3);
         }
-
-            image = DbBitmapUtility.getImage(mParam1);
-
-        String filename = "TEMP_IMG.jpg";
-        File externalFilesDir = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        if (externalFilesDir == null) {
-            tempFile = null;
-        }
-        else {
-            tempFile = new File(externalFilesDir, filename);
-            Log.i("......", "Path: " + externalFilesDir.getPath());
-        }
-
-
-
+        setRetainInstance(true);
+        mPhotoFile = mParam1;
+        mPhotoTmp = mParam2;
+        load = mParam3;
     }
 
     @Override
@@ -114,7 +102,6 @@ public class PhotoViewFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_photo_view, container, false);
-        Toast.makeText(getActivity(), "onCreate", Toast.LENGTH_SHORT).show();
         imageView = (ImageView) v.findViewById(R.id.fragment_photo_view);
         mDelPhoto = (ImageButton) v.findViewById(R.id.fragment_photo_delete);
         mDelPhoto.setOnClickListener(new View.OnClickListener() {
@@ -127,35 +114,31 @@ public class PhotoViewFragment extends Fragment {
 
             }
         });
-        if(mParam2){
-        setPhoto();}
-        else
-        updatePhotoView();
-
+        if(load){
+            updatePhotoView();
+        }else
+            setPhoto();
         return v;
     }
 
     private void updatePhotoView() {
-       if(image == null) {
+        if ((mPhotoFile == null || !mPhotoFile.exists()) && (mPhotoTmp == null || !mPhotoTmp.exists())) {
             imageView.setImageDrawable(null);
             imageView.setVisibility(View.INVISIBLE);
 
             mDelPhoto.setVisibility(View.INVISIBLE);
         } else {
-            imageView.setImageBitmap(image);
+            File file = (mPhotoTmp != null && mPhotoTmp.exists()) ? mPhotoTmp : mPhotoFile;
+            Bitmap bitmap = PictureUtils.getScaledBitmap(
+                    file.getPath(), getActivity());
+            imageView.setImageBitmap(bitmap);
             imageView.setVisibility(View.VISIBLE);
             mDelPhoto.setVisibility(View.VISIBLE);
         }
         if (mListener != null) {
-            mListener.onFragmentInteraction(DbBitmapUtility.getBytes(image));
-        }
-    }
-    private void setImage(){
-        if(tempFile.exists()){
-
-            image = BitmapFactory.decodeFile(tempFile.getAbsolutePath());
-
-
+            Log.i("......", "sending to activity: tmp:  " + mPhotoTmp.getAbsolutePath());
+            Log.i("......", "sending to activity: file:  " + mPhotoFile.getAbsolutePath());
+            mListener.onFragmentInteraction(mPhotoFile, mPhotoTmp);
         }
     }
 
@@ -168,9 +151,8 @@ public class PhotoViewFragment extends Fragment {
 
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
-
-            Uri uri = Uri.fromFile(tempFile);
+        if (mPhotoTmp != null && takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+            Uri uri = Uri.fromFile(mPhotoTmp);
             takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
             startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
         }
@@ -201,7 +183,6 @@ public class PhotoViewFragment extends Fragment {
         }
 
         if (requestCode == REQUEST_IMAGE_CAPTURE) {
-            setImage();
             updatePhotoView();
             return;
         }
@@ -210,11 +191,11 @@ public class PhotoViewFragment extends Fragment {
             if (data != null) {
 
                 try (InputStream from = getActivity().getContentResolver().openInputStream(data.getData())) {
-                    PictureUtils.copyFile(from, tempFile);
+                    PictureUtils.copyFile(from, mPhotoTmp);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                setImage();
+
                 updatePhotoView();
 
             }
@@ -222,15 +203,15 @@ public class PhotoViewFragment extends Fragment {
         }
 
         if (requestCode == REQUEST_DELETE) {
-            deletePic(tempFile);
-            image = null;
+            deletePic(mPhotoTmp);
+            deletePic(mPhotoFile);
             updatePhotoView();
         }
 
 
     }
 
-   /* private void savePhoto() {
+    private void savePhoto() {
         if (mPhotoTmp != null && mPhotoTmp.exists()) {
             if ((!mPhotoFile.exists() || mPhotoFile.delete()) && mPhotoTmp.renameTo(mPhotoFile)) {
                 return;
@@ -239,13 +220,12 @@ public class PhotoViewFragment extends Fragment {
             Toast.makeText(getContext(), "Photo not saved", Toast.LENGTH_LONG).show();
 
         }
-    }*/
+    }
 
     @Override
     public void onStop() {
         super.onStop();
-        deletePic(tempFile);
-        image = null;
+        deletePic(mPhotoTmp);
     }
 
 
@@ -293,11 +273,6 @@ public class PhotoViewFragment extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onFragmentInteraction(byte[] image);
+        void onFragmentInteraction(File PhotoFile, File PhotoTmp);
     }
 }
-
-        /*BitmapFactory.Options opt = new BitmapFactory.Options();
-        opt.inDither = true;
-        opt.inPreferredConfig = Bitmap.Config.ARGB_8888;
-        image = BitmapFactory.decodeByteArray(mParam1, 0, mParam1.length, opt);}*/

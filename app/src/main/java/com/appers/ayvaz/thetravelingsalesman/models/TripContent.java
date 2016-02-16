@@ -4,13 +4,15 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Environment;
+import android.util.Log;
 
 import com.appers.ayvaz.thetravelingsalesman.database.DatabaseHelper;
-import com.appers.ayvaz.thetravelingsalesman.database.DatabaseHelperTravExp;
 import com.appers.ayvaz.thetravelingsalesman.database.DbSchema;
 import com.appers.ayvaz.thetravelingsalesman.database.TripCursorWrapper;
 import com.wefika.calendar.manager.CalendarManager;
 
+import java.io.File;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -100,7 +102,7 @@ public class TripContent {
         values.put(DbSchema.TripTable.Cols.TRIP_DATE_TO, CalendarToString(trip.getDate_to()));
         values.put(DbSchema.TripTable.Cols.TRIP_BOARDING,trip.getBoarding());
         values.put(DbSchema.TripTable.Cols.TRIP_DESCRIPTION, trip.getDescription());
-        values.put(DbSchema.TripTable.Cols.TRIP_IMAGE, trip.getImage());
+        values.put(DbSchema.TripTable.Cols.TRIP_IMAGE_FILE, trip.getImageFile());
 
         return values;
     }
@@ -163,9 +165,9 @@ public class TripContent {
     }
 
 
-    public void addTrip(Trip item) {
+    public int addTrip(Trip item) {
         ContentValues values = getContentValues(item);
-        mDatabase.insert(DbSchema.TripTable.NAME, null, values);
+        return (int) mDatabase.insert(DbSchema.TripTable.NAME, null, values);
     }
 
     public void updateTrip(Trip trip ) {
@@ -184,6 +186,24 @@ public class TripContent {
         );
 
         return new TripCursorWrapper(cursor);
+    }
+    public File getPhotoFile(Trip trip, boolean tmp) {
+        File externalFilesDir = mContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+
+        if (externalFilesDir == null) {
+            return null;
+        }
+
+        Log.i("......", "Path: " + externalFilesDir.getPath() + trip.getPhotoFileName(tmp));
+        return new File(externalFilesDir, trip.getPhotoFileName(tmp));
+    }
+
+    public int getMaxID()
+    {
+        Cursor cursor = mDatabase.rawQuery("SELECT MAX(trip_id) FROM DbSchema.TripTable.NAME", null);
+        cursor.moveToFirst();
+        int maxID = Integer.valueOf(cursor.getString(0));
+        return maxID;
     }
 
 

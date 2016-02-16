@@ -56,7 +56,7 @@ public class TripCursorWrapper extends CursorWrapper {
         String date_to = getString(getColumnIndex(DbSchema.TripTable.Cols.TRIP_DATE_TO));
         String boarding = getString(getColumnIndex(DbSchema.TripTable.Cols.TRIP_BOARDING));
         String description = getString(getColumnIndex(DbSchema.TripTable.Cols.TRIP_DESCRIPTION));
-        byte[] img = getBlob(getColumnIndex(DbSchema.TripTable.Cols.TRIP_IMAGE));
+        String imgFile = getString(getColumnIndex(DbSchema.TripTable.Cols.TRIP_IMAGE_FILE));
 
         Trip trip = new Trip(Integer.valueOf(id));
         //Trip trip = new Trip();
@@ -69,7 +69,7 @@ public class TripCursorWrapper extends CursorWrapper {
         trip.setDate_to(stringToCalendar(date_to));
         trip.setBoarding(boarding);
         trip.setDescription(description);
-        trip.setImage(img);
+        trip.setImageFile(imgFile);
 
         return trip;
 

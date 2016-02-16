@@ -12,6 +12,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -30,6 +31,7 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.appers.ayvaz.thetravelingsalesman.database.TripCursorWrapper;
 import com.appers.ayvaz.thetravelingsalesman.dialog.DatePickerFragment;
 import com.appers.ayvaz.thetravelingsalesman.models.Client;
 import com.appers.ayvaz.thetravelingsalesman.models.ClientManager;
@@ -56,7 +58,8 @@ public class TravelDetail extends AppCompatActivity implements PhotoViewFragment
     AutoCompleteTextView autoCompleteTextView;
     Button addExpense;
 
-    byte[] imageFinal;
+    int id_trip_main = -1;
+    File photoFile, tempFile;
 
     RadioGroup radioGroup;
     RadioButton radPlane, radTrain, radCar;
@@ -69,7 +72,7 @@ public class TravelDetail extends AppCompatActivity implements PhotoViewFragment
     static Calendar dateTo;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_travel_detail);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -145,7 +148,11 @@ public class TravelDetail extends AppCompatActivity implements PhotoViewFragment
         Intent intentRecieved = getIntent();
 
         if(intentRecieved != null && intentRecieved.hasExtra("TRIP")){
-             loadData(getData(intentRecieved));}
+            boolean original = false;
+            if(savedInstanceState == null)
+                original = true;
+
+             loadData(getData(intentRecieved), (savedInstanceState == null));}
         else if(intentRecieved !=null && intentRecieved.hasExtra("CLIENT")){
             UUID clientUUID = UUID.fromString(intentRecieved.getStringExtra("CLIENT"));
             selection =clientManager.getClient(clientUUID);
@@ -192,7 +199,9 @@ public class TravelDetail extends AppCompatActivity implements PhotoViewFragment
         cameraButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showPhoto(imageFinal, true);
+                if(saveData(false)){
+                TripContent tripContent = TripContent.get(getApplicationContext());
+                showPhoto(tripContent.getPhotoFile(trip_main, false),tripContent.getPhotoFile(trip_main, true), false);}
             }
         });
 
@@ -200,7 +209,7 @@ public class TravelDetail extends AppCompatActivity implements PhotoViewFragment
             @Override
             public void onClick(View v) {
 
-                if(saveData()) {
+                if(saveData(savePhoto())) {
                     Intent intent = new Intent(getApplicationContext(), ExpenseAdd.class);
                     intent.putExtra("CLIENT", selection.getId().toString());
                     intent.putExtra("TRIP_ID", trip_main.getId());
@@ -227,13 +236,26 @@ public class TravelDetail extends AppCompatActivity implements PhotoViewFragment
 
         }
     }
-    public void showPhoto(byte[] imageByte, boolean addImage)
+    public void showPhoto(File photoFile, File tempFile,boolean load)
     {
         //TripContent tripContent = TripContent.get(getApplicationContext());
-        PhotoViewFragment photoViewFragment = PhotoViewFragment.newInstance(imageByte,addImage);
+        PhotoViewFragment photoViewFragment = PhotoViewFragment.newInstance(photoFile,tempFile,load);
         FragmentManager fragmentManager = getSupportFragmentManager();
         android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.add(R.id.trip_photo_fragment_container, photoViewFragment).commit();
+        fragmentTransaction.replace(R.id.trip_photo_fragment_container, photoViewFragment).commit();
+    }
+
+
+    private boolean savePhoto() {
+        if (tempFile != null && tempFile.exists()) {
+            if ((!photoFile.exists() || photoFile.delete()) && tempFile.renameTo(photoFile)) {
+                Log.i("......", "saving photo" + tempFile.getAbsolutePath());
+                return true;
+            }
+            Toast.makeText(getApplicationContext(), "Photo not saved", Toast.LENGTH_LONG).show();
+
+        }
+        return false;
     }
 
     public static void dateRecieved(Calendar date, int dateSel){
@@ -262,7 +284,7 @@ public class TravelDetail extends AppCompatActivity implements PhotoViewFragment
         return  client_Names;
     }
 
-    public void loadData(Trip trip){
+    public void loadData(Trip trip, boolean savedInstance){
         editTravelTo.setText(trip.getTrip_to());
         selection = clientManager.getClient(trip.getClient_id());
         if(selection!=null)
@@ -278,11 +300,16 @@ public class TravelDetail extends AppCompatActivity implements PhotoViewFragment
         tripType = trip.getType();
         if(tripType!=null)
         RadioCheck(tripType);
-        imageFinal = trip.getImage();
+
         trip_main = trip;
-        if(imageFinal != null){
-        showPhoto(imageFinal,false);
-        Toast.makeText(getApplicationContext(),"loaded image", Toast.LENGTH_SHORT).show();}
+        id_trip_main = trip_main.getId();
+
+
+        if(trip.getImageFile() != null) {
+            photoFile = new File(trip.getImageFile());
+        }
+        if(savedInstance)
+        showPhoto(TripContent.get(getApplicationContext()).getPhotoFile(trip_main, false),TripContent.get(getApplicationContext()).getPhotoFile(trip_main, true), true);
 
     }
 
@@ -293,7 +320,7 @@ public class TravelDetail extends AppCompatActivity implements PhotoViewFragment
     }
 
         //last method to be run, if a Trip does not exist add. otherwise update
-    public boolean saveData(){
+    public boolean saveData(boolean savePhoto){
 
         boolean edit = true;
         if(trip_main == null){
@@ -319,14 +346,23 @@ public class TravelDetail extends AppCompatActivity implements PhotoViewFragment
         trip_main.setDescription(editTravelDescription.getText().toString());
         trip_main.setBoarding(editTravelBoardingPass.getText().toString());
         trip_main.setType(tripType);
-        trip_main.setImage(imageFinal);
 
+        if(savePhoto) {
+            Log.i("......", "photo Final Save" + tempFile.getAbsolutePath());
+            trip_main.setImageFile(photoFile.getAbsolutePath());
+        }
+        else if(photoFile == null || !photoFile.exists())
+            trip_main.setImageFile(null);
 
         TripContent tripContent = TripContent.get(getApplicationContext());
-        if(edit)
+        if(edit || trip_main.getId() != -1)
             tripContent.updateTrip(trip_main);
+        else if(id_trip_main == -1){
+             id_trip_main = tripContent.addTrip(trip_main);
+            Log.i("......", "Added Row id: " + id_trip_main);
+            trip_main.setId(id_trip_main);}
         else
-         tripContent.addTrip(trip_main);
+            Toast.makeText(getApplicationContext(),"Error: Save Error", Toast.LENGTH_LONG).show();
 
         return true;
 
@@ -356,7 +392,7 @@ public class TravelDetail extends AppCompatActivity implements PhotoViewFragment
             case R.id.action_settings:
                 return true;
             case 22:
-                if(saveData()){
+                if(saveData(savePhoto())){
                 Intent intent = new Intent(getApplicationContext(), TripExpMan.class);
                 intent.putExtra("ORIGIN", "TRIP");
                 intent.putExtra("CLIENT", selection.getId().toString());
@@ -372,8 +408,10 @@ public class TravelDetail extends AppCompatActivity implements PhotoViewFragment
     }
 
     @Override
-    public void onFragmentInteraction(byte[] image) {
-       this.imageFinal = image;
+    public void onFragmentInteraction(File photoFile, File tempFile) {
+       this.photoFile = photoFile;
+        this.tempFile = tempFile;
+
     }
 
 

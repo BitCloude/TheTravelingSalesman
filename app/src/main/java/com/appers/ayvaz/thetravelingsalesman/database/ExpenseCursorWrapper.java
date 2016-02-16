@@ -55,7 +55,7 @@ public class ExpenseCursorWrapper extends CursorWrapper {
         String date_from = getString(getColumnIndex(DbSchema.ExpenseTable.Cols.EXPENSE_DATE_FROM));
         String date_to = getString(getColumnIndex(DbSchema.ExpenseTable.Cols.EXPENSE_DATE_TO));
         String description = getString(getColumnIndex(DbSchema.ExpenseTable.Cols.EXPENSE_DESCRIPTION));
-        byte[] img = getBlob(getColumnIndex(DbSchema.ExpenseTable.Cols.EXPENSE_IMAGE));
+        String imgFile = getString(getColumnIndex(DbSchema.ExpenseTable.Cols.EXPENSE_IMAGE_FILE));
 
         Expense expense = new Expense(Integer.valueOf(id));
        // Expense expense = new Expense();
@@ -67,7 +67,7 @@ public class ExpenseCursorWrapper extends CursorWrapper {
         expense.setDate_from(stringToCalendar(date_from));
         expense.setDate_to(stringToCalendar(date_to));
         expense.setDescription(description);
-        expense.setImage(img);
+        expense.setImageFile(imgFile);
 
         return expense;
 

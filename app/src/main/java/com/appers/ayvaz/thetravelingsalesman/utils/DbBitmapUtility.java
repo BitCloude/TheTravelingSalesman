@@ -15,7 +15,7 @@ public class DbBitmapUtility {
         if(bitmap ==null)
             return null;
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 80, stream);
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 20, stream);
         return stream.toByteArray();
     }
 

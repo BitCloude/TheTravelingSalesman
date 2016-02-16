@@ -10,11 +10,11 @@ import java.util.UUID;
 
 public class Expense implements Parcelable{
 
-    private int id , trip_id;
+    private int id = -1;
+    private int trip_id;
     private UUID client_id;
 
-    private String type, amount, description;
-    private byte[] image;
+    private String type, amount, description, imageFile;
     private Calendar date_from, date_to;
 
 
@@ -39,6 +39,8 @@ public class Expense implements Parcelable{
     }
 
     public int getId(){ return id;}
+
+    public void setId(int id){this.id = id;}
 
     public void setTrip_id(int trip_id){this.trip_id = trip_id;}
 
@@ -68,10 +70,14 @@ public class Expense implements Parcelable{
 
     public String getDescription(){return description;}
 
-    public void setImage(byte[] image) {this.image = image;}
+    public void setImageFile(String imageFile){this.imageFile = imageFile;}
 
-    public byte[] getImage() {return image;}
+    public String getImageFile(){return imageFile;}
 
+    public String getPhotoFileName(boolean temp) {
+        return "IMG_EXPENSE_" + Integer.toString(getId()) +
+                (temp ? "_tmp" : "") + ".jpg";
+    }
     @Override
     public int describeContents() {
         return 0;
@@ -87,11 +93,7 @@ public class Expense implements Parcelable{
         dest.writeSerializable(date_from);
         dest.writeSerializable(date_to);
         dest.writeString(description);
-        if(image != null)
-        dest.writeInt(image.length);
-        else
-        dest.writeInt(0);
-        dest.writeByteArray(image);
+        dest.writeString(imageFile);
 
     }
 
@@ -114,11 +116,7 @@ public class Expense implements Parcelable{
         this.date_from = (Calendar) in.readSerializable();
         this.date_to = (Calendar) in.readSerializable();
         this.description = in.readString();
-        this.image = new byte[in.readInt()];
-        if(this.image.length == 0){
-            this.image = null;
-        }else{
-            in.readByteArray(this.image);}
+        this.imageFile = in.readString();
 
     }
 
