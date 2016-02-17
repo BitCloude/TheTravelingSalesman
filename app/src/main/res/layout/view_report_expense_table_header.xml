@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:background="@color/HeaderBackground"
+        android:layout_height="@dimen/report_header_height"
+
+        android:orientation="horizontal"
+        android:weightSum="10">
+
+        <RelativeLayout
+            android:id="@+id/dateHeader"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2.2"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true">
+
+            <TextView
+                android:id="@+id/taskDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:gravity="center"
+                android:text="@string/date"
+                android:textColor="@color/TextPrimary" />
+
+            <ImageView
+                android:id="@+id/dateSorted"
+                android:layout_width="14dp"
+                android:layout_height="14dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/ic_dark_sortable" />
+        </RelativeLayout>
+
+        <include layout="@layout/view_divider_vertical" />
+
+        <RelativeLayout
+            android:id="@+id/taskHeader"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="5dp"
+            android:layout_weight="3.55"
+            android:layout_marginStart="5dp">
+
+            <TextView
+                android:id="@+id/taskTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:gravity="center"
+                android:text="@string/task"
+                android:textColor="@color/TextPrimary" />
+
+            <ImageView
+                android:id="@+id/titleSorted"
+                android:layout_width="14dp"
+                android:layout_height="14dp"
+                android:layout_alignTop="@+id/taskTitle"
+                android:layout_marginStart="21dp"
+                android:layout_toEndOf="@+id/taskTitle"
+                android:src="@drawable/ic_dark_sortable" />
+
+        </RelativeLayout>
+
+
+        <include layout="@layout/view_divider_vertical" />
+
+    </LinearLayout>
+
+    <include layout="@layout/view_shadow" />
+</LinearLayout>

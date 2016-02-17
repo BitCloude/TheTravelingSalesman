@@ -1,5 +1,6 @@
 package com.appers.ayvaz.thetravelingsalesman;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +17,7 @@ public class ReportsActivity extends NavigationDrawerActivity {
 
 
     public void gotoExpenses(View view) {
-
+        startActivity(new Intent(this, ReportExpenseActivity.class));
     }
 
     public void gotoTasks(View view) {

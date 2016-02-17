@@ -41,7 +41,7 @@ import butterknife.ButterKnife;
 
 public class ReportExpenseFragment extends Fragment {
 
-    private static final String DEBUG_TAG = "ReportTripFragment: ";
+    private static final String DEBUG_TAG = "ReportExpenseFragment: ";
     private static final int REQUEST_CLIENT = 0;
     @Bind(R.id.recyclerView)
     RecyclerView mRecyclerView;
