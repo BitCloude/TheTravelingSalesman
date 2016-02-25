@@ -1,26 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:weightSum="2"
+    android:background="@color/colorPrimaryDark"
     tools:context="com.appers.ayvaz.thetravelingsalesman.ReportsActivity">
 
     <Button
         android:id="@+id/btn_expenses"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_width="220dp"
+        android:layout_height="50dp"
         android:layout_weight="1"
         android:onClick="gotoExpenses"
-        android:text="@string/expense" />
+        android:drawableLeft="@drawable/ic_money_white"
+        android:text="@string/expense"
+        android:background="@color/ColorExpense"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="137dp"
+        android:padding="6dp" />
 
     <Button
         android:id="@+id/btn_tasks"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_width="220dp"
+        android:layout_height="50dp"
         android:layout_weight="1"
         android:onClick="gotoTasks"
-        android:text="@string/tasks" />
-</LinearLayout>
+        android:drawableLeft="@drawable/ic_event_white"
+        android:text="@string/tasks"
+        android:background="@color/ColorTask"
+        android:layout_below="@+id/btn_expenses"
+        android:layout_alignStart="@+id/btn_expenses"
+        android:layout_marginTop="157dp"
+        android:padding="6dp" />
+</RelativeLayout>

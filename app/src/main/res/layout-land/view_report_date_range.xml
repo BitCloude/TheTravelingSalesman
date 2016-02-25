@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="6dp">
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/startDateButton"
+        android:layout_marginRight="6dp"
+        android:layout_alignParentTop="true"
+        android:layout_toEndOf="@+id/textView6"
+        android:backgroundTint="#ffffff" />
+
+    <Button
+        android:layout_width="100dp"
+        style="?android:attr/buttonStyleSmall"
+
+        android:layout_height="wrap_content"
+        android:id="@+id/endDateButton"
+        android:layout_marginRight="12dp"
+        android:backgroundTint="#ffffff"
+        android:layout_below="@+id/startDateButton"
+        android:layout_alignStart="@+id/startDateButton" />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="36dp"
+        android:id="@+id/applyButton"
+        android:text="@string/go"
+        android:backgroundTint="#ffffff"
+        android:layout_below="@+id/endDateButton"
+        android:layout_alignParentEnd="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="From"
+        android:id="@+id/textView6"
+        android:layout_marginRight="16dp"
+        android:layout_alignTop="@+id/startDateButton"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="To"
+        android:id="@+id/textView7"
+        android:layout_marginRight="8dp"
+        android:layout_below="@+id/startDateButton"
+        android:layout_alignParentStart="true" />
+
+</RelativeLayout>

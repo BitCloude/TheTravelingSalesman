@@ -3,6 +3,8 @@ package com.appers.ayvaz.thetravelingsalesman;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -30,6 +32,7 @@ import com.appers.ayvaz.thetravelingsalesman.utils.PictureUtils;
 
 import java.io.File;
 import java.io.Serializable;
+import java.util.List;
 import java.util.UUID;
 
 import butterknife.Bind;
@@ -148,7 +151,7 @@ public class ClientInfoActivity extends BaseActivity {
 
         if (!TextUtils.isEmpty(mClient.getLinkedIn())) {
             addToView(R.layout.view_client_linkedin_row, 1);
-            bindLinkedIn(mOtherContainer, mClient.getLinkedInFull());
+            bindLinkedIn(mOtherContainer);
         }
 
         if (!TextUtils.isEmpty(mClient.getNote())) {
@@ -176,19 +179,22 @@ public class ClientInfoActivity extends BaseActivity {
 
     }
 
-    private void bindLinkedIn(ViewGroup parent, String linkedIn) {
+    private void bindLinkedIn(ViewGroup parent) {
         View v = parent.getChildAt(parent.getChildCount() - 1);
         TextView field = (TextView) v.findViewById(R.id.content);
-        field.setText(linkedIn);
+        field.setText(mClient.getLinkedInUrl());
 
 
         ImageButton button = (ImageButton) v.findViewById(R.id.linkedInButt);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_VIEW,
-                        Uri.parse(mClient.getLinkedIn()));
-
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("linkedin://" + mClient.getLinkedIn()));
+                final PackageManager packageManager = getPackageManager();
+                final List<ResolveInfo> list = packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
+                if (list.isEmpty()) {
+                    intent = new Intent(Intent.ACTION_VIEW, Uri.parse(mClient.getLinkedInUrl()));
+                }
                 startActivity(intent);
 
             }

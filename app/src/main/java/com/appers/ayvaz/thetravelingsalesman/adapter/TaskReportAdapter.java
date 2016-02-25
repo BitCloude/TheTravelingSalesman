@@ -1,40 +1,31 @@
 package com.appers.ayvaz.thetravelingsalesman.adapter;
 
 import android.app.ProgressDialog;
-import android.content.ContentUris;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.AsyncTask;
-import android.provider.CalendarContract;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.util.SparseBooleanArray;
-import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.appers.ayvaz.thetravelingsalesman.R;
-import com.appers.ayvaz.thetravelingsalesman.database.DbSchema;
 import com.appers.ayvaz.thetravelingsalesman.models.Client;
 import com.appers.ayvaz.thetravelingsalesman.models.Task;
 import com.appers.ayvaz.thetravelingsalesman.utils.DateTimeHelper;
+import com.appers.ayvaz.thetravelingsalesman.utils.MyCsvWriter;
 import com.appers.ayvaz.thetravelingsalesman.utils.ReportExportUtils;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.joda.time.LocalDate;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -44,19 +35,17 @@ import butterknife.ButterKnife;
 
 public class TaskReportAdapter extends RecyclerView.Adapter<TaskReportAdapter.ViewHolder> {
 
-    private final String DEBUG_TAG = "TaskReportAdapter: ";
-    private final static int TYPE_CLIENT = 0;
-    private final static int TYPE_DATE = 1;
-
     public final static int SORT_BY_TITLE = 0;
     public final static int SORT_BY_DATETIME = 1;
     public final static int SORT_BY_TIME = 2;
-
+    private final static int TYPE_CLIENT = 0;
+    private final static int TYPE_DATE = 1;
+    private final String DEBUG_TAG = "TaskReportAdapter: ";
     List<Task> mTasks;
     private int mSortMode;
     private int[] mOrders = new int[3];
     private Comparator[] comparators = {new Task.TitleComparator(), new Task.DateTimeComparator(),
-    new Task.TimeComparator()};
+            new Task.TimeComparator()};
     private Context mContext;
 
     public TaskReportAdapter(List<Task> taskList, Context context) {
@@ -133,7 +122,6 @@ public class TaskReportAdapter extends RecyclerView.Adapter<TaskReportAdapter.Vi
     }
 
 
-
     @Override
     public int getItemCount() {
         return mTasks.size();
@@ -201,39 +189,36 @@ public class TaskReportAdapter extends RecyclerView.Adapter<TaskReportAdapter.Vi
                 return null;
             }
 
-            try (FileWriter writer = new FileWriter(params[0])){
-                writer.append(mContext.getString(R.string.client_name));
-                writer.append(DIVIDER);
-                writer.append(mContext.getString(R.string.task_title));
-                writer.append(DIVIDER);
-                writer.append(mContext.getString(R.string.location));
-                writer.append(DIVIDER);
-                writer.append(mContext.getString(R.string.start_time));
-                writer.append(DIVIDER);
-                writer.append(mContext.getString(R.string.end_time));
-                writer.append(DIVIDER);
-                writer.append(mContext.getString(R.string.description));
-                writer.append(DIVIDER);
+            try (MyCsvWriter writer = new MyCsvWriter(params[0])) {
+                String[] header = {
+                        mContext.getString(R.string.client_name),
+                        mContext.getString(R.string.task_title),
+                        mContext.getString(R.string.location),
+                        mContext.getString(R.string.start_time),
+                        mContext.getString(R.string.end_time),
+                        mContext.getString(R.string.description)
+                };
+
+                writer.addRow(header);
+
+                String[] row = new String[header.length];
 
                 for (int i = 0; i < mTasks.size(); i++) {
                     publishProgress(i);
                     Task t = mTasks.get(i);
                     if (t.getClient() != null) {
-                        writer.append(t.getClient().toString());
-                        writer.append(DIVIDER);
+                        row[0] = t.getClient().toString();
+                    } else {
+                        row[0] = "";
                     }
 
-                    writer.append(t.getTitle());
-                    writer.append(DIVIDER);
-                    writer.append(t.getLocation());
-                    writer.append(DIVIDER);
-                    writer.append(DateTimeHelper.getFullTime(t.getStartTime()));
-                    writer.append(DIVIDER);
-                    writer.append(DateTimeHelper.getFullTime(t.getEndTime()));
-                    writer.append(DIVIDER);
-                    writer.append(t.getNotes());
+                    row[1] = t.getTitle();
+                    row[2] = t.getLocation();
+                    row[3] = DateTimeHelper.getFullTime(t.getStartTime());
+                    row[4] = DateTimeHelper.getFullTime(t.getEndTime());
+                    row[5] = t.getNotes();
 
-                    writer.append(NEW_LINE);
+                    writer.addRow(row);
                 }
 
                 writer.flush();
@@ -256,16 +241,23 @@ public class TaskReportAdapter extends RecyclerView.Adapter<TaskReportAdapter.Vi
             Toast.makeText(mContext, R.string.report_saved, Toast.LENGTH_LONG).show();
         }
     }
+
     // view holder for client view
     public class ViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.taskTitle)        TextView taskTitle;
-        @Bind(R.id.taskDate)        TextView taskDate;
-        @Bind(R.id.taskTime)        TextView taskTime;
-        @Bind(R.id.yearChanged)        LinearLayout yearChanged;
-        @Bind(R.id.year)            TextView year;
+        @Bind(R.id.taskTitle)
+        TextView taskTitle;
+        @Bind(R.id.taskDate)
+        TextView taskDate;
+        @Bind(R.id.taskTime)
+        TextView taskTime;
+        @Bind(R.id.yearChanged)
+        LinearLayout yearChanged;
+        @Bind(R.id.year)
+        TextView year;
 
 
         private Task mTask;
+
         public ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
@@ -278,7 +270,6 @@ public class TaskReportAdapter extends RecyclerView.Adapter<TaskReportAdapter.Vi
             setView();
 
         }
-
 
 
         public void setView() {

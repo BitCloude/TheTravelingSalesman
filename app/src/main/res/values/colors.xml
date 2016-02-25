@@ -19,4 +19,6 @@
     <color name="LightButton">#d3f0ea</color>
 
     <color name="OkButton">#fdb045</color>
+    <color name="ColorExpense">#60d264</color>
+    <color name="ColorTask">#d18315</color>
 </resources>

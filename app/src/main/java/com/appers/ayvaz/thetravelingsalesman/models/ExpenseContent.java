@@ -9,7 +9,10 @@ import android.util.Log;
 
 import com.appers.ayvaz.thetravelingsalesman.database.DatabaseHelper;
 import com.appers.ayvaz.thetravelingsalesman.database.DbSchema;
+import com.appers.ayvaz.thetravelingsalesman.database.DbSchema.ExpenseTable;
 import com.appers.ayvaz.thetravelingsalesman.database.ExpenseCursorWrapper;
+
+import org.joda.time.LocalDate;
 
 import java.io.File;
 import java.text.DateFormat;
@@ -52,21 +55,21 @@ public class ExpenseContent {
     private static ContentValues getContentValues(Expense expense) {
         ContentValues values = new ContentValues();
         //values.put(DbSchema.ExpenseTable.Cols.EXPENSE_ID, Integer.toString(expense.getId()));
-        values.put(DbSchema.ExpenseTable.Cols.EXPENSE_TRIP_ID, Integer.toString(expense.getTrip_id()));
-        values.put(DbSchema.ExpenseTable.Cols.EXPENSE_CLIENT_ID, expense.getClient_id().toString());
-        values.put(DbSchema.ExpenseTable.Cols.EXPENSE_TYPE, expense.getType());
-        values.put(DbSchema.ExpenseTable.Cols.EXPENSE_AMOUNT, expense.getAmount());
-        values.put(DbSchema.ExpenseTable.Cols.EXPENSE_DATE_FROM, CalendarToString(expense.getDate_from()));
-        values.put(DbSchema.ExpenseTable.Cols.EXPENSE_DATE_TO, CalendarToString(expense.getDate_to()));
-        values.put(DbSchema.ExpenseTable.Cols.EXPENSE_DESCRIPTION, expense.getDescription());
-        values.put(DbSchema.ExpenseTable.Cols.EXPENSE_IMAGE_FILE, expense.getImageFile());
+        values.put(ExpenseTable.Cols.EXPENSE_TRIP_ID, Integer.toString(expense.getTrip_id()));
+        values.put(ExpenseTable.Cols.EXPENSE_CLIENT_ID, expense.getClient_id().toString());
+        values.put(ExpenseTable.Cols.EXPENSE_TYPE, expense.getType());
+        values.put(ExpenseTable.Cols.EXPENSE_AMOUNT, expense.getAmount());
+        values.put(ExpenseTable.Cols.EXPENSE_DATE_FROM, CalendarToString(expense.getDate_from()));
+        values.put(ExpenseTable.Cols.EXPENSE_DATE_TO, CalendarToString(expense.getDate_to()));
+        values.put(ExpenseTable.Cols.EXPENSE_DESCRIPTION, expense.getDescription());
+        values.put(ExpenseTable.Cols.EXPENSE_IMAGE_FILE, expense.getImageFile());
 
         return values;
     }
 
     public Expense getExpense(int id) {
         ExpenseCursorWrapper cursor = queryExpenses(
-                DbSchema.ExpenseTable.Cols.EXPENSE_ID + " = ?",
+                ExpenseTable.Cols.EXPENSE_ID + " = ?",
                 new String[]{Integer.toString(id)}, null
         );
 
@@ -85,7 +88,7 @@ public class ExpenseContent {
         List<Expense> expenses = new ArrayList<>();
         String whereClause = null;
         String[] whereArgs = null;
-        String sortOrder = DbSchema.ExpenseTable.Cols.EXPENSE_DATE_FROM + " DESC";
+        String sortOrder = ExpenseTable.Cols.EXPENSE_DATE_FROM + " DESC";
 
 
         try (ExpenseCursorWrapper cursor = queryExpenses(whereClause, whereArgs,
@@ -102,9 +105,9 @@ public class ExpenseContent {
 
     public List<Expense> getClientExpenses(UUID uuid) {
         List<Expense> expenses = new ArrayList<>();
-        String whereClause  = DbSchema.ExpenseTable.Cols.EXPENSE_CLIENT_ID + " = ?";
+        String whereClause  = ExpenseTable.Cols.EXPENSE_CLIENT_ID + " = ?";
         String[] whereArgs = new String[]{uuid.toString()};
-        String sortOrder = DbSchema.ExpenseTable.Cols.EXPENSE_DATE_FROM + " DESC";
+        String sortOrder = ExpenseTable.Cols.EXPENSE_DATE_FROM + " DESC";
 
         try (ExpenseCursorWrapper cursor = queryExpenses(whereClause, whereArgs,
                 sortOrder)) {
@@ -120,22 +123,22 @@ public class ExpenseContent {
 
     public int addExpense(Expense item) {
         ContentValues values = getContentValues(item);
-        return (int) mDatabase.insert(DbSchema.ExpenseTable.NAME, null, values);
+        return (int) mDatabase.insert(ExpenseTable.NAME, null, values);
     }
 
     public void updateExpense(Expense expense) {
         String id = Integer.toString(expense.getId());
         ContentValues values = getContentValues(expense);
 
-        mDatabase.update(DbSchema.ExpenseTable.NAME, values,
-                DbSchema.ExpenseTable.Cols.EXPENSE_ID + " =  ?",
+        mDatabase.update(ExpenseTable.NAME, values,
+                ExpenseTable.Cols.EXPENSE_ID + " =  ?",
                 new String[]{id});
     }
 
     private ExpenseCursorWrapper queryExpenses(String whereClause, String[] whereArgs,
                                              String sortOrder) {
         Cursor cursor = mDatabase.query(
-                DbSchema.ExpenseTable.NAME, null, whereClause, whereArgs, null, null, sortOrder
+                ExpenseTable.NAME, null, whereClause, whereArgs, null, null, sortOrder
         );
 
         return new ExpenseCursorWrapper(cursor);
@@ -161,8 +164,37 @@ public class ExpenseContent {
     }
 
     public boolean delete(int id) {
-        String whereClause = DbSchema.ExpenseTable.Cols.EXPENSE_ID + " = ?";
+        String whereClause = ExpenseTable.Cols.EXPENSE_ID + " = ?";
         String[] whereArgs = new String[]{Integer.toString(id)};
-        return mDatabase.delete(DbSchema.ExpenseTable.NAME, whereClause, whereArgs) > 0;
+        return mDatabase.delete(ExpenseTable.NAME, whereClause, whereArgs) > 0;
+    }
+
+    public List<Expense> getTripExpenses(int tripId, Calendar start, Calendar end) {
+        List<Expense> result = new ArrayList<>();
+//        LocalDate startDate = LocalDate.fromCalendarFields(start);
+//        LocalDate endDate = LocalDate.fromCalendarFields(end);
+
+        try (ExpenseCursorWrapper cursor = queryExpenses(ExpenseTable.Cols.EXPENSE_TRIP_ID + " = ?"
+        , new String[]{Integer.toString(tripId)}, null)) {
+            if (cursor == null) {
+                return result;
+            }
+
+            while (cursor.moveToNext()) {
+                Expense e = cursor.getExpense();
+//                LocalDate current = LocalDate.fromCalendarFields(e.getDate_from());
+//                if (current.isBefore(startDate) || current.isAfter(endDate)) {
+//                    continue;
+//                }
+                result.add(e);
+            }
+        }
+            catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return result;
+
+
     }
 }

@@ -250,13 +250,24 @@ public class ClientActivity extends BaseActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Intent intent;
+        switch (item.getItemId()) {
 
-        if (item.getItemId() == R.id.action_info) {
-            Intent intent = ClientInfoActivity.newIntent(this, mClientId);
-            startActivity(intent);
-
+        case R.id.action_info:
+                intent = ClientInfoActivity.newIntent(this, mClientId);
+                startActivity(intent);
             return true;
+
+        case R.id.action_trip:
+                intent = TripExpMan.newTripIntent(this, mClientId);
+                startActivity(intent);
+                return true;
+        case R.id.action_expense:
+                intent = TripExpMan.newExpenseIntent(this, mClientId);
+                startActivity(intent);
+                return true;
         }
+
         return super.onOptionsItemSelected(item);
     }
 

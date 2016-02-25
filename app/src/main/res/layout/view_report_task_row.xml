@@ -5,27 +5,7 @@
     android:orientation="vertical"
     >
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:visibility="gone"
-        android:id="@+id/yearChanged"
-        android:background="@color/YearBackground"
-        >
-
-        <TextView
-            android:id="@+id/year"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="2014"
-            android:textColor="#ffffff"
-            android:paddingTop="4dp"
-            android:paddingBottom="4dp"
-            android:gravity="center" />
-        <include layout = "@layout/view_divider_horizontal"
-            />
-    </LinearLayout>
+    <include layout = "@layout/view_report_year"/>
 
     <LinearLayout
         android:layout_width="match_parent"

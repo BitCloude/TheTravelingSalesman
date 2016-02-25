@@ -117,7 +117,11 @@
         <activity
             android:name=".ReportTaskActivity"
             android:launchMode="singleTask"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:parentActivityName=".ReportsActivity" />
+        <activity
+            android:name=".ReportExpenseActivity"
+            android:launchMode="singleTask"
+            android:parentActivityName=".ReportsActivity" />
         <activity
             android:name=".LoginActivity"
             android:label="@string/app_name"

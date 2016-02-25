@@ -6,7 +6,7 @@ import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.view.Menu;
 
-public class ReportTaskActivity extends SingleFragmentActivity {
+public class ReportTaskActivity extends SingleFragmentActivityNoNav {
 
     private static final String EXTRA_REPORT_TYPE = "extra_report_type";
     public static final int REPORT_TYPE_TASK = 0;
@@ -42,6 +42,7 @@ public class ReportTaskActivity extends SingleFragmentActivity {
 
         setTitle(getString(R.string.title_activity_report_task));
 
+
     }
 
 
@@ -49,6 +50,6 @@ public class ReportTaskActivity extends SingleFragmentActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        checkMenu(ids[mThisType]);
+
     }
 }

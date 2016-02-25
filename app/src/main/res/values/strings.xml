@@ -175,6 +175,14 @@
     <string name="answer">Answer</string>
     <string name="error_incorrect_answer">Wrong answer</string>
     <string name="message_recreate_password">You will create a new password.</string>
+    <string name="other">Other</string>
+    <string name="gifts">Gifts</string>
+    <string name="restaurant">Restaurant</string>
+    <string name="cab">Transportation</string>
+    <string name="hotel">Hotel</string>
+    <string name="trip_title">Travel Information</string>
+    <string name="message_finish_export">Report has been saved.</string>
+    <string name="message_export_failed">Failed to save the report.</string>
 
     <string-array name="security_questions">
         <item>When you were young, what did you want to be when you grew up?</item>
