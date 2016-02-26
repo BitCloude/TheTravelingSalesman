@@ -78,6 +78,7 @@ public class TravelDetail extends AppCompatActivity implements PhotoViewFragment
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        setTitle("Trip Add/Edit");
         addExpense = (Button) findViewById(R.id.travelDetailAddExpense);
         radPlane = (RadioButton) findViewById(R.id.buttonTravelPlane);
         radTrain = (RadioButton) findViewById(R.id.buttonTravelTrain);

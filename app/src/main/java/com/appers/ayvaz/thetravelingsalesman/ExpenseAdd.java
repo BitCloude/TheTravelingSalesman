@@ -70,6 +70,7 @@ Spinner spinnerType;
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        setTitle("Expense Add/Edit");
         buttonCamera = (ImageButton) findViewById(R.id.cameraButton);
         buttonDateFrom = (ImageButton) findViewById(R.id.ButtonCalenderFrom);
         buttonDateTo = (ImageButton) findViewById(R.id.ButtonCalenderTo);

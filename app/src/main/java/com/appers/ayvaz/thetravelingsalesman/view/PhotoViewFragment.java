@@ -36,7 +36,6 @@ import java.io.InputStream;
  */
 public class PhotoViewFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "photo_file";
     private static final String ARG_PARAM2 = "photo_file_temp";
     private static final String ARG_PARAM3 = "load_or_add";
@@ -136,8 +135,6 @@ public class PhotoViewFragment extends Fragment {
             mDelPhoto.setVisibility(View.VISIBLE);
         }
         if (mListener != null) {
-            Log.i("......", "sending to activity: tmp:  " + mPhotoTmp.getAbsolutePath());
-            Log.i("......", "sending to activity: file:  " + mPhotoFile.getAbsolutePath());
             mListener.onFragmentInteraction(mPhotoFile, mPhotoTmp);
         }
     }
@@ -209,17 +206,6 @@ public class PhotoViewFragment extends Fragment {
         }
 
 
-    }
-
-    private void savePhoto() {
-        if (mPhotoTmp != null && mPhotoTmp.exists()) {
-            if ((!mPhotoFile.exists() || mPhotoFile.delete()) && mPhotoTmp.renameTo(mPhotoFile)) {
-                return;
-            }
-
-            Toast.makeText(getContext(), "Photo not saved", Toast.LENGTH_LONG).show();
-
-        }
     }
 
     @Override
