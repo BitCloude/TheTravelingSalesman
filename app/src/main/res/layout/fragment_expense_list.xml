@@ -8,7 +8,7 @@
     <!-- TODO: Update blank fragment layout -->
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="105dp"
+        android:layout_height="120dp"
         android:layout_margin="5dp"
         android:background="@color/colorPrimaryDark">
         <!--cardview_dark_background-->
@@ -39,10 +39,21 @@
                 />
             <!--android:src="@drawable/ic_travel_detail_car_dark"-->
 
+            <TextView
+                android:id="@+id/fragment_expense_client"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Alex Andreasyan"
+                android:textSize="15dp"
+                android:layout_alignParentBottom="true"
+                android:layout_marginStart="10dp"
+                android:textColor="@android:color/white" />
+
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
-                android:layout_alignParentBottom="true"
+                android:layout_below="@+id/fragment_expense_date"
+                android:layout_above="@id/fragment_expense_client"
                 android:layout_margin="5dp"
                 android:background="@android:color/white">
 

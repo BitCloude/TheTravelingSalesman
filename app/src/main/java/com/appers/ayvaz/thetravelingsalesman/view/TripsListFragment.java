@@ -13,6 +13,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.appers.ayvaz.thetravelingsalesman.R;
+import com.appers.ayvaz.thetravelingsalesman.models.Client;
+import com.appers.ayvaz.thetravelingsalesman.models.ClientManager;
 import com.appers.ayvaz.thetravelingsalesman.models.Trip;
 
 import java.util.Calendar;
@@ -30,7 +32,7 @@ public class TripsListFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "TRIP";
    // private static final String ARG_PARAM2 = "param2";
-   TextView date, trip_from_to,description ;
+   TextView date, trip_from_to,description, clientText ;
     ImageView type;
 
     // TODO: Rename and change types of parameters
@@ -75,7 +77,11 @@ public class TripsListFragment extends Fragment {
         trip_from_to = (TextView) v.findViewById(R.id.fragment_trips_from);
         description = (TextView) v.findViewById(R.id.fragment_trips_description);
         type = (ImageView) v.findViewById(R.id.fragment_trips_type);
+        clientText = (TextView) v.findViewById(R.id.fragment_trips_client);
 
+        Client client = ClientManager.get(getActivity()).getClient(mTrip.getClient_id());
+
+        clientText.setText(client.toString());
         Calendar dateFrom = mTrip.getDate_from();
         date.setText(String.format("%tm/%td/%tY", dateFrom, dateFrom, dateFrom));
         //trip_from_to.setText("From " + mTrip.getTrip_from() + " to " + mTrip.getTrip_to());

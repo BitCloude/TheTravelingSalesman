@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.appers.ayvaz.thetravelingsalesman.R;
+import com.appers.ayvaz.thetravelingsalesman.models.Client;
+import com.appers.ayvaz.thetravelingsalesman.models.ClientManager;
 import com.appers.ayvaz.thetravelingsalesman.models.Expense;
 import com.appers.ayvaz.thetravelingsalesman.models.Trip;
 import com.appers.ayvaz.thetravelingsalesman.models.TripContent;
@@ -28,7 +30,7 @@ public class ExpenseListFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "EXPENSE";
-    TextView date, expense_trip,amount,type,description ;
+    TextView date, expense_trip,amount,type,description,clientText ;
 
     // TODO: Rename and change types of parameters
     private Expense mExpense;
@@ -73,6 +75,11 @@ public class ExpenseListFragment extends Fragment {
         description = (TextView) v.findViewById(R.id.fragment_expense_description);
         amount = (TextView) v.findViewById(R.id.fragment_expense_amount);
         type = (TextView) v.findViewById(R.id.fragment_expense_type);
+        clientText = (TextView) v.findViewById(R.id.fragment_expense_client);
+
+        Client client = ClientManager.get(getActivity()).getClient(mExpense.getClient_id());
+
+        clientText.setText(client.toString());
 
         Calendar dateFrom = mExpense.getDate_from();
         if(dateFrom != null)
@@ -84,7 +91,7 @@ public class ExpenseListFragment extends Fragment {
         expense_trip.setText(trip.toString());}
         else{
         expense_trip.setText(null);}
-        amount.setText(mExpense.getAmount());
+        amount.setText("$" + mExpense.getAmount());
         description.setText(mExpense.getDescription());
         type.setText(mExpense.getType());
 

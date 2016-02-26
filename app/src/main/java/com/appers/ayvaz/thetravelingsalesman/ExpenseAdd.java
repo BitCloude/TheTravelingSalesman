@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.InputFilter;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -29,6 +30,7 @@ import com.appers.ayvaz.thetravelingsalesman.models.Expense;
 import com.appers.ayvaz.thetravelingsalesman.models.ExpenseContent;
 import com.appers.ayvaz.thetravelingsalesman.models.Trip;
 import com.appers.ayvaz.thetravelingsalesman.models.TripContent;
+import com.appers.ayvaz.thetravelingsalesman.utils.DecimalDigitsInputFilter;
 import com.appers.ayvaz.thetravelingsalesman.view.PhotoViewFragment;
 
 import java.io.ByteArrayOutputStream;
@@ -73,6 +75,7 @@ Spinner spinnerType;
         buttonDateTo = (ImageButton) findViewById(R.id.ButtonCalenderTo);
         buttonAddTravel = (ImageButton) findViewById(R.id.buttonAddTravel);
         editAmount = (EditText) findViewById(R.id.EditAmount);
+        editAmount.setFilters(new InputFilter[] {new DecimalDigitsInputFilter(10,2)});
         editDescription = (EditText) findViewById(R.id.expenseAddEditDescription);
         //spinner = (Spinner) findViewById(R.id.spinnerTripSelect);
         spinnerType = (Spinner) findViewById(R.id.spinnerExpenseType);
@@ -314,7 +317,6 @@ Spinner spinnerType;
         Expense expense = i.getParcelableExtra("EXPENSE");
         return expense;
     }
-
 
     public boolean saveData(boolean savePhoto){
 
