@@ -8,7 +8,7 @@
     <!-- TODO: Update blank fragment layout -->
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="120dp"
+        android:layout_height="123dp"
         android:layout_margin="5dp"
         android:background="@color/colorPrimaryDark">
         <!--cardview_dark_background-->
@@ -54,7 +54,7 @@
                 android:layout_height="60dp"
                 android:layout_below="@+id/fragment_expense_date"
                 android:layout_above="@id/fragment_expense_client"
-                android:layout_margin="5dp"
+                android:layout_margin="2dp"
                 android:background="@android:color/white">
 
                 <TextView
