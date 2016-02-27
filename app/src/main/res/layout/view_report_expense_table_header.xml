@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:background="@color/HeaderBackground"
+        android:layout_height="@dimen/report_header_height"
+
+        android:orientation="horizontal"
+        android:weightSum="15">
+
+        <RelativeLayout
+            android:id="@+id/dateHeader"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2.5"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true">
+
+            <TextView
+                android:id="@+id/taskDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/date"
+                android:textColor="@color/TextPrimary"
+                android:layout_alignTop="@+id/dateSorted"
+                android:layout_alignParentStart="true"
+                android:layout_marginLeft="6dp" />
+
+            <ImageView
+                android:id="@+id/dateSorted"
+                android:layout_width="14dp"
+                android:layout_height="14dp"
+                android:src="@drawable/ic_dark_sortable"
+                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginRight="4dp" />
+        </RelativeLayout>
+
+        <include layout="@layout/view_divider_vertical" />
+
+        <RelativeLayout
+            android:id="@+id/taskHeader"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="5dp"
+            android:layout_weight="2.5"
+            android:layout_marginStart="5dp">
+
+            <TextView
+                android:id="@+id/taskTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/task"
+                android:textColor="@color/TextPrimary"
+                android:lines="2"
+                android:layout_centerVertical="true"
+                android:layout_alignParentStart="true"
+                android:layout_marginLeft="6dp" />
+
+            <ImageView
+                android:id="@+id/titleSorted"
+                android:layout_width="14dp"
+                android:layout_height="14dp"
+                android:src="@drawable/ic_dark_sortable"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentStart="false"
+                android:layout_centerVertical="true" />
+
+        </RelativeLayout>
+
+
+        <include layout="@layout/view_divider_vertical" />
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="5dp"
+            android:layout_marginStart="5dp"
+            android:layout_weight="2">
+            <ImageView
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/ic_hotel"
+                android:layout_centerInParent="true" />
+            <!--<TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="@string/hotel"
+
+                android:textColor="@color/TextPrimary"
+                android:gravity="center_vertical"
+                android:lines="2" />-->
+        </RelativeLayout>
+        <include layout="@layout/view_divider_vertical" />
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="5dp"
+            android:layout_marginStart="5dp"
+            android:layout_weight="2">
+            <ImageView
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/ic_car"
+                android:layout_centerInParent="true" />
+            <!--<TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="@string/cab"
+                android:textColor="@color/TextPrimary"
+                android:gravity="center_vertical"
+                android:lines="2" />-->
+        </RelativeLayout>
+        <include layout="@layout/view_divider_vertical" />
+        <RelativeLayout
+            android:id="@+id/relativeLayout5"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="5dp"
+            android:layout_marginStart="5dp"
+            android:layout_weight="2">
+            <ImageView
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/ic_restaurant"
+                android:layout_centerInParent="true" />
+          <!--  <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="@string/restaurant"
+                android:textColor="@color/TextPrimary"
+                android:gravity="center_vertical"
+                android:lines="2"
+                 />-->
+        </RelativeLayout>
+        <include layout="@layout/view_divider_vertical" />
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="5dp"
+            android:layout_marginStart="5dp"
+            android:layout_weight="2">
+            <ImageView
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/ic_gift"
+                android:layout_centerInParent="true" />
+          <!--  <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="@string/gifts"
+                android:textColor="@color/TextPrimary"
+                android:gravity="center_vertical"
+                android:lines="2" />-->
+        </RelativeLayout>
+        <include layout="@layout/view_divider_vertical" />
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="5dp"
+            android:layout_marginStart="5dp"
+            android:layout_weight="2">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="@string/other"
+                android:textColor="@color/TextPrimary"
+                android:gravity="center_vertical"
+                android:lines="2" />
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <include layout="@layout/view_shadow" />
+</LinearLayout>

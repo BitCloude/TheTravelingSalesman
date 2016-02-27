@@ -1,6 +1,7 @@
 package com.appers.ayvaz.thetravelingsalesman;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -9,18 +10,26 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
-public abstract class NavigationDrawerActivity extends AppCompatActivity {
+import com.appers.ayvaz.thetravelingsalesman.utils.LoginUtils;
+
+import java.util.Set;
+
+public abstract class NavigationDrawerActivity extends BaseActivity {
 
     DrawerLayout mDrawerLayout;
     NavigationView mNavigationView;
     ActionBarDrawerToggle mDrawerToggle;
     private LinearLayout view_stub;
+    TextView mUsername;
+    SharedPreferences mSharedPreferences;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,9 +39,12 @@ public abstract class NavigationDrawerActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         view_stub = (LinearLayout) findViewById(R.id.view_stub);
 
+        mSharedPreferences = getSharedPreferences(LoginUtils.PREF_NAME, 0);
+
         // drawer stuff
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mNavigationView = (NavigationView) findViewById(R.id.nav_menu);
+
 
         mNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -68,9 +80,17 @@ public abstract class NavigationDrawerActivity extends AppCompatActivity {
             actionBar.setHomeButtonEnabled(true);
         }
 
+        SharedPreferences sharedPreferences = getSharedPreferences(LoginUtils.PREF_NAME, 0);
+        String username = sharedPreferences.getString(LoginUtils.KEY_USERNAME, "");
+        mUsername = (TextView) mNavigationView.getHeaderView(0).findViewById(R.id.nav_username);
+        mUsername.setText(username);
+
     }
 
     protected void checkMenu(int menuId) {
+        if (menuId < 0) {
+            return;
+        }
         MenuItem currentItem = mNavigationView.getMenu().findItem(menuId);
         currentItem.setChecked(true);
     }
@@ -78,8 +98,8 @@ public abstract class NavigationDrawerActivity extends AppCompatActivity {
 
     private void selectItem(int itemId) {
 
-        if (itemId == R.id.nav_report_task) {
-            startActivity(ReportTaskActivity.newIntent(this, ReportTaskActivity.REPORT_TYPE_TASK));
+        if (itemId == R.id.nav_reports) {
+            startActivity(new Intent(this, ReportsActivity.class));
         } else if (itemId == R.id.nav_trip) {
             startActivity(new Intent(this, TripExpMan.class).putExtra("ORIGIN", "TRIP"));
         } else if (itemId == R.id.nav_expenses) {
@@ -90,6 +110,8 @@ public abstract class NavigationDrawerActivity extends AppCompatActivity {
             startActivity(new Intent(this, NotificationActivity.class));
         } else if (itemId == R.id.nav_clients) {
             startActivity(new Intent(this, LandingActivity.class));
+        } else if (itemId == R.id.nav_settings) {
+            startActivity(new Intent(this, SettingsActivity.class));
         }
 
     }

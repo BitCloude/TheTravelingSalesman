@@ -17,6 +17,11 @@ public class Expense implements Parcelable{
     private String type, amount, description, imageFile;
     private Calendar date_from, date_to;
 
+    public static final String TYPE_HOTEL = "Hotel Bill";
+    public static final String TYPE_TRAVEL = "Travel Bill";
+    public static final String TYPE_RESTAURANT = "Restaurant Bill";
+    public static final String TYPE_GIFT = "Gift";
+    public static final String TYPE_OTHER = "Other";
 
     public Expense(int id) {
         this.id = id;

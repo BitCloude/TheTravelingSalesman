@@ -3,12 +3,16 @@ package com.appers.ayvaz.thetravelingsalesman;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -21,16 +25,30 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.appers.ayvaz.thetravelingsalesman.adapter.TaskReportAdapter;
 import com.appers.ayvaz.thetravelingsalesman.models.Client;
 import com.appers.ayvaz.thetravelingsalesman.models.ClientManager;
+import com.appers.ayvaz.thetravelingsalesman.models.Expense;
+import com.appers.ayvaz.thetravelingsalesman.models.ExpenseContent;
+import com.appers.ayvaz.thetravelingsalesman.models.ExpenseReport;
 import com.appers.ayvaz.thetravelingsalesman.models.Task;
 import com.appers.ayvaz.thetravelingsalesman.models.TaskManager;
+import com.appers.ayvaz.thetravelingsalesman.models.Trip;
+import com.appers.ayvaz.thetravelingsalesman.models.TripContent;
 import com.appers.ayvaz.thetravelingsalesman.utils.DateTimeHelper;
 import com.appers.ayvaz.thetravelingsalesman.utils.EventUtility;
+import com.appers.ayvaz.thetravelingsalesman.utils.MyCsvWriter;
+import com.appers.ayvaz.thetravelingsalesman.utils.ReportExportUtils;
 import com.appers.ayvaz.thetravelingsalesman.view.DividerItemDecoration;
 
+import org.joda.time.LocalDate;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.UUID;
@@ -41,7 +59,7 @@ import butterknife.ButterKnife;
 
 public class ReportExpenseFragment extends Fragment {
 
-    private static final String DEBUG_TAG = "ReportTripFragment: ";
+    private static final String DEBUG_TAG = "ReportExpenseFragment";
     private static final int REQUEST_CLIENT = 0;
     @Bind(R.id.recyclerView)
     RecyclerView mRecyclerView;
@@ -63,6 +81,11 @@ public class ReportExpenseFragment extends Fragment {
     ImageButton mSelectClient;
     @Bind(R.id.client_name)
     TextView mClientName;
+//    @Bind(R.id.hotelSum) TextView mHotelSum;
+//    @Bind(R.id.restaurantSum) TextView mRestaurantSum;
+//    @Bind(R.id.giftSum) TextView mGiftSum;
+//    @Bind(R.id.otherSum) TextView mOtherSum;
+//    @Bind(R.id.cabSum) TextView mCabSum;
 
     private int UNSORTED_ICON = R.drawable.ic_dark_sortable;
     private int ASC_ICON = R.drawable.ic_dark_sorted_asc;
@@ -70,10 +93,12 @@ public class ReportExpenseFragment extends Fragment {
     private int[] sortable_icons = {UNSORTED_ICON, ASC_ICON, DESC_ICON};
     private Calendar mStartDateSet, mEndDateSet, mStartDate, mEndDate;
     private Client mClient;
+    private Trip mTrip;
     private long lastEventId;
     private ImageView[] mHeaderIcons;
+    private ExpenseReport mTotal;
 
-    private TaskReportAdapter mAdapter;
+    private ExpenseReportAdapter mAdapter;
 
     public ReportExpenseFragment() {
         // Required empty public constructor
@@ -97,11 +122,11 @@ public class ReportExpenseFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_report_task, container, false);
-
+        View view = inflater.inflate(R.layout.fragment_report_expense, container, false);
+        Log.i(DEBUG_TAG, "view");
         ButterKnife.bind(this, view);
         //mHeaderIcons = new ImageView[]{mTitleSorted, mDateSorted, mTimeSorted};
-
+        Log.i(DEBUG_TAG, "after bind");
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mRecyclerView.addItemDecoration(new DividerItemDecoration(getContext(),
                 DividerItemDecoration.VERTICAL_LIST));
@@ -185,10 +210,10 @@ public class ReportExpenseFragment extends Fragment {
     }
 
     private void updateIcon() {
-        int[] orders = mAdapter.getOrders();
-        for (int i = 0; i < 3; i++) {
-            mHeaderIcons[i].setImageResource(sortable_icons[orders[i]]);
-        }
+//        int[] orders = mAdapter.getOrders();
+//        for (int i = 0; i < 3; i++) {
+//            mHeaderIcons[i].setImageResource(sortable_icons[orders[i]]);
+//        }
     }
 
     private void updateUI() {
@@ -321,15 +346,99 @@ public class ReportExpenseFragment extends Fragment {
         }
     }
 
-    private class GetTask extends AsyncTask<Calendar, Void, List<Task>> {
+    private List<ExpenseReport> getExpenseReport(Client client, Calendar start, Calendar end) {
+        TripContent tripContent = TripContent.get(getActivity());
+        LocalDate startDate = LocalDate.fromCalendarFields(start);
+        LocalDate endDate = LocalDate.fromCalendarFields(end);
+        List<ExpenseReport> reports = new ArrayList<>();
+        mTotal = new ExpenseReport();
+        mTotal.setInfo("Total");
+
+
+        if (mTrip == null) {
+            List<Trip> trips = client == null ? tripContent.getTrips()
+                    : tripContent.getClientTrips(client.getId());
+            Log.i(DEBUG_TAG, "trips found: " + trips.size());
+            for (Trip t : trips) {
+
+                LocalDate current = LocalDate.fromCalendarFields(t.getDate_from());
+                if (current.isBefore(startDate) || current.isAfter(endDate)) {
+                    continue;
+                }
+
+                ExpenseReport r = new ExpenseReport();
+                if (client == null) {
+                    r.setClient(ClientManager.get(getActivity()).getClient(t.getClient_id()));
+                } else {
+                    r.setClient(client);
+                }
+
+                r.setInfo(t.toString());
+                r.setDate(t.getDate_from());
+
+                List<Expense> expenses = ExpenseContent.get(getActivity())
+                        .getTripExpenses(t.getId(), start, end);
+
+                Log.i(DEBUG_TAG, "Expense found: " + expenses.size());
+
+
+                for (Expense expense : expenses) {
+                    String type = expense.getType();
+                    double amount = Double.parseDouble(expense.getAmount());
+                    Log.i(DEBUG_TAG, "Amount: " + amount);
+                    if (type.equals(Expense.TYPE_RESTAURANT)) {
+                        r.addRestaurant(amount);
+                        mTotal.addRestaurant(amount);
+                    } else if (type.equals(Expense.TYPE_OTHER)) {
+                        r.addOther(amount);
+                        mTotal.addOther(amount);
+                    } else if (type.equals(Expense.TYPE_GIFT)) {
+                        r.addGifts(amount);
+                        mTotal.addGifts(amount);
+                    } else if (type.equals(Expense.TYPE_HOTEL)) {
+                        r.addHotel(amount);
+                        mTotal.addHotel(amount);
+                    } else if (type.equals(Expense.TYPE_TRAVEL)) {
+                        r.addCabs(amount);
+                        mTotal.addCabs(amount);
+                    } else {
+                        Log.i(DEBUG_TAG, "expense type: " + type + " not recognized");
+                    }
+                }
+
+                reports.add(r);
+            }
+        } // // TODO: 023 02 23 trip not selected
+
+
+        reports.add(mTotal);
+
+
+        return reports;
+    }
+
+   /* private void bindTotal(ExpenseReport sum) {
+        mHotelSum.setText(ReportExportUtils.formatMoney(sum.getHotel()));
+        mRestaurantSum.setText(ReportExportUtils.formatMoney(sum.getRestaurant()));
+        mCabSum.setText(ReportExportUtils.formatMoney(sum.getCabs()));
+        mGiftSum.setText(ReportExportUtils.formatMoney(sum.getGifts()));
+        mOtherSum.setText(ReportExportUtils.formatMoney(sum.getOther()));
+    }
+*/
+
+    private class GetTask extends AsyncTask<Calendar, Void, List<ExpenseReport>> {
 
         @Override
-        protected List<Task> doInBackground(Calendar... params) {
-            if (mClient != null) {
-                return TaskManager.get(getContext()).query(mClient.getId(), params[0], params[1]);
-            }
+        protected List<ExpenseReport> doInBackground(Calendar... params) {
+            /*try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }*/
+            Calendar start = params[0];
+            Calendar end = params[1];
 
-            return TaskManager.get(getActivity()).queryInstance(params[0], params[1], null);
+            return getExpenseReport(mClient, start, end);
 
         }
 
@@ -340,17 +449,207 @@ public class ReportExpenseFragment extends Fragment {
         }
 
         @Override
-        protected void onPostExecute(List<Task> tasks) {
+        protected void onPostExecute(List<ExpenseReport> expenses) {
             if (mAdapter == null) {
-                mAdapter = new TaskReportAdapter(tasks, getActivity());
+                mAdapter = new ExpenseReportAdapter(expenses, getActivity());
                 mRecyclerView.setAdapter(mAdapter);
             } else {
-                mAdapter.setData(tasks);
+                mAdapter.setData(expenses);
                 mAdapter.notifyDataSetChanged();
             }
 
+//            bindTotal(mTotal);
             mProgressBarContainer.setVisibility(View.GONE);
 //            mRecyclerView.setVisibility(View.VISIBLE);
+        }
+    }
+
+}
+
+class ExpenseReportAdapter extends RecyclerView.Adapter<ExpenseReportAdapter.ViewHolder> {
+    List<ExpenseReport> mExpenses;
+    Context mContext;
+    private static final String DEBUG_TAG = "ExpenseReportAdapter";
+
+
+    public ExpenseReportAdapter(List<ExpenseReport> expenses, Context context) {
+        mExpenses = expenses;
+        mContext = context;
+    }
+    public void saveReport(Client client) {
+        if (mExpenses.size() == 0) {
+            Toast.makeText(mContext, R.string.report_nothing_to_save, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        final File file = ReportExportUtils.getFileNameByTime(mContext,
+                ReportExportUtils.TYPE_EXPENSE, client);
+
+        if (file == null) {
+            Log.i(DEBUG_TAG, "FILE NULL");
+            return;
+        }
+
+        AlertDialog alertDialog = new AlertDialog.Builder(mContext)
+                .setMessage(mContext.getString(R.string.save_report, file.getPath()))
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        new GenerateExpenseReport().execute(file);
+                    }
+                })
+                .setNegativeButton(android.R.string.cancel, null)
+                .create();
+
+        alertDialog.show();
+
+    }
+
+    public void setData(List<ExpenseReport> data) {
+        mExpenses = data;
+    }
+
+    @Override
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.view_report_expense_row, parent, false);
+        return new ViewHolder(view);
+    }
+
+    @Override
+    public void onBindViewHolder(ViewHolder holder, int position) {
+        ExpenseReport current = mExpenses.get(position);
+        holder.bindView(current);
+        if (current.getDate() == null) {
+            holder.showYear(-1);
+            return;
+        }
+
+        int currentYear = current.getDate().get(Calendar.YEAR);
+        if (position == 0 || currentYear != mExpenses.get(position - 1)
+                .getDate().get(Calendar.YEAR)) {
+            holder.showYear(currentYear);
+        } else {
+            holder.showYear(-1);
+        }
+    }
+
+    @Override
+    public int getItemCount() {
+        return mExpenses.size();
+    }
+
+    class ViewHolder extends RecyclerView.ViewHolder {
+        @Bind(R.id.date) TextView date;
+        @Bind(R.id.tripTitle) TextView tripTitle;
+        @Bind(R.id.hotel) TextView hotel;
+        @Bind(R.id.cab) TextView cab;
+        @Bind(R.id.gifts) TextView gifts;
+        @Bind(R.id.other) TextView other;
+
+        @Bind(R.id.yearChanged) View yearChanged;
+        @Bind(R.id.year) TextView year;
+
+        public ViewHolder(View itemView) {
+            super(itemView);
+
+            ButterKnife.bind(this, itemView);
+        }
+
+        public void bindView(ExpenseReport row) {
+            if (row.getDate() != null) {
+                date.setText(DateTimeHelper.formatShortDate(row.getDate().getTime()));
+            }
+
+            tripTitle.setText(row.getInfo());
+
+            tripTitle.setText(row.getInfo());
+            hotel.setText(ReportExportUtils.formatMoney(row.getHotel()));
+            cab.setText(ReportExportUtils.formatMoney(row.getCabs()));
+            gifts.setText(ReportExportUtils.formatMoney(row.getGifts()));
+            other.setText(ReportExportUtils.formatMoney(row.getOther()));
+
+        }
+
+        public void showYear(int y) {
+            if (y <= 0) {
+                yearChanged.setVisibility(View.GONE);
+            } else {
+                year.setText(Integer.toString(y));
+                yearChanged.setVisibility(View.VISIBLE);
+            }
+        }
+    }
+
+    private class GenerateExpenseReport extends AsyncTask<File, Void, Boolean> {
+        @Override
+        protected Boolean doInBackground(File... params) {
+            if (params.length != 1) {
+                return null;
+            }
+
+            File file = params[0];
+
+/** 0. name | 1. date | 2. title | 3. hotel | 4. resturant | 5. cab | 6. gift | 7. other */
+            try (MyCsvWriter writer = new MyCsvWriter(file)){
+
+                String[] header = {
+                        mContext.getString(R.string.client_name),
+                mContext.getString(R.string.start_time),
+                mContext.getString(R.string.trip_title),
+                mContext.getString(R.string.hotel),
+                mContext.getString(R.string.restaurant),
+                mContext.getString(R.string.cab),
+                mContext.getString(R.string.gifts),
+                mContext.getString(R.string.other)
+                };
+
+                writer.addRow(header);
+
+                String[] row = new String[header.length];
+
+                for (int i = 0; i < mExpenses.size(); i++) {
+//                    publishProgress(i);
+
+                    ExpenseReport report = mExpenses.get(i);
+                    if (report.getClient() != null) {
+                        row[0] = report.getClient().toString();
+                    } else {
+                        row[0] = "";
+                    }
+
+                    if (report.getDate() != null) {
+                        row[1] = DateTimeHelper.formatDateForExport(report.getDate().getTime());
+                    } else {
+                        row[1] = "";
+                    }
+
+                    row[2] = report.getInfo();
+                    row[3] = ReportExportUtils.formatMoneyNumberOnly(report.getHotel());
+                    row[4] = ReportExportUtils.formatMoneyNumberOnly(report.getRestaurant());
+                    row[5] = ReportExportUtils.formatMoneyNumberOnly(report.getCabs());
+                    row[6] = ReportExportUtils.formatMoneyNumberOnly(report.getGifts());
+                    row[7] = ReportExportUtils.formatMoneyNumberOnly(report.getOther());
+
+                    writer.addRow(row);
+                }
+
+                writer.flush();
+                writer.close();
+
+                return true;
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return false;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            Toast.makeText(mContext, result ? R.string.message_finish_export : R.string.message_export_failed,
+                    Toast.LENGTH_SHORT).show();
         }
     }
 }

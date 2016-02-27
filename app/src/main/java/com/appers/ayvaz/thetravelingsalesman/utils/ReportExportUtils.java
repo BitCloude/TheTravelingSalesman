@@ -14,6 +14,8 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import java.io.File;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.List;
 
 /**
@@ -37,28 +39,34 @@ public class ReportExportUtils {
         }
 
         LocalDateTime today = LocalDateTime.now();
-        DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy_MM_dd_HHmm");
+        DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy_MM_dd_HHmm_ss");
         String prefix = type == TYPE_EXPENSE ? EXPENSE_PREFIX : TASK_PREFIX;
+        prefix += "_";
+
         if (client != null) {
             prefix += client.toString() + "_";
         }
-        String str = prefix + fmt.print(today) + EXTENSION;
+        String str = prefix + fmt.print(today);
 
-        File file = new File(externalFilesDir, str);
+        File file = new File(externalFilesDir, str + EXTENSION);
 
-        int cnt = 0;
-
-        while (cnt <= MAX_COUNT && file.exists()) {
-            ++cnt;
-            file = new File(externalFilesDir, str + "_" + cnt);
-        }
-
-        if (cnt == MAX_COUNT + 1) {
-            Log.i(DEBUG_TAG, "report file name error");
+        if (file.exists()) {
+            Log.i(DEBUG_TAG, "overwriting");
         }
 
         Log.i("......", "Path: " + file.getPath());
         return file;
+    }
+
+    public static String formatMoney(double value) {
+        String pattern = "###,###.##";
+        DecimalFormat myFormatter = new DecimalFormat(pattern);
+        return  myFormatter.format(value);
+    }
+
+    public static String formatMoneyNumberOnly(double value) {
+        NumberFormat formatter = new DecimalFormat("#0.00");
+        return formatter.format(value);
     }
 
 

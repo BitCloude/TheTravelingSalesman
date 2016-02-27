@@ -1,6 +1,7 @@
 package com.appers.ayvaz.thetravelingsalesman;
 
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
@@ -56,8 +57,33 @@ public class TripExpMan extends NavigationDrawerActivity implements SectionsPage
 
     int fragmentSection;
     static String clientDefault = null;
+    private static final String EXTRA_ORIGIN = "ORIGIN";
+    private static final String EXTRA_CLIENT = "CLIENT";
+    private static final String ORIGIN_TRIP = "TRIP";
+    private static final String ORIGIN_EXPENSE = "EXPENSE";
 
 
+    public static Intent newTripIntent(Context context, UUID clientId) {
+        Intent intent = new Intent(context, TripExpMan.class);
+        intent.putExtra(EXTRA_ORIGIN, ORIGIN_TRIP);
+        if (clientId != null) {
+            intent.putExtra(EXTRA_CLIENT, clientId.toString());
+        }
+
+        return intent;
+
+    }
+
+    public static Intent newExpenseIntent(Context context, UUID clientId) {
+        Intent intent = new Intent(context, TripExpMan.class);
+        intent.putExtra(EXTRA_ORIGIN, ORIGIN_EXPENSE);
+        if (clientId != null) {
+            intent.putExtra(EXTRA_CLIENT, clientId.toString());
+        }
+
+        return intent;
+
+    }
 
     @Override
     public void reportSection(int position) {

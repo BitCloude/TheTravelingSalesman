@@ -18,6 +18,7 @@
         android:label="@string/app_name"
         android:screenOrientation="portrait"
         android:supportsRtl="true"
+        tools:replace="android:allowBackup"
         android:theme="@style/AppTheme">
         <activity
             android:name=".MainActivity"
@@ -39,8 +40,7 @@
             android:name=".TravelDetail"
             android:label="@string/title_activity_travel_detail"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".ClientEditActivity" />
+        <activity android:name=".ClientEditActivity" />
         <activity
             android:name=".ReportsActivity"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -59,6 +59,7 @@
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
@@ -100,6 +101,7 @@
             <meta-data
                 android:name="android.app.searchable"
                 android:resource="@xml/task_searchable" />
+
         </activity>
         <activity
             android:name=".ClientPickActivity"
@@ -107,7 +109,25 @@
         <activity
             android:name=".ReportTaskActivity"
             android:launchMode="singleTask"
+            android:parentActivityName=".ReportsActivity" />
+        <activity
+            android:name=".ReportExpenseActivity"
+            android:launchMode="singleTask"
+            android:parentActivityName=".ReportsActivity" />
+        <activity
+            android:name=".LoginActivity"
+            android:label="@string/app_name"
+            android:launchMode="singleTask"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".BaseActivity" />
+        <activity
+            android:name=".SettingsActivity"
+            android:launchMode="singleTask"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ForgotPasswordActivity"
+            android:launchMode="singleTask" />
+        <activity android:name=".LinkedInActivity"></activity>
     </application>
 
 </manifest>

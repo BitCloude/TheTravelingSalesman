@@ -35,6 +35,11 @@ public class DateTimeHelper {
         return df.format(date);
     }
 
+    public static String formatDate(Date date) {
+
+        return getDateFormat().format(date);
+    }
+
     private static DateFormat getMonthDateFormat() {
         return new SimpleDateFormat("MMM dd", Locale.getDefault());
     }
@@ -87,5 +92,9 @@ public class DateTimeHelper {
     public static String getFullTime(Date date) {
         return DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.FULL,
                 Locale.getDefault()).format(date);
+    }
+
+    public static String formatDateForExport(Date time) {
+        return new SimpleDateFormat("yyyy/MMM/dd", Locale.getDefault()).format(time);
     }
 }

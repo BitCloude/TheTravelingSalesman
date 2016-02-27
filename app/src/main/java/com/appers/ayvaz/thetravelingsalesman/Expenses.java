@@ -30,6 +30,8 @@ Spinner spinnerClient, spinnerAmount, spinnerFrom;
     String cost = "$25,000";
     //Trip From Delhi to Hyderhabad
     ImageButton expensesBut;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

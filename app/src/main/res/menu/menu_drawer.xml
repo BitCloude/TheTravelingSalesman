@@ -19,24 +19,20 @@
             android:id="@+id/nav_trip"
             android:title="@string/trip"/>
 
-        <item android:title="@string/reports">
-            <menu>
-                <group android:checkableBehavior="single">
-                    <item
-                        android:id="@+id/nav_report_task"
-                        android:title="@string/title_activity_report_task"/>
-                    <item
-                        android:id="@+id/nav_report_expense"
-                        android:title="@string/expense_report"/>
+        <item android:title="@string/reports"
+            android:id="@+id/nav_reports"
+            >
 
-                </group>
-            </menu>
         </item>
 
         <item
             android:title="">
             <menu>
                 <group android:checkableBehavior="none">
+                    <item
+                        android:id="@+id/nav_settings"
+                        android:title="@string/action_settings"
+                        />
                     <item
                         android:title="@string/help"/>
                     <item

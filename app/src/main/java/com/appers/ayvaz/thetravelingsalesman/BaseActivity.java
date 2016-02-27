@@ -1,155 +1,78 @@
 package com.appers.ayvaz.thetravelingsalesman;
 
 import android.content.Intent;
-import android.content.res.Configuration;
-import android.os.Bundle;
-import android.support.design.widget.NavigationView;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarDrawerToggle;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.LinearLayout;
+import android.os.Bundle;
+import android.text.TextUtils;
+import android.util.Log;
 
-public abstract class BaseActivity extends AppCompatActivity {
+import com.appers.ayvaz.thetravelingsalesman.utils.LoginUtils;
 
-    DrawerLayout mDrawerLayout;
-    CharSequence mTitle, mDrawerTitle;
-    NavigationView mNavigationView;
-    ActionBarDrawerToggle mDrawerToggle;
-    private LinearLayout view_stub;
+import java.util.Calendar;
+
+public class BaseActivity extends AppCompatActivity {
+
+    private static final String DEBUG_TAG = "Base Activity";
+    SharedPreferences mSharedPreferences;
+    Calendar mCalendar;
+    boolean mLocked;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_base);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        ActionBar actionBar = getSupportActionBar();
-        view_stub = (LinearLayout) findViewById(R.id.view_stub);
 
-        // drawer stuff
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-//        mTitle = mDrawerTitle = getTitle();
-        //navi view implementation
-        mNavigationView = (NavigationView) findViewById(R.id.nav_menu);
+        mSharedPreferences = getSharedPreferences(LoginUtils.PREF_NAME, 0);
 
-        mNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(MenuItem item) {
-                item.setChecked(true);
-                selectItem(item.getItemId());
-                mDrawerLayout.closeDrawers();
-                return true;
-            }
-        });
-
-        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
-                toolbar, R.string.drawer_open, R.string.drawer_close) {
-            @Override
-            public void onDrawerClosed(View drawerView) {
-                super.onDrawerClosed(drawerView);
-//                setTitle(mTitle);
-                invalidateOptionsMenu();
-            }
-
-            @Override
-            public void onDrawerOpened(View drawerView) {
-                super.onDrawerOpened(drawerView);
-//                setTitle(mDrawerTitle);
-                invalidateOptionsMenu();
-            }
-        };
-
-        mDrawerLayout.setDrawerListener(mDrawerToggle);
+    }
 
 
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setHomeButtonEnabled(true);
+
+    private boolean isLocked() {
+        if (TextUtils.isEmpty(mSharedPreferences.getString(LoginUtils.KEY_PASSWORD, ""))) {
+            return false;
         }
 
-
-
-    }
-
-
-    private void selectItem(int itemId) {
-
-        if (itemId == R.id.nav_report_task) {
-            startActivity(new Intent(this, ReportTaskActivity.class));
-        } else if (itemId == R.id.nav_trip) {
-            startActivity(new Intent(this, TripExpMan.class));
-        } else if (itemId == R.id.nav_tasks) {
-            startActivity(new Intent(this, TaskListActivity.class));
-        } else if (itemId == R.id.nav_reminders) {
-            startActivity(new Intent(this, NotificationActivity.class));
-        } else if (itemId == R.id.nav_clients) {
-            startActivity(new Intent(this, LandingActivity.class));
-        }
-
-    }
-
-    @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        // Sync the toggle state after onRestoreInstanceState has occurred.
-        mDrawerToggle.syncState();
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        mDrawerToggle.onConfigurationChanged(newConfig);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Pass the event to ActionBarDrawerToggle, if it returns
-        // true, then it has handled the app icon touch event
-        if (mDrawerToggle.onOptionsItemSelected(item)) {
+        if (mSharedPreferences.getBoolean(LoginUtils.KEY_LOCKED, false)) {
             return true;
         }
-        // Handle your other action bar items...
 
-        return super.onOptionsItemSelected(item);
+        long timeLeft = mSharedPreferences.getLong(LoginUtils.TIME_LEFT, 0);
+        long timeNow = Calendar.getInstance().getTimeInMillis();
+
+        Log.i(DEBUG_TAG, "Delta time:" + (timeNow - timeLeft));
+        return timeNow - timeLeft > LoginUtils.MAX_TIME_LEFT;
     }
 
-    /* Override all setContentView methods to put the content view to the FrameLayout view_stub
-      * so that, we can make other activity implementations looks like normal activity subclasses.
-      */
+    private void setLeaveTime() {
+        mCalendar = Calendar.getInstance();
+        Log.i(DEBUG_TAG, "Left at: " + mCalendar.getTimeInMillis());
+        mSharedPreferences.edit().putLong(LoginUtils.TIME_LEFT, mCalendar.getTimeInMillis()).apply();
+    }
 
-    /*
     @Override
-    public void setContentView(int layoutResID) {
-        if (view_stub != null) {
-            LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
-            ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.MATCH_PARENT);
-            View stubView = inflater.inflate(layoutResID, view_stub, false);
-            view_stub.addView(stubView, lp);
+    protected void onStop() {
+        super.onStop();
+        setLeaveTime();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (isLocked()) {
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivity(intent);
+            mLocked = true;
+        } else {
+            mLocked = false;
         }
     }
 
     @Override
-    public void setContentView(View view) {
-        if (view_stub != null) {
-            ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.MATCH_PARENT);
-            view_stub.addView(view, lp);
-        }
+    protected void onResume() {
+        super.onResume();
+        mLocked = false;
     }
 
-    @Override
-    public void setContentView(View view, ViewGroup.LayoutParams params) {
-        if (view_stub != null) {
-            view_stub.addView(view, params);
-        }
-    }
-
-    */
 
 }

@@ -32,7 +32,7 @@ public class MessageBox {
     private List<MyMessage> messageList;
 
     private MessageBox(Context context) {
-        mContext = context;
+        mContext = context.getApplicationContext();
 
     }
 

@@ -11,7 +11,6 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -19,53 +18,47 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.TextView;
 
+import com.appers.ayvaz.thetravelingsalesman.models.Client;
 import com.appers.ayvaz.thetravelingsalesman.models.ClientManager;
 import com.appers.ayvaz.thetravelingsalesman.models.Task;
 import com.appers.ayvaz.thetravelingsalesman.models.TaskManager;
-import com.appers.ayvaz.thetravelingsalesman.models.Client;
 import com.appers.ayvaz.thetravelingsalesman.utils.EventUtility;
 
 import java.util.Calendar;
-import java.util.TimeZone;
 import java.util.UUID;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class ClientActivity extends AppCompatActivity
-        {
+public class ClientActivity extends BaseActivity {
 
 
-            private static final String DEBUG_TAG = "ClientActivity: ";
-
-            interface ClientChanged {
-        void updateUI(Client client);
-    }
-
-    private FragmentPagerAdapter mFragmentPagerAdapter;
-
-    private String[] tabTitles;
+    private static final String DEBUG_TAG = "ClientActivity: ";
+    private static final String EXTRA_CLIENT_ID = "client_id";
     private final int[] tabIcons = {};
+    @Bind(R.id.editNewTask)
+    EditText mEditNewTask;
+    @Bind(R.id.newTaskOK)
+    ImageButton mNewTaskOk;
+    @Bind(R.id.tabLayout)
+    TabLayout mTabLayout;
+    @Bind(R.id.viewpager)
+    ViewPager mViewPager;
+    private FragmentPagerAdapter mFragmentPagerAdapter;
+    private String[] tabTitles;
     private long mEventId;
-
     private UUID mClientId;
     private Client mClient;
-    private static final String EXTRA_CLIENT_ID = "client_id";
-
+    private boolean mNewTaskClicked = false;
     private ClientChanged[] fragments;
-    @Bind (R.id.editNewTask) EditText mEditNewTask;
-    @Bind (R.id.newTaskOK)  ImageButton mNewTaskOk;
-    @Bind (R.id.tabLayout) TabLayout mTabLayout;
-    @Bind(R.id.viewpager) ViewPager mViewPager;
-
 
     public static Intent newIntent(Context packageContext, UUID clientId) {
         Intent i = new Intent(packageContext, ClientActivity.class);
         i.putExtra(EXTRA_CLIENT_ID, clientId);
         return i;
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -91,21 +84,25 @@ public class ClientActivity extends AppCompatActivity
             @Override
             public Fragment getItem(int position) {
                 switch (position) {
-                    case 0: ClientTaskFragment taskFragment = ClientTaskFragment.newInstance(mClientId);
+                    case 0:
+                        ClientTaskFragment taskFragment = ClientTaskFragment.newInstance(mClientId);
                         fragments[0] = taskFragment;
                         return taskFragment;
 
-                    case 1: ClientCallLogFragment clientCallLogFragment = ClientCallLogFragment.newInstance(
-                            mClient.getFirstPhone(), mClient.getSecondPhone());
+                    case 1:
+                        ClientCallLogFragment clientCallLogFragment = ClientCallLogFragment.newInstance(
+                                mClient.getFirstPhone(), mClient.getSecondPhone());
                         fragments[1] = clientCallLogFragment;
                         return clientCallLogFragment;
 
-                    case 2: ClientMessageFragment fragment = ClientMessageFragment
-                            .newInstance(mClient.getFirstPhone(), mClient.getSecondPhone());
+                    case 2:
+                        ClientMessageFragment fragment = ClientMessageFragment
+                                .newInstance(mClient.getFirstPhone(), mClient.getSecondPhone());
                         fragments[2] = fragment;
                         return fragment;
 
-                    default: return new NotificationFragment();
+                    default:
+                        return new NotificationFragment();
                 }
 
             }
@@ -158,7 +155,36 @@ public class ClientActivity extends AppCompatActivity
 
     }
 
+    private void insertEvent() {
+        long calID = 3;
+        long startMillis = 0;
+        long endMillis = 0;
+        Calendar beginTime = Calendar.getInstance();
+        Calendar endTime = Calendar.getInstance();
+        endTime.add(Calendar.MINUTE, 30);
+        startMillis = beginTime.getTimeInMillis();
+        endMillis = endTime.getTimeInMillis();
+
+
+        ContentResolver cr = getContentResolver();
+        ContentValues values = new ContentValues();
+        values.put(CalendarContract.Events.DTSTART, startMillis);
+        values.put(CalendarContract.Events.DTEND, endMillis);
+        values.put(CalendarContract.Events.TITLE, mEditNewTask.getText().toString());
+        values.put(CalendarContract.Events.CALENDAR_ID, calID);
+        // todo: timezone
+
+//        values.put(CalendarContract.Events.EVENT_TIMEZONE, );
+        Uri uri = cr.insert(CalendarContract.Events.CONTENT_URI, values);
+
+// get the event ID that is the last element in the Uri
+        mEventId = Long.parseLong(uri.getLastPathSegment());
+    }
     private void createNewTask() {
+
+        // todo: change the way of adding new tasks 2.13.2016
+
+        mNewTaskClicked = true;
 
 
         mEventId = EventUtility.getNewEventId(this.getContentResolver());
@@ -173,20 +199,18 @@ public class ClientActivity extends AppCompatActivity
 
     }
 
-
     @Override
     protected void onResume() {
         super.onResume();
 
 
-
         long prev_id = EventUtility.getLastEventId(getContentResolver());
 
-        Log.i(DEBUG_TAG, "prev_id: "+prev_id);
+        Log.i(DEBUG_TAG, "prev_id: " + prev_id);
 
 //         if prev_id == mEventId, means there is new events created
 //         and we need to insert new events into local sqlite database.
-        if (prev_id == mEventId) {
+        if (mEventId > 0 && prev_id >= mEventId) {
             // do database insert
             Log.i("Task", "inserting");
             Task task = new Task(mEventId);
@@ -213,8 +237,8 @@ public class ClientActivity extends AppCompatActivity
     }
 
     /**
-    *  if the user edit the client info, reload call log and texts
-    * */
+     * if the user edit the client info, reload call log and texts
+     */
     public void updateFragments() {
         for (int i = 0; i < tabTitles.length; i++) {
             if (fragments[i] != null) {
@@ -226,28 +250,36 @@ public class ClientActivity extends AppCompatActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Intent intent;
+        switch (item.getItemId()) {
 
-        if (item.getItemId() == R.id.action_info) {
-            Intent intent = ClientInfoActivity.newIntent(this, mClientId);
-            startActivity(intent);
-
+        case R.id.action_info:
+                intent = ClientInfoActivity.newIntent(this, mClientId);
+                startActivity(intent);
             return true;
+
+        case R.id.action_trip:
+                intent = TripExpMan.newTripIntent(this, mClientId);
+                startActivity(intent);
+                return true;
+        case R.id.action_expense:
+                intent = TripExpMan.newExpenseIntent(this, mClientId);
+                startActivity(intent);
+                return true;
         }
+
         return super.onOptionsItemSelected(item);
     }
 
     /**
      * if user save the change
      *
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_EDIT && resultCode == RESULT_OK) {
-            updateUI();
-            updateCallnText();
-        }
-    }
-
+     * @Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+     * if (requestCode == REQUEST_EDIT && resultCode == RESULT_OK) {
+     * updateUI();
+     * updateCallnText();
+     * }
+     * }
      */
 
 
@@ -255,15 +287,10 @@ public class ClientActivity extends AppCompatActivity
         return mClient;
     }
 
-
-
-
     @Override
     protected void onPause() {
         super.onPause();
     }
-
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -272,7 +299,9 @@ public class ClientActivity extends AppCompatActivity
     }
 
 
-
+    interface ClientChanged {
+        void updateUI(Client client);
+    }
 
 
 }

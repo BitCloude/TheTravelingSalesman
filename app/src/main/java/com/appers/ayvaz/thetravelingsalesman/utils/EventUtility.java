@@ -15,10 +15,11 @@ public class EventUtility {
         if (cursor == null) {
             return -1;
         }
+
         cursor.moveToFirst();
         long max_val = cursor.getLong(cursor.getColumnIndex("max_id"));
         cursor.close();
-        return max_val+1;
+        return max_val + 1;
     }
 
     public static long getLastEventId(ContentResolver cr) {

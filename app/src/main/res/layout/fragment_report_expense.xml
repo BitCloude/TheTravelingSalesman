@@ -1,66 +1,136 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_marginTop="8dp"
-    android:layout_marginBottom="8dp"
 
-    tools:context=".ReportTaskFragment">
 
-    <LinearLayout
+    <RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+    android:layout_marginTop="6dp"
+    android:layout_marginBottom="6dp"
         android:orientation="vertical">
 
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/cardview_margin"
-            android:layout_marginStart="6dp"
             android:layout_marginEnd="6dp"
-            >
+            android:layout_marginStart="6dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:id="@+id/view2">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical"
-                >
-                <include layout="@layout/view_report_client"/>
-                <include layout="@layout/view_report_date_range"/>
+                android:orientation="vertical">
+
+                <include layout="@layout/view_report_client" />
+
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="6dp">
+
+                    <TextView
+                        android:id="@+id/textView10"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentTop="true"
+                        android:text="@string/trip"
+                        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+                    <ImageButton
+                        android:id="@+id/selectClient"
+                        style="?android:attr/buttonStyleSmall"
+                        android:layout_width="24dp"
+                        android:layout_height="60dp"
+                        android:layout_alignBottom="@+id/tripTitle"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentTop="true"
+                        android:background="@android:color/transparent"
+                        android:src="@drawable/ic_keyboard_arrow_right_grey_900_18dp" />
+
+                    <TextView
+                        android:id="@+id/tripTitle"
+                        android:layout_width="220dp"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_toStartOf="@+id/selectClient"
+                        android:lines="1"
+                        android:textColor="@color/TextPrimary"
+                        android:textSize="18sp" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="6dp">
+
+                    <TextView
+                        android:id="@+id/textView9"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentTop="true"
+                        android:text="@string/amount"
+                        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+                    <TextView
+                        android:id="@+id/amount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentTop="true"
+                        android:gravity="right"
+                        android:text="12345"
+                        android:textAppearance="?android:attr/textAppearanceMedium" />
+                </RelativeLayout>
+
+                <include layout="@layout/view_report_date_range" />
 
             </LinearLayout>
 
         </android.support.v7.widget.CardView>
 
+        <FrameLayout
+            android:id="@+id/progressBarContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone">
+
+            <ProgressBar
+                android:id="@+id/progressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:indeterminate="true" />
+
+        </FrameLayout>
+
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
 
-            <include layout="@layout/view_report_task_table_header"/>
+            android:layout_below="@+id/view2">
 
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:id="@+id/progressBarContainer">
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
-                <ProgressBar
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/progressBar"
-                    android:layout_gravity="center"
-                    android:indeterminate="true" />
-            </FrameLayout>
+            <include layout="@layout/view_report_expense_table_header" />
 
             <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerView"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/report_header_height"
-                android:id="@+id/recyclerView" />
+                android:layout_height="match_parent" />
 
+</LinearLayout>
         </android.support.v7.widget.CardView>
 
 
-    </LinearLayout>
+</RelativeLayout>
 
-
-</FrameLayout>

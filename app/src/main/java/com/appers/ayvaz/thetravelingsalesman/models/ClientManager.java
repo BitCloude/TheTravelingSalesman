@@ -40,7 +40,7 @@ public class ClientManager {
     public static final String LIKE = " LIKE ?";
 
     private ClientManager(Context context) {
-        mContext = context;
+        mContext = context.getApplicationContext();
         mDatabase = new DatabaseHelper(mContext)
                 .getWritableDatabase();
 

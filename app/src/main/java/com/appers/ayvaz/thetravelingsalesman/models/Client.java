@@ -54,6 +54,10 @@ public class Client {
         return linkedIn;
     }
 
+    public String getLinkedInUrl() {
+        return LINKEDIN_DOMAIN + linkedIn;
+    }
+
     public void setLinkedIn(String linkedIn) {
         this.linkedIn = linkedIn;
     }
@@ -130,9 +134,6 @@ public class Client {
         this.firstPhone = CommUtils.normalizeNumber(mobile);
     }
 
-    public String getLinkedInFull() {
-        return LINKEDIN_DOMAIN + getLinkedIn();
-    }
 
     public String getNote() {
         return note;
