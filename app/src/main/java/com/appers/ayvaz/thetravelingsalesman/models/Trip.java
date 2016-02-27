@@ -10,11 +10,10 @@ import java.util.Date;
 import java.util.UUID;
 
 public class Trip implements Parcelable {
-    private int id;
+    private int id = -1;
     private UUID client_id;
 
-    private String type, trip_from, trip_to, boarding, description;
-    private byte[] image;
+    private String type, trip_from, trip_to, boarding, description, imageFile;
     private Calendar date_from, date_to;
 
     public Trip(){}
@@ -24,7 +23,7 @@ public class Trip implements Parcelable {
 
     public String toString() {
         if (!isEmpty(trip_from) || !isEmpty(trip_to)) {
-            return trip_from +
+            return "From " + trip_from +  " To " +
                     (isEmpty(trip_from) ? "" : " ")
                     + trip_to;
         }
@@ -41,6 +40,8 @@ public class Trip implements Parcelable {
     }
 
     public int getId(){ return id;}
+
+    public void setId(int id){this.id = id;}
 
     public void setClient_id(UUID client_id){this.client_id = client_id;}
 
@@ -74,9 +75,16 @@ public class Trip implements Parcelable {
 
     public String getDescription(){return description;}
 
-    public void setImage(byte[] image) {this.image = image;}
+    public void setImageFile(String imageFile){this.imageFile = imageFile;}
 
-    public byte[] getImage() {return image;}
+    public String getImageFile(){return imageFile;}
+
+    public String getPhotoFileName(boolean temp) {
+
+            return "IMG_TRIP_" + Integer.toString(getId()) +
+                    (temp ? "_tmp" : "") + ".jpg";
+
+    }
 
 
     @Override
@@ -95,7 +103,7 @@ public class Trip implements Parcelable {
         dest.writeSerializable(date_to);
         dest.writeString(boarding);
         dest.writeString(description);
-        dest.writeByteArray(image);
+        dest.writeString(imageFile);
 
     }
 
@@ -119,7 +127,7 @@ public class Trip implements Parcelable {
         this.date_to = (Calendar) in.readSerializable();
         this.boarding = in.readString();
         this.description = in.readString();
-        this.image = in.createByteArray();
+        this.imageFile = in.readString();
 
     }
 

@@ -63,7 +63,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 DbSchema.ExpenseTable.Cols.EXPENSE_DATE_FROM,
                 DbSchema.ExpenseTable.Cols.EXPENSE_DATE_TO,
                 DbSchema.ExpenseTable.Cols.EXPENSE_DESCRIPTION,
-                DbSchema.ExpenseTable.Cols.EXPENSE_IMAGE + TYPE_BLOB,
+                DbSchema.ExpenseTable.Cols.EXPENSE_IMAGE_FILE,
                 DbSchema.ExpenseTable.Cols.EXPENSE_TRIP_ID,
                 DbSchema.TripTable.NAME,
                 DbSchema.TripTable.Cols.TRIP_ID,
@@ -86,7 +86,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 DbSchema.TripTable.Cols.TRIP_DATE_TO,
                 DbSchema.TripTable.Cols.TRIP_BOARDING,
                 DbSchema.TripTable.Cols.TRIP_DESCRIPTION,
-                DbSchema.TripTable.Cols.TRIP_IMAGE + TYPE_BLOB,
+                DbSchema.TripTable.Cols.TRIP_IMAGE_FILE,
                 DbSchema.TripTable.Cols.TRIP_CLIENT_ID,
                 DbSchema.ClientTable.NAME,
                 DbSchema.ClientTable.Cols.UUID
