@@ -42,6 +42,7 @@ public class TaskManager {
     private static final int PROJECTION_END_INDEX = 2;
     private static TaskManager mTaskManager;
 
+
     private static String[] projections = new String[]{
             CalendarContract.Events._ID,
             CalendarContract.Events.TITLE,
@@ -123,14 +124,14 @@ public class TaskManager {
         Calendar now = Calendar.getInstance();
         now.setTime(new Date());
         Calendar end = Calendar.getInstance();
-        end.set(END_YEAR, 11, 31, 23, 59);
+        end.setTimeInMillis(Long.MAX_VALUE);
 
         return query(clientID, now, end);
     }
 
     public List<Task> query(UUID clientID, Calendar start, Calendar end) {
         List<Task> taskList = new ArrayList<>();
-        List<Long> deleteList = new ArrayList<>();
+
         String selection = null;
         String[] selectionArgs = null;
 
@@ -156,18 +157,15 @@ public class TaskManager {
             return taskList;
 
         }
-        // second, for each event that belongs to this client, find all instances that haven't occurred
+
+        // second, for each event that belongs to this client, find all instances in the range
         while (cursor.moveToNext()) {
 
             long eventId = cursor.getLong(cursor.getColumnIndex(Cols.EVENT_ID));
 
             List<Task> result = queryInstance(start, end, eventId);
 
-            if (result.size() == 0) {
-                Log.i(DEBUG_TAG, "Event to be deleted: " + eventId);
-                Log.i(DEBUG_TAG, "client: " + clientID);
-                deleteList.add(eventId);
-            }
+
 
             taskList.addAll(result);
 
@@ -176,12 +174,37 @@ public class TaskManager {
         cursor.close();
 
 
+
+        return taskList;
+    }
+
+    public void clearTask() {
+        List<Long> deleteList = new ArrayList<>();
+
+        List<Long> eventIds = new ArrayList<>();
+
+        try(Cursor cursor = query(null, null)) {
+            while (cursor.moveToNext()) {
+                eventIds.add(cursor.getLong(cursor.getColumnIndex(Cols.EVENT_ID)));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        for (long eventId : eventIds) {
+            Cursor cursor = queryEvent(eventId);
+            if (cursor != null && cursor.getCount() == 0) {
+                Log.i(DEBUG_TAG, "Event to be deleted: " + eventId);
+                deleteList.add(eventId);
+            }
+        }
+
+
         for (long delEvent : deleteList) {
             if (delete(delEvent)) {
                 Log.i(DEBUG_TAG, "Event " + delEvent + " deleted.");
             }
         }
-        return taskList;
     }
 
     public List<Task> search(CharSequence userInput) {
@@ -256,6 +279,14 @@ public class TaskManager {
         }
 
         return list;
+    }
+
+    private Cursor query(String selection, String[] args) {
+        return mDatabase.query(DbSchema.TaskTable.NAME,
+                null,
+                selection,
+                args,
+                null, null, null, null);
     }
 
     private Client getClient(Task t) {

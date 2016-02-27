@@ -13,17 +13,18 @@
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/cardview_margin"
             android:layout_marginEnd="6dp"
-            android:layout_marginStart="6dp"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:id="@+id/view2">
+            android:id="@+id/view2"
+            android:layout_marginBottom="@dimen/cardview_margin"
+            android:layout_marginStart="6dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:padding="4dp">
 
                 <include layout="@layout/view_report_client" />
 
@@ -42,27 +43,17 @@
                         android:text="@string/trip"
                         android:textAppearance="?android:attr/textAppearanceSmall" />
 
-                    <ImageButton
-                        android:id="@+id/selectClient"
-                        style="?android:attr/buttonStyleSmall"
-                        android:layout_width="24dp"
-                        android:layout_height="60dp"
-                        android:layout_alignBottom="@+id/tripTitle"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentTop="true"
-                        android:background="@android:color/transparent"
-                        android:src="@drawable/ic_keyboard_arrow_right_grey_900_18dp" />
-
-                    <TextView
-                        android:id="@+id/tripTitle"
-                        android:layout_width="220dp"
+                    <Spinner
+                        android:layout_width="150dp"
                         android:layout_height="wrap_content"
+                        android:id="@+id/tripSpinner"
                         android:layout_centerVertical="true"
-                        android:layout_toStartOf="@+id/selectClient"
-                        android:lines="1"
-                        android:textColor="@color/TextPrimary"
-                        android:textSize="18sp" />
+                        android:layout_alignParentEnd="true"
+                        android:spinnerMode="dialog" />
+
                 </RelativeLayout>
+
+                <include layout="@layout/view_report_date_range" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -85,11 +76,12 @@
                         android:layout_alignParentEnd="true"
                         android:layout_alignParentTop="true"
                         android:gravity="right"
-                        android:text="12345"
-                        android:textAppearance="?android:attr/textAppearanceMedium" />
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:lines="1"
+                        android:layout_toEndOf="@+id/textView9"
+                        android:layout_marginLeft="8dp"
+                        android:textColor="@color/TextPrimary" />
                 </RelativeLayout>
-
-                <include layout="@layout/view_report_date_range" />
 
             </LinearLayout>
 

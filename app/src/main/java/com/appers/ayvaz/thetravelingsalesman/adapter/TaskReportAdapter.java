@@ -21,7 +21,6 @@ import com.appers.ayvaz.thetravelingsalesman.utils.DateTimeHelper;
 import com.appers.ayvaz.thetravelingsalesman.utils.MyCsvWriter;
 import com.appers.ayvaz.thetravelingsalesman.utils.ReportExportUtils;
 
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.joda.time.LocalDate;
 
 import java.io.File;
@@ -54,6 +53,13 @@ public class TaskReportAdapter extends RecyclerView.Adapter<TaskReportAdapter.Vi
         mContext = context;
         sort(mSortMode, false);
 
+    }
+
+    public void clearOrders() {
+
+        for (int i = 0; i < mOrders.length; i++) {
+            mOrders[i] = 0;
+        }
     }
 
     public int[] getOrders() {
@@ -156,6 +162,8 @@ public class TaskReportAdapter extends RecyclerView.Adapter<TaskReportAdapter.Vi
 
     }
 
+
+
     private class GenerateTaskReport extends AsyncTask<File, Integer, Void> {
 
         private ProgressDialog progressDialog;
@@ -244,7 +252,7 @@ public class TaskReportAdapter extends RecyclerView.Adapter<TaskReportAdapter.Vi
 
     // view holder for client view
     public class ViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.taskTitle)
+        @Bind(R.id.titleHeader)
         TextView taskTitle;
         @Bind(R.id.taskDate)
         TextView taskDate;

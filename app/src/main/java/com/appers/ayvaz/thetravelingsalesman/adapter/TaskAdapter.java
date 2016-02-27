@@ -21,6 +21,7 @@ import com.appers.ayvaz.thetravelingsalesman.R;
 import com.appers.ayvaz.thetravelingsalesman.TaskListActivity;
 import com.appers.ayvaz.thetravelingsalesman.models.Client;
 import com.appers.ayvaz.thetravelingsalesman.models.Task;
+import com.appers.ayvaz.thetravelingsalesman.models.TaskList;
 import com.appers.ayvaz.thetravelingsalesman.models.TaskManager;
 import com.appers.ayvaz.thetravelingsalesman.utils.DateTimeHelper;
 
@@ -273,6 +274,11 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
                 menu.setHeaderTitle(mTask.getTitle());
 
 
+            } else {
+                ((Activity) v.getContext()).getMenuInflater()
+                        .inflate(R.menu.menu_client_task_context, menu);
+
+                menu.setHeaderTitle(mTask.getTitle());
             }
 
             mSelected = getAdapterPosition();

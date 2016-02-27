@@ -1,20 +1,27 @@
 package com.appers.ayvaz.thetravelingsalesman;
 
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import java.util.*;
 
 import com.appers.ayvaz.thetravelingsalesman.adapter.TaskAdapter;
 import com.appers.ayvaz.thetravelingsalesman.models.Client;
+import com.appers.ayvaz.thetravelingsalesman.models.ClientManager;
 import com.appers.ayvaz.thetravelingsalesman.models.Task;
 import com.appers.ayvaz.thetravelingsalesman.models.TaskManager;
 import com.appers.ayvaz.thetravelingsalesman.view.DividerItemDecoration;
@@ -34,6 +41,8 @@ import butterknife.ButterKnife;
 public class ClientTaskFragment extends Fragment implements ClientActivity.ClientChanged,
         TaskListActivity.OnDateChanged {
 
+    private static final int REQUEST_CLIENT = 0;
+    private static final String DEBUG_TAG = "ClientTaskFragment";
     private Client mClient;
     private LocalDate mDate;
     private UUID mClientId;
@@ -42,9 +51,10 @@ public class ClientTaskFragment extends Fragment implements ClientActivity.Clien
     private static final String ARG_DATE_TIME = "date_time";
     public static final int BY_CLIENT = 0;
     public static final int BY_DATE = 1;
-    private static final String TAG = "ClientTaskFragment";
+
     private int mMode;
     private TaskAdapter mAdapter;
+    private int mSelected;
 
     public ClientTaskFragment() {
         // Required empty public constructor
@@ -99,7 +109,9 @@ public class ClientTaskFragment extends Fragment implements ClientActivity.Clien
         mRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(),
                 DividerItemDecoration.VERTICAL_LIST));
         mRecyclerView.setHasFixedSize(true);
+        registerForContextMenu(mRecyclerView);
         updateUI();
+
 
         return view;
     }
@@ -138,7 +150,7 @@ public class ClientTaskFragment extends Fragment implements ClientActivity.Clien
     @Override
     public void updateUI(Client client) {
         if (mMode == BY_DATE) {
-            Log.i(TAG, "mode == by_date");
+            Log.i(DEBUG_TAG, "mode == by_date");
             return;
         }
         mClient = client;
@@ -147,16 +159,69 @@ public class ClientTaskFragment extends Fragment implements ClientActivity.Clien
 
     public void updateUI(LocalDate date) {
         if (mMode == BY_CLIENT) {
-            Log.i(TAG, "mode == by_client");
+            Log.i(DEBUG_TAG, "mode == by_client");
             return;
         }
         mDate = date;
         updateUI();
     }
 
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        mSelected = mAdapter.getSelected();
+
+        switch (item.getItemId()) {
+            case R.id.action_delete:
+                alertDeletion(mSelected);
+                return true;
+
+            case R.id.action_change_client:
+                startActivityForResult(new Intent(getActivity(), ClientPickActivity.class),
+                        REQUEST_CLIENT);
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
 
 
+    }
 
+    private void alertDeletion(final int selected) {
+        AlertDialog dialog = new AlertDialog.Builder(getActivity())
+                .setMessage(getString(R.string.r_u_sure, "Task"))
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        boolean result = mAdapter.delete(selected);
+
+                        Toast.makeText(getActivity(),
+                                getString(R.string.task_delete_result,
+                                        result ? "" : "not"), Toast.LENGTH_SHORT)
+                                .show();
+
+                    }
+                })
+                .setNegativeButton(android.R.string.cancel, null)
+                .create();
+
+        dialog.show();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode != Activity.RESULT_OK) {
+            return;
+        }
+
+        if (requestCode == REQUEST_CLIENT) {
+            UUID id = UUID.fromString(data.getStringExtra(ClientPickActivity.EXTRA_CLIENT_ID));
+            Client client = ClientManager.get(getActivity()).getClient(id);
+            boolean s = mAdapter.setClient(mSelected, client);
+            Log.i(DEBUG_TAG, "update " + (s ? "success" : "failed"));
+            mAdapter.notifyItemChanged(mSelected);
+        }
+    }
 }
 
 

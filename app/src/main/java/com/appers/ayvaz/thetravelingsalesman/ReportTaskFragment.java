@@ -3,12 +3,15 @@ package com.appers.ayvaz.thetravelingsalesman;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -20,7 +23,6 @@ import android.widget.DatePicker;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.appers.ayvaz.thetravelingsalesman.adapter.TaskReportAdapter;
 import com.appers.ayvaz.thetravelingsalesman.models.Client;
@@ -29,8 +31,11 @@ import com.appers.ayvaz.thetravelingsalesman.models.Task;
 import com.appers.ayvaz.thetravelingsalesman.models.TaskManager;
 import com.appers.ayvaz.thetravelingsalesman.utils.DateTimeHelper;
 import com.appers.ayvaz.thetravelingsalesman.utils.EventUtility;
+import com.appers.ayvaz.thetravelingsalesman.utils.ReportExportUtils;
 import com.appers.ayvaz.thetravelingsalesman.view.DividerItemDecoration;
 
+import java.io.File;
+import java.io.FilenameFilter;
 import java.util.Calendar;
 import java.util.List;
 import java.util.UUID;
@@ -65,10 +70,10 @@ public class ReportTaskFragment extends Fragment {
     Button mEndButton;
     @Bind(R.id.applyButton)
     Button mApplyButton;
-    @Bind(R.id.selectClient)
-    ImageButton mSelectClient;
     @Bind(R.id.client_name)
-    TextView mClientName;
+    Button mClientName;
+    @Bind(R.id.clearClient)
+    ImageButton mClearClient;
     private int UNSORTED_ICON = R.drawable.ic_dark_sortable;
     private int ASC_ICON = R.drawable.ic_dark_sorted_asc;
     private int DESC_ICON = R.drawable.ic_dark_sorted_desc;
@@ -77,6 +82,7 @@ public class ReportTaskFragment extends Fragment {
     private Client mClient;
     private long lastEventId;
     private ImageView[] mHeaderIcons;
+
 
     private TaskReportAdapter mAdapter;
 
@@ -145,6 +151,14 @@ public class ReportTaskFragment extends Fragment {
             }
         });
 
+        mClearClient.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mClient = null;
+                updateUI();
+            }
+        });
+
 
         mStartButton.setOnClickListener(new PickDateButtonListener());
         mEndButton.setOnClickListener(new PickDateButtonListener());
@@ -160,20 +174,13 @@ public class ReportTaskFragment extends Fragment {
             }
         });
 
-        mSelectClient.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivityForResult(new Intent(getContext(), ClientPickActivity.class),
-                        REQUEST_CLIENT);
-            }
-        });
+
 
         mClientName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mClient != null) {
-                    startActivity(ClientInfoActivity.newIntent(getContext(), mClient.getId()));
-                }
+                startActivityForResult(new Intent(getContext(), ClientPickActivity.class),
+                        REQUEST_CLIENT);
             }
         });
 
@@ -200,8 +207,10 @@ public class ReportTaskFragment extends Fragment {
 
         if (mClient != null) {
             mClientName.setText(mClient.toString());
+            mClearClient.setVisibility(View.VISIBLE);
         } else {
             mClientName.setText(R.string.client_not_selected);
+            mClearClient.setVisibility(View.INVISIBLE);
         }
 
         showStartTime();
@@ -265,10 +274,46 @@ public class ReportTaskFragment extends Fragment {
                 mAdapter.saveReport(mClient);
                 return true;
 
+            case R.id.action_send:
+                selectAndShare();
+                return true;
+
+            case R.id.action_open_folder:
+                ReportExportUtils.openReportFolder(getActivity());
+                return true;
+
             default:
                 return super.onOptionsItemSelected(item);
 
         }
+    }
+
+
+
+    private void selectAndShare() {
+        final File dir = ReportExportUtils.getReportDir(getActivity());
+        if (dir == null) {
+            return;
+        }
+
+        final String[] fileList = dir.list(new FilenameFilter() {
+            @Override
+            public boolean accept(File dir, String filename) {
+                return filename.startsWith(ReportExportUtils.TASK_PREFIX);
+            }
+        });
+
+        Log.i(DEBUG_TAG, fileList.length + " files found");
+
+        new AlertDialog.Builder(getActivity()).setTitle(R.string.select_report)
+                .setItems(fileList,
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                ReportExportUtils.shareFile(getActivity(), new File(dir, fileList[which]));
+                            }
+                        })
+                .create().show();
     }
 
     private class PickDateButtonListener implements View.OnClickListener {
@@ -354,7 +399,11 @@ public class ReportTaskFragment extends Fragment {
             }
 
             mProgressBarContainer.setVisibility(View.GONE);
+            mAdapter.clearOrders();
+            updateIcon();
 //            mRecyclerView.setVisibility(View.VISIBLE);
         }
     }
+
+
 }

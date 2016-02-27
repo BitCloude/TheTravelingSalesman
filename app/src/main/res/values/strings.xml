@@ -133,7 +133,7 @@
     <string name="report_saved">Report saved.</string>
     <string name="report_nothing_to_save">Nothing to export.</string>
     <string name="client_not_selected">(Not Selected)</string>
-    <string name="title_activity_report_expense">Report Expense</string>
+    <string name="title_activity_report_expense">Expense Report</string>
     <string name="title_activity_login">Sign in</string>
 
     <!-- Strings related to login -->
@@ -183,6 +183,11 @@
     <string name="trip_title">Travel Information</string>
     <string name="message_finish_export">Report has been saved.</string>
     <string name="message_export_failed">Failed to save the report.</string>
+    <string name="chooser_title">Share this report via</string>
+    <string name="select_report">Select a report to share</string>
+    <string name="message_no_file_explorer">File explorer not found.</string>
+    <string name="action_open_folder">Open report folder</string>
+    <string name="select_a">Select a %s</string>
 
     <string-array name="security_questions">
         <item>When you were young, what did you want to be when you grew up?</item>

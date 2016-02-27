@@ -13,7 +13,4 @@
         android:title="Change client"
         app:showAsAction="never" />
 
-    <item
-        android:id="@+id/action_view_client"
-        android:title="View Client"/>
 </menu>

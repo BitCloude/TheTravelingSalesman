@@ -8,12 +8,26 @@ import java.util.Calendar;
 public class ExpenseReport {
 
     private Calendar date;
+
+    public Calendar getToDate() {
+        return toDate;
+    }
+
+    public void setToDate(Calendar toDate) {
+        this.toDate = toDate;
+    }
+
+    private Calendar toDate;
+
     private String info;
     private double hotel;
     private double cabs;
     private double gifts;
     private double other;
     private Client client;
+
+
+    public static final String TOTAL = "Total";
 
     public Client getClient() {
         return client;
@@ -28,7 +42,7 @@ public class ExpenseReport {
         cabs = 0;
         gifts = 0;
         other = 0;
-
+        restaurant = 0;
     }
 
     public double getRestaurant() {
@@ -99,6 +113,12 @@ public class ExpenseReport {
     public void setOther(double other) {
         this.other = other;
     }
+
+    public double getTotal() {
+        return hotel + restaurant + cabs + gifts + other;
+    }
+
+
 }
 
 
