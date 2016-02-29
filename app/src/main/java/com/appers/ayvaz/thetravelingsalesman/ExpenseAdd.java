@@ -193,7 +193,7 @@ Spinner spinnerType;
         buttonCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(saveData(false)) {
+                if(saveData()) {
                     ExpenseContent expenseContent = ExpenseContent.get(getApplicationContext());
                     showPhoto(expenseContent.getPhotoFile(expense_main, false),expenseContent.getPhotoFile(expense_main, true), false);
 
@@ -229,7 +229,7 @@ Spinner spinnerType;
             case R.id.action_settings:
                 return true;
             case 11:
-                if(saveData(savePhoto())) {
+                if(saveData()) {
                     Intent intent = new Intent(getApplicationContext(), TripExpMan.class);
                     intent.putExtra("ORIGIN", "EXPENSE");
                     intent.putExtra("CLIENT", selectedClient.getId().toString());
@@ -319,7 +319,7 @@ Spinner spinnerType;
         return expense;
     }
 
-    public boolean saveData(boolean savePhoto){
+    public boolean saveData(){
 
         boolean edit = true;
         if(expense_main == null){
@@ -330,6 +330,7 @@ Spinner spinnerType;
             expense_main.setClient_id(selectedClient.getId());
         else {
             autoCompleteTextViewClients.setHintTextColor(ContextCompat.getColor(getApplicationContext(), R.color.hint_text_red));
+            expense_main = null;
             return false;
         }
 
@@ -340,6 +341,7 @@ Spinner spinnerType;
         }
         else{
             Toast.makeText(getApplicationContext(),"Error: Starting date is after ending date", Toast.LENGTH_LONG).show();
+            expense_main = null;
             return false;
         }
         expense_main.setAmount(editAmount.getText().toString());
@@ -366,8 +368,11 @@ Spinner spinnerType;
         else if(id_expense_main == -1){
             id_expense_main = expenseContent.addExpense(expense_main);
              expense_main.setId(id_expense_main);}
-        else
-            Toast.makeText(getApplicationContext(),"Error: Save Error", Toast.LENGTH_LONG).show();
+        else {
+            Toast.makeText(getApplicationContext(), "Error: Save Error", Toast.LENGTH_LONG).show();
+            expense_main = null;
+            return false;
+        }
 
 
 

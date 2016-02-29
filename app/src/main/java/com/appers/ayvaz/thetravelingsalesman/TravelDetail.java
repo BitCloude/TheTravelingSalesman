@@ -332,6 +332,7 @@ public class TravelDetail extends AppCompatActivity implements PhotoViewFragment
         trip_main.setClient_id(selection.getId());
         else {
             autoCompleteTextView.setHintTextColor(ContextCompat.getColor(getApplicationContext(), R.color.hint_text_red));
+            trip_main = null;
             return false;
         }
         if(TripContent.compareCalendars(dateFrom,dateTo) != -1) {
@@ -340,6 +341,7 @@ public class TravelDetail extends AppCompatActivity implements PhotoViewFragment
         }
         else{
             Toast.makeText(getApplicationContext(),"Error: Starting date is after ending date", Toast.LENGTH_LONG).show();
+            trip_main = null;
             return false;
         }
         trip_main.setTrip_from(editTravelFrom.getText().toString());
@@ -362,8 +364,11 @@ public class TravelDetail extends AppCompatActivity implements PhotoViewFragment
              id_trip_main = tripContent.addTrip(trip_main);
             Log.i("......", "Added Row id: " + id_trip_main);
             trip_main.setId(id_trip_main);}
-        else
-            Toast.makeText(getApplicationContext(),"Error: Save Error", Toast.LENGTH_LONG).show();
+        else {
+            Toast.makeText(getApplicationContext(), "Error: Save Error", Toast.LENGTH_LONG).show();
+            trip_main = null;
+            return false;
+        }
 
         return true;
 
@@ -488,12 +493,8 @@ public class TravelDetail extends AppCompatActivity implements PhotoViewFragment
                         Bundle bundle = new Bundle();
                         bundle = data.getExtras();
                         Calendar tempDate = (Calendar) bundle.get("com.appers.avyaz.thetravelingsalesman.task.date");
-                        if(TripContent.compareCalendars(dateFrom,tempDate) != -1 ) {
                             dateTo = tempDate;
                             textDateTo.setText(String.format("%tm/%td/%tY", dateTo, dateTo, dateTo));
-                        }
-                        else
-                            Toast.makeText(getActivity(),"Completion date(To) cannot be before starting date(From) ",Toast.LENGTH_LONG).show();
                     } else if (resultCode == Activity.RESULT_CANCELED){
                         Toast.makeText(getActivity(),"Error Date To",Toast.LENGTH_LONG).show();
                     }
