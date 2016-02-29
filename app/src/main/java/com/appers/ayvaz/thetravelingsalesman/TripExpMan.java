@@ -104,7 +104,7 @@ public class TripExpMan extends NavigationDrawerActivity implements SectionsPage
     /**
      * The {@link ViewPager} that will host the section contents.
      */
-    private ViewPager mViewPager;
+    private static ViewPager mViewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -265,10 +265,10 @@ public class TripExpMan extends NavigationDrawerActivity implements SectionsPage
                 linear.removeView(contextChildView);
                 Toast.makeText(getApplicationContext(), "Delete", Toast.LENGTH_SHORT).show();
                 return true;
-            }
+    }
 
-             }
-            return super.onContextItemSelected(item);
+}
+return super.onContextItemSelected(item);
 
 
 
@@ -279,6 +279,14 @@ public class TripExpMan extends NavigationDrawerActivity implements SectionsPage
         super.onNewIntent(intent);
         setIntent(intent);
     }
+    public static void setCurrentTab(int item, Context context){
+        mViewPager.setCurrentItem(item);
+        Toast.makeText(context,"I Tried", Toast.LENGTH_LONG).show();
+
+    }
+    public static int getCurrentItem(){
+       return mViewPager.getCurrentItem();
+    }
 
     @Override
     protected void onResume() {
@@ -286,8 +294,10 @@ public class TripExpMan extends NavigationDrawerActivity implements SectionsPage
 
         String request = null;
         Intent incoming = getIntent();
-        if(incoming != null && incoming.hasExtra("ORIGIN"))
+        if(incoming != null && incoming.hasExtra("ORIGIN")) {
             request = incoming.getStringExtra("ORIGIN");
+            getIntent().removeExtra("ORIGIN");
+        }
         if(incoming != null && incoming.hasExtra("CLIENT"))
             clientDefault = incoming.getStringExtra("CLIENT");
 
@@ -295,7 +305,7 @@ public class TripExpMan extends NavigationDrawerActivity implements SectionsPage
             mViewPager.setCurrentItem(1); //expense tab
             //Toast.makeText(getApplicationContext(),"expense", Toast.LENGTH_LONG).show();
         }
-        else
+        else if(request != null)
             mViewPager.setCurrentItem(0);
 
         if(fragmentSection == 0)
@@ -357,7 +367,7 @@ public class TripExpMan extends NavigationDrawerActivity implements SectionsPage
              */
             SectionNumberHolder mCallback;
 
-
+            int currentTab;
             static Client selection=null;
             //AutoCompleteTextView autoCompleteTextView;
             TextView dateSet;
@@ -437,6 +447,7 @@ public class TripExpMan extends NavigationDrawerActivity implements SectionsPage
                     @Override
                     public void onClick(View v) {
                         selection = null;
+                        currentTab = TripExpMan.getCurrentItem();
                         startActivityForResult(new Intent(getContext(), ClientPickActivity.class),
                                 REQUEST_CLIENT);
                     }
@@ -473,6 +484,7 @@ public class TripExpMan extends NavigationDrawerActivity implements SectionsPage
             public void onActivityResult(int request_code, int resultCode, Intent intent){
                 if(intent!= null) {
                     if (request_code == REQUEST_CLIENT) {
+                       // TripExpMan.setCurrentTab(currentTab,getActivity());
                         UUID uuid = UUID.fromString(intent.getStringExtra(ClientPickActivity.EXTRA_CLIENT_ID));
                         selection = ClientManager.get(getContext()).getClient(uuid);
                     } else {
