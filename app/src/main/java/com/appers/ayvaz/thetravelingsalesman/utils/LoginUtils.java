@@ -35,8 +35,9 @@ public class LoginUtils{
     public static final String KEY_USERNAME = "username";
     public static final String KEY_PASSWORD = "password";
     public static final String KEY_LOCKED = "locked";
+    public static final String KEY_FIRST_TIME = "firstTime";
     public static final String TIME_LEFT = "time_left";
-    public static final long MAX_TIME_LEFT = 30 * 1000;
+    public static final long MAX_TIME_LEFT = 15 * 1000;
     public static final int MAX_QUESTION_CHAR = 64;
     public static final String KEY_QUESTION = "securityQuestion";
     public static final String KEY_ANSWER = "answer";
@@ -85,6 +86,8 @@ public class LoginUtils{
 
         return password.length() >= 4 && password.length() <= 16;
     }
+
+
 
 
 

@@ -112,6 +112,8 @@ public abstract class NavigationDrawerActivity extends BaseActivity {
             startActivity(new Intent(this, LandingActivity.class));
         } else if (itemId == R.id.nav_settings) {
             startActivity(new Intent(this, SettingsActivity.class));
+        } else if (itemId == R.id.nav_exit) {
+            finishAffinity();
         }
 
     }

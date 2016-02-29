@@ -3,43 +3,36 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_clients"
-            android:title="@string/clients"/>
+            android:title="@string/clients" />
 
         <item
             android:id="@+id/nav_tasks"
-            android:title="@string/tasks"/>
+            android:title="@string/tasks" />
         <item
             android:id="@+id/nav_reminders"
-            android:title="@string/reminders"/>
+            android:title="@string/reminders" />
 
         <item
             android:id="@+id/nav_expenses"
-            android:title="@string/expense"/>
+            android:title="@string/expense" />
         <item
             android:id="@+id/nav_trip"
-            android:title="@string/trip"/>
-
-        <item android:title="@string/reports"
-            android:id="@+id/nav_reports"
-            >
-
-        </item>
+            android:title="@string/trip" />
 
         <item
-            android:title="">
-            <menu>
-                <group android:checkableBehavior="none">
-                    <item
-                        android:id="@+id/nav_settings"
-                        android:title="@string/action_settings"
-                        />
-                    <item
-                        android:title="@string/help"/>
-                    <item
-                        android:title="@string/exit"/>
-                </group>
-            </menu>
+            android:id="@+id/nav_reports"
+            android:title="@string/reports">
+
         </item>
+
+
+        <item
+            android:id="@+id/nav_settings"
+            android:title="@string/action_settings" />
+
+        <item
+            android:id="@+id/nav_exit"
+            android:title="@string/exit" />
 
 
         <!--item

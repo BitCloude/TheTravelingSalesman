@@ -246,21 +246,26 @@ public class SettingsFragment extends Fragment {
     private void saveChanges() {
         SharedPreferences.Editor editor = mSharedPreferences.edit();
 
-        // save new password, if changed
-        String newPw = mNewPassword.getText().toString();
 
-        if (!TextUtils.isEmpty(newPw)) {
-            editor.putString(LoginUtils.KEY_PASSWORD, LoginUtils.encrypt(newPw));
-        }
 
         // save username
         editor.putString(LoginUtils.KEY_USERNAME, mUsername.getText().toString());
 
+        // save new password, if changed
+        String newPw = mNewPassword.getText().toString();
+        if (!TextUtils.isEmpty(newPw)) {
+            editor.putString(LoginUtils.KEY_PASSWORD, LoginUtils.encrypt(newPw));
+        }
 
-        // save security question and answer, if changed
+
+
+
+        // save security question and answer, if changed and password is not empty
         String newAnswer = mAnswer.getText().toString();
 
-        if (!TextUtils.isEmpty(newAnswer)) {
+        if (!TextUtils.isEmpty(newAnswer) && (!TextUtils.isEmpty(newPw) || !TextUtils.isEmpty(
+                mSharedPreferences.getString(LoginUtils.KEY_PASSWORD, "")))) {
+
             editor.putString(LoginUtils.KEY_QUESTION, getQuestion());
             String encryptedAnswer = LoginUtils.encrypt(newAnswer);
             editor.putString(LoginUtils.KEY_ANSWER, encryptedAnswer);
