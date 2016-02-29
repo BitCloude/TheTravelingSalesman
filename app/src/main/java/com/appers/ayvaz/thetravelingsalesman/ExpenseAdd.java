@@ -181,12 +181,13 @@ Spinner spinnerType;
         buttonAddTravel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), TravelDetail.class);
-                if(selectedClient!=null)
-                {
-                    intent.putExtra("CLIENT", selectedClient.getId().toString());
+                if (saveData()) {
+                    Intent intent = new Intent(getApplicationContext(), TravelDetail.class);
+                    if (selectedClient != null) {
+                        intent.putExtra("CLIENT", selectedClient.getId().toString());
+                    }
+                    startActivity(intent);
                 }
-                startActivity(intent);
             }
         });
 

@@ -200,7 +200,7 @@ public class TravelDetail extends AppCompatActivity implements PhotoViewFragment
         cameraButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(saveData(false)){
+                if(saveData()){
                 TripContent tripContent = TripContent.get(getApplicationContext());
                 showPhoto(tripContent.getPhotoFile(trip_main, false),tripContent.getPhotoFile(trip_main, true), false);}
             }
@@ -210,7 +210,7 @@ public class TravelDetail extends AppCompatActivity implements PhotoViewFragment
             @Override
             public void onClick(View v) {
 
-                if(saveData(savePhoto())) {
+                if(saveData()) {
                     Intent intent = new Intent(getApplicationContext(), ExpenseAdd.class);
                     intent.putExtra("CLIENT", selection.getId().toString());
                     intent.putExtra("TRIP_ID", trip_main.getId());
@@ -321,7 +321,7 @@ public class TravelDetail extends AppCompatActivity implements PhotoViewFragment
     }
 
         //last method to be run, if a Trip does not exist add. otherwise update
-    public boolean saveData(boolean savePhoto){
+    public boolean saveData(){
 
         boolean edit = true;
         if(trip_main == null){
@@ -350,7 +350,7 @@ public class TravelDetail extends AppCompatActivity implements PhotoViewFragment
         trip_main.setBoarding(editTravelBoardingPass.getText().toString());
         trip_main.setType(tripType);
 
-        if(savePhoto) {
+        if(savePhoto()) {
             Log.i("......", "photo Final Save" + tempFile.getAbsolutePath());
             trip_main.setImageFile(photoFile.getAbsolutePath());
         }
@@ -398,7 +398,7 @@ public class TravelDetail extends AppCompatActivity implements PhotoViewFragment
             case R.id.action_settings:
                 return true;
             case 22:
-                if(saveData(savePhoto())){
+                if(saveData()){
                 Intent intent = new Intent(getApplicationContext(), TripExpMan.class);
                 intent.putExtra("ORIGIN", "TRIP");
                 intent.putExtra("CLIENT", selection.getId().toString());

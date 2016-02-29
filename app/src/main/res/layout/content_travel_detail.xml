@@ -79,6 +79,7 @@
             android:id="@+id/travelDetailAutoCompleteTextView"
             android:layout_below="@id/cameraTravelButton"
             android:hint="Type Client Name Here"
+            android:singleLine="true"
             android:textSize="18dp"/>
 
 
