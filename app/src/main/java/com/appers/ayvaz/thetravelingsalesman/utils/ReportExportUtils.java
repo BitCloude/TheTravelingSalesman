@@ -85,6 +85,27 @@ public class ReportExportUtils {
         return formatter.format(value);
     }
 
+    public static Intent getOpenIntent(File file, Context context) {
+        if (!file.exists()) {
+            return null;
+        }
+
+        Uri fileUri = Uri.fromFile(file);
+        Intent viewIntent = new Intent(Intent.ACTION_VIEW);
+        if (fileUri != null) {
+            viewIntent.setDataAndType(fileUri, "text/csv");
+            if (viewIntent.resolveActivity(context.getPackageManager()) != null) {
+                String title = context.getResources().getString(R.string.open_title);
+                return Intent.createChooser(viewIntent, title);
+            } else {
+                return null;
+            }
+        } else {
+            Log.i(DEBUG_TAG, "null Uri");
+            return null;
+        }
+
+    }
 
     public static void shareFile(Context context, File file) {
 
@@ -108,14 +129,10 @@ public class ReportExportUtils {
             sendIntent.putExtra(Intent.EXTRA_STREAM, fileUri);
 
 
-
-            String title = context.getResources().getString(R.string.chooser_title);
-            // Create intent to show the chooser dialog
-            Intent chooser = Intent.createChooser(sendIntent, title);
-
-
             // Verify the original intent will resolve to at least one activity
             if (sendIntent.resolveActivity(context.getPackageManager()) != null) {
+                String title = context.getResources().getString(R.string.chooser_title);
+                Intent chooser = Intent.createChooser(sendIntent, title);
                 context.startActivity(chooser);
             }
         } else {

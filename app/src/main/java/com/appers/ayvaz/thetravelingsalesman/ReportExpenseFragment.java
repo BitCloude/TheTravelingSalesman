@@ -3,13 +3,17 @@ package com.appers.ayvaz.thetravelingsalesman;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.app.AlertDialog;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -51,6 +55,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
+
+import javax.xml.transform.Result;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -867,6 +873,18 @@ class ExpenseReportAdapter extends RecyclerView.Adapter<ExpenseReportAdapter.Vie
 
     private class GenerateExpenseReport extends AsyncTask<File, Void, Boolean> {
 
+        File mFile;
+        int mId;
+        NotificationCompat.Builder mBuilder;
+        NotificationManager mNotificationManager;
+
+
+
+
+        @Override
+        protected void onPreExecute() {
+
+        }
 
         @Override
         protected Boolean doInBackground(File... params) {
@@ -874,8 +892,8 @@ class ExpenseReportAdapter extends RecyclerView.Adapter<ExpenseReportAdapter.Vie
                 return null;
             }
 
-            File file = params[0];
-            File parentDir = file.getParentFile();
+            mFile = params[0];
+            File parentDir = mFile.getParentFile();
             if (!parentDir.exists()) {
                 if (!parentDir.mkdir()) {
                     return false;
@@ -883,7 +901,7 @@ class ExpenseReportAdapter extends RecyclerView.Adapter<ExpenseReportAdapter.Vie
             }
 
 /** 0. name | 1. date | 2. title | 3. hotel | 4. resturant | 5. cab | 6. gift | 7. other */
-            try (MyCsvWriter writer = new MyCsvWriter(file)) {
+            try (MyCsvWriter writer = new MyCsvWriter(mFile)) {
 
                 String[] header = {
                         mContext.getString(R.string.client_name),
@@ -929,9 +947,12 @@ class ExpenseReportAdapter extends RecyclerView.Adapter<ExpenseReportAdapter.Vie
                 writer.flush();
                 writer.close();
 
+                Thread.sleep(1000);
                 return true;
 
             } catch (IOException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
                 e.printStackTrace();
             }
 
@@ -940,8 +961,45 @@ class ExpenseReportAdapter extends RecyclerView.Adapter<ExpenseReportAdapter.Vie
 
         @Override
         protected void onPostExecute(Boolean result) {
-            Toast.makeText(mContext, result ? R.string.message_finish_export : R.string.message_export_failed,
-                    Toast.LENGTH_SHORT).show();
+//            Toast.makeText(mContext, result ? R.string.message_finish_export : R.string.message_export_failed,
+//                    Toast.LENGTH_SHORT).show();
+
+            mNotificationManager = (NotificationManager) mContext
+                    .getSystemService(Context.NOTIFICATION_SERVICE);
+            mBuilder = new NotificationCompat.Builder(mContext);
+
+            if (result) {
+                mBuilder.setSmallIcon(R.drawable.ic_save)
+                        .setContentTitle(mContext.getString(R.string.message_finish_export))
+                        .setContentText(mFile.getPath())
+                        .setContentInfo("Open the report")
+                        .setAutoCancel(true);
+
+                Intent resultIntent = ReportExportUtils.getOpenIntent(mFile, mContext);
+                if (resultIntent == null) {
+                    return;
+                }
+
+                TaskStackBuilder stackBuilder = TaskStackBuilder.create(mContext);
+                stackBuilder.addParentStack(ReportExpenseActivity.class);
+                stackBuilder.addNextIntent(resultIntent);
+
+                PendingIntent resultPendingIntent =
+                        stackBuilder.getPendingIntent(
+                                0,
+                                PendingIntent.FLAG_UPDATE_CURRENT
+                        );
+
+                mBuilder.setContentIntent(resultPendingIntent);
+                mNotificationManager.notify(mId, mBuilder.build());
+            } else {
+                Toast.makeText(mContext, R.string.message_export_failed, Toast.LENGTH_SHORT)
+                        .show();
+            }
+
+
         }
     }
+
+
 }

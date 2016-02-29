@@ -1,9 +1,14 @@
 package com.appers.ayvaz.thetravelingsalesman.adapter;
 
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.AsyncTask;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -15,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.appers.ayvaz.thetravelingsalesman.R;
+import com.appers.ayvaz.thetravelingsalesman.ReportTaskActivity;
 import com.appers.ayvaz.thetravelingsalesman.models.Client;
 import com.appers.ayvaz.thetravelingsalesman.models.Task;
 import com.appers.ayvaz.thetravelingsalesman.utils.DateTimeHelper;
@@ -164,9 +170,10 @@ public class TaskReportAdapter extends RecyclerView.Adapter<TaskReportAdapter.Vi
 
 
 
-    private class GenerateTaskReport extends AsyncTask<File, Integer, Void> {
+    private class GenerateTaskReport extends AsyncTask<File, Integer, Boolean> {
 
         private ProgressDialog progressDialog;
+        private File mFile;
 
         @Override
         protected void onPreExecute() {
@@ -189,13 +196,15 @@ public class TaskReportAdapter extends RecyclerView.Adapter<TaskReportAdapter.Vi
         }
 
         @Override
-        protected Void doInBackground(File... params) {
+        protected Boolean doInBackground(File... params) {
             final String DIVIDER = ", ";
             final String NEW_LINE = "\n";
             if (params == null || params.length != 1) {
                 Log.i(DEBUG_TAG, "file path not included");
                 return null;
             }
+
+            mFile = params[0];
 
             try (MyCsvWriter writer = new MyCsvWriter(params[0])) {
                 String[] header = {
@@ -232,21 +241,62 @@ public class TaskReportAdapter extends RecyclerView.Adapter<TaskReportAdapter.Vi
                 writer.flush();
                 writer.close();
 
+                return true;
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
 
-            return null;
+            return false;
         }
 
         @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
+        protected void onPostExecute(Boolean result) {
+
             if (progressDialog != null) {
                 progressDialog.dismiss();
             }
 
-            Toast.makeText(mContext, R.string.report_saved, Toast.LENGTH_LONG).show();
+            int id = 10;
+
+//            Toast.makeText(mContext, R.string.report_saved, Toast.LENGTH_LONG).show();
+
+
+            if (result) {
+                NotificationManager mNotificationManager = (NotificationManager) mContext
+                        .getSystemService(Context.NOTIFICATION_SERVICE);
+                NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(mContext);
+
+                mBuilder.setSmallIcon(R.drawable.ic_save)
+                        .setContentTitle(mContext.getString(R.string.message_finish_export))
+                        .setContentText(mFile.getPath())
+                        .setContentInfo("Open the report")
+                        .setAutoCancel(true);
+
+                Intent resultIntent = ReportExportUtils.getOpenIntent(mFile, mContext);
+                if (resultIntent == null) {
+                    return;
+                }
+
+                TaskStackBuilder stackBuilder = TaskStackBuilder.create(mContext);
+                stackBuilder.addParentStack(ReportTaskActivity.class);
+                stackBuilder.addNextIntent(resultIntent);
+
+
+                PendingIntent resultPendingIntent =
+                        stackBuilder.getPendingIntent(
+                                0,
+                                PendingIntent.FLAG_UPDATE_CURRENT
+                        );
+
+                mBuilder.setContentIntent(resultPendingIntent);
+                mNotificationManager.notify(id, mBuilder.build());
+            } else {
+                Toast.makeText(mContext, R.string.message_export_failed, Toast.LENGTH_SHORT)
+                        .show();
+            }
+
+
         }
     }
 
