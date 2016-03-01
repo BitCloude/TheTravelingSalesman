@@ -31,10 +31,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private static final String DEBUG_TAG = "LoginActivity";
     private static final String PREF_NAME = "loginInfomation";
-    /**
-     * A dummy authentication store containing known user names and passwords.
-     * TODO: remove after connecting to a real authentication system.
-     */
+
     private final String KEY_USERNAME = "username";
     private final String KEY_PASSWORD = "password";
 
