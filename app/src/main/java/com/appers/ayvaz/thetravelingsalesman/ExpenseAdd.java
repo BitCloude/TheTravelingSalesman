@@ -345,7 +345,13 @@ Spinner spinnerType;
             expense_main = null;
             return false;
         }
-        expense_main.setAmount(editAmount.getText().toString());
+        String amt = editAmount.getText().toString();
+
+        if(amt.equals(""))
+            expense_main.setAmount("0");
+        else
+            expense_main.setAmount(editAmount.getText().toString());
+
         expense_main.setDescription(editDescription.getText().toString());
         expense_main.setClient_id(selectedClient.getId());
         if(selectedTrip!=null && !autoCompleteTextViewTrips.getText().toString().equals(""))
