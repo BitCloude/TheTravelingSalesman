@@ -190,6 +190,7 @@
     <string name="select_a">Select a %s</string>
     <string name="message_file_not_exit">File doesn\'t exist.</string>
     <string name="open_title">Open through</string>
+    <string name="message_no_report">There\'s no report currently.</string>
 
     <string-array name="security_questions">
         <item>When you were young, what did you want to be when you grew up?</item>

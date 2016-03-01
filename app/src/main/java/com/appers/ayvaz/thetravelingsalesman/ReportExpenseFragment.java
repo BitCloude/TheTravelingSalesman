@@ -333,7 +333,13 @@ public class ReportExpenseFragment extends Fragment {
             }
         });
 
-        Log.i(DEBUG_TAG, fileList.length + " files found");
+        if (fileList == null || fileList.length == 0) {
+            Toast.makeText(getActivity(), R.string.message_no_report, Toast.LENGTH_SHORT)
+                    .show();
+            return;
+        }
+
+
 
 
         new AlertDialog.Builder(getActivity()).setTitle(R.string.select_report)
