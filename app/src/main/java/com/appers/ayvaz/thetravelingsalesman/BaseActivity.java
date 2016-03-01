@@ -59,13 +59,17 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        if (isLocked()) {
+        if (isFirstTime() || isLocked()) {
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
             mLocked = true;
         } else {
             mLocked = false;
         }
+    }
+
+    private boolean isFirstTime() {
+        return mSharedPreferences.getBoolean(LoginUtils.KEY_FIRST_TIME, true);
     }
 
     @Override

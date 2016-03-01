@@ -3,13 +3,17 @@ package com.appers.ayvaz.thetravelingsalesman;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.app.AlertDialog;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -19,39 +23,40 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.appers.ayvaz.thetravelingsalesman.adapter.TaskReportAdapter;
 import com.appers.ayvaz.thetravelingsalesman.models.Client;
 import com.appers.ayvaz.thetravelingsalesman.models.ClientManager;
 import com.appers.ayvaz.thetravelingsalesman.models.Expense;
 import com.appers.ayvaz.thetravelingsalesman.models.ExpenseContent;
 import com.appers.ayvaz.thetravelingsalesman.models.ExpenseReport;
-import com.appers.ayvaz.thetravelingsalesman.models.Task;
-import com.appers.ayvaz.thetravelingsalesman.models.TaskManager;
 import com.appers.ayvaz.thetravelingsalesman.models.Trip;
 import com.appers.ayvaz.thetravelingsalesman.models.TripContent;
 import com.appers.ayvaz.thetravelingsalesman.utils.DateTimeHelper;
-import com.appers.ayvaz.thetravelingsalesman.utils.EventUtility;
 import com.appers.ayvaz.thetravelingsalesman.utils.MyCsvWriter;
 import com.appers.ayvaz.thetravelingsalesman.utils.ReportExportUtils;
 import com.appers.ayvaz.thetravelingsalesman.view.DividerItemDecoration;
 
-import org.joda.time.LocalDate;
-
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
+
+import javax.xml.transform.Result;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -61,9 +66,14 @@ public class ReportExpenseFragment extends Fragment {
 
     private static final String DEBUG_TAG = "ReportExpenseFragment";
     private static final int REQUEST_CLIENT = 0;
+
     @Bind(R.id.recyclerView)
     RecyclerView mRecyclerView;
 
+    @Bind(R.id.titleHeader)
+    View mTitleHeader;
+    @Bind(R.id.dateHeader)
+    View mDateHeader;
     @Bind(R.id.titleSorted)
     ImageView mTitleSorted;
     @Bind(R.id.dateSorted)
@@ -77,10 +87,14 @@ public class ReportExpenseFragment extends Fragment {
     Button mEndButton;
     @Bind(R.id.applyButton)
     Button mApplyButton;
-    @Bind(R.id.selectClient)
-    ImageButton mSelectClient;
     @Bind(R.id.client_name)
-    TextView mClientName;
+    Button mClientName;
+    @Bind(R.id.tripSpinner)
+    Spinner mTripSpinner;
+    @Bind(R.id.clearClient)
+    ImageButton mClearClient;
+    @Bind(R.id.amount)
+    TextView mAmount;
 //    @Bind(R.id.hotelSum) TextView mHotelSum;
 //    @Bind(R.id.restaurantSum) TextView mRestaurantSum;
 //    @Bind(R.id.giftSum) TextView mGiftSum;
@@ -99,10 +113,16 @@ public class ReportExpenseFragment extends Fragment {
     private ExpenseReport mTotal;
 
     private ExpenseReportAdapter mAdapter;
+    private ArrayAdapter<Trip> mTripAdapter;
+
+    // for sorting
+    private int[] orders = new int[2];
 
     public ReportExpenseFragment() {
         // Required empty public constructor
     }
+
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -116,6 +136,7 @@ public class ReportExpenseFragment extends Fragment {
         mStartDateSet = Calendar.getInstance();
         mEndDateSet = Calendar.getInstance();
 
+
     }
 
     @Override
@@ -125,45 +146,57 @@ public class ReportExpenseFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_report_expense, container, false);
         Log.i(DEBUG_TAG, "view");
         ButterKnife.bind(this, view);
-        //mHeaderIcons = new ImageView[]{mTitleSorted, mDateSorted, mTimeSorted};
+        mHeaderIcons = new ImageView[]{mTitleSorted, mDateSorted};
         Log.i(DEBUG_TAG, "after bind");
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mRecyclerView.addItemDecoration(new DividerItemDecoration(getContext(),
                 DividerItemDecoration.VERTICAL_LIST));
 
         setHasOptionsMenu(true);
+        mClearClient.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mClient = null;
+                updateUI();
+            }
+        });
 
         updateUI();
 
-        /*mTaskTitle.setOnClickListener(new View.OnClickListener() {
+        mDateHeader.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                boolean asc = mAdapter.getOrders()[0] != 1;
-
-                mAdapter.sort(TaskReportAdapter.SORT_BY_TITLE, asc);
+                if (orders[0] < 2) {
+                    mAdapter.sortByDate(true);
+                    orders[0] = 2;
+                    orders[1] = 0;
+                } else {
+                    mAdapter.sortByDate(false);
+                    orders[0] = 1;
+                    orders[1] = 0;
+                }
 
                 updateIcon();
             }
         });
 
-        mTaskDate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                boolean asc = mAdapter.getOrders()[1] != 1;
-                mAdapter.sort(TaskReportAdapter.SORT_BY_DATETIME, asc);
-                updateIcon();
-
-            }
-        });
-
-        mTaskTime.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                boolean asc = mAdapter.getOrders()[2] != 1;
-                mAdapter.sort(TaskReportAdapter.SORT_BY_TIME, asc);
-                updateIcon();
-            }
-        });*/
+//        mTitleSorted.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (orders[1] < 2) {
+//                    mAdapter.sortByTitle(true);
+//                    orders[1] = 2;
+//                    orders[0] = 0;
+//                } else {
+//                    mAdapter.sortByTitle(false);
+//                    orders[1] = 1;
+//                    orders[0] = 0;
+//                }
+//
+//                updateIcon();
+//
+//            }
+//        });
 
 
         mStartButton.setOnClickListener(new PickDateButtonListener());
@@ -175,25 +208,17 @@ public class ReportExpenseFragment extends Fragment {
 
                 mStartDate.setTime(mStartDateSet.getTime());
                 mEndDate.setTime(mEndDateSet.getTime());
-                new GetTask().execute(mStartDate, mEndDate);
+                new GetExpenseReport().execute(mStartDate, mEndDate);
 
             }
         });
 
-        mSelectClient.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivityForResult(new Intent(getContext(), ClientPickActivity.class),
-                        REQUEST_CLIENT);
-            }
-        });
 
         mClientName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mClient != null) {
-                    startActivity(ClientInfoActivity.newIntent(getContext(), mClient.getId()));
-                }
+                startActivityForResult(new Intent(getContext(), ClientPickActivity.class),
+                        REQUEST_CLIENT);
             }
         });
 
@@ -202,42 +227,38 @@ public class ReportExpenseFragment extends Fragment {
     }
 
     private void showStartTime() {
-        mStartButton.setText(DateTimeHelper.formatMed(mStartDateSet.getTime()));
+        mStartButton.setText(DateTimeHelper.formatDate(mStartDateSet.getTime()));
     }
 
     private void showEndTime() {
-        mEndButton.setText(DateTimeHelper.formatMed(mEndDateSet.getTime()));
+        mEndButton.setText(DateTimeHelper.formatDate(mEndDateSet.getTime()));
     }
 
     private void updateIcon() {
-//        int[] orders = mAdapter.getOrders();
-//        for (int i = 0; i < 3; i++) {
-//            mHeaderIcons[i].setImageResource(sortable_icons[orders[i]]);
-//        }
+
+        for (int i = 0; i < mHeaderIcons.length; i++) {
+            mHeaderIcons[i].setImageResource(sortable_icons[orders[i]]);
+        }
     }
 
     private void updateUI() {
 
         if (mClient != null) {
             mClientName.setText(mClient.toString());
+            mClearClient.setVisibility(View.VISIBLE);
         } else {
-            mClientName.setText(R.string.client_not_selected);
+            mClientName.setText(getString(R.string.select_a, "client"));
+            mClearClient.setVisibility(View.INVISIBLE);
         }
 
         showStartTime();
         showEndTime();
 
-        if (lastEventId != EventUtility.getLastEventId(getContext().getContentResolver())) {
-            new GetTask().execute(mStartDate, mEndDate);
-        }
+
+        new GetExpenseReport().execute(mStartDate, mEndDate);
+        new GetTrips().execute(mClient);
 
 
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        lastEventId = EventUtility.getLastEventId(getContext().getContentResolver());
     }
 
     @Override
@@ -285,10 +306,244 @@ public class ReportExpenseFragment extends Fragment {
                 mAdapter.saveReport(mClient);
                 return true;
 
+            case R.id.action_send:
+//                saveAndShare();
+                selectFile();
+                return true;
+
+            case R.id.action_open_folder:
+                ReportExportUtils.openReportFolder(getActivity());
+                return true;
+
             default:
                 return super.onOptionsItemSelected(item);
 
         }
+    }
+
+    private void selectFile() {
+        final File dir = ReportExportUtils.getReportDir(getActivity());
+        if (dir == null) {
+            return;
+        }
+        final String[] fileList = dir.list(new FilenameFilter() {
+            @Override
+            public boolean accept(File dir, String filename) {
+                return filename.startsWith(ReportExportUtils.EXPENSE_PREFIX);
+            }
+        });
+
+        Log.i(DEBUG_TAG, fileList.length + " files found");
+
+
+        new AlertDialog.Builder(getActivity()).setTitle(R.string.select_report)
+                .setItems(fileList,
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                ReportExportUtils.shareFile(getActivity(), new File(dir, fileList[which]));
+                            }
+                        })
+                .create().show();
+    }
+
+    private void setupSpinner(List<Trip> trips) {
+        Trip dummyTrip = new Trip();
+        dummyTrip.setDescription(getString(R.string.select_a, "trip"));
+        trips.add(0, dummyTrip);
+
+        if (mTripAdapter == null) {
+            mTripAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item,
+                    trips);
+            mTripSpinner.setAdapter(mTripAdapter);
+            mTripSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    if (position > 0) {
+                        mTrip = (Trip) parent.getItemAtPosition(position);
+                        Log.i(DEBUG_TAG, "selected trip: " + mTrip);
+                    } else {
+                        mTrip = null;
+                    }
+
+                    new GetExpenseReport().execute(mStartDate, mEndDate);
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+
+                }
+            });
+
+        } else {
+            mTripAdapter.clear();
+            mTripAdapter.addAll(trips);
+//            mTripAdapter.notifyDataSetChanged();
+        }
+    }
+
+    private List<Trip> loadTrip(Client client) {
+        TripContent tripContent = TripContent.get(getActivity());
+        List<Trip> list = client == null ? tripContent.getTrips()
+                : tripContent.getClientTrips(client.getId());
+
+        return list;
+
+    }
+
+    private List<ExpenseReport> getExpenseReport(Client client, Calendar start, Calendar end) {
+        TripContent tripContent = TripContent.get(getActivity());
+        List<ExpenseReport> reports = new ArrayList<>();
+
+        // last row of the table
+        mTotal = new ExpenseReport();
+        mTotal.setInfo(ExpenseReport.TOTAL);
+        Calendar dummyDate = Calendar.getInstance();
+        dummyDate.setTimeInMillis(Long.MAX_VALUE);
+        mTotal.setDate(dummyDate);
+
+
+        if (mTrip == null) {
+            // 1. add trip related expenses
+            List<Trip> trips = client == null ? tripContent.getTrips(start, end)
+                    : tripContent.getClientTrips(client.getId());
+
+            Log.i(DEBUG_TAG, "trips found: " + trips.size());
+            for (Trip t : trips) {
+
+                List<Expense> expenses = ExpenseContent.get(getActivity())
+                        .getTripExpenses(t.getId(), start, end);
+
+                Log.i(DEBUG_TAG, "Expense found: " + expenses.size());
+
+                if (expenses.size() == 0) {
+                    continue;
+                }
+
+                ExpenseReport r = new ExpenseReport();
+                if (client == null) {
+                    r.setClient(ClientManager.get(getActivity()).getClient(t.getClient_id()));
+                } else {
+                    r.setClient(client);
+                }
+
+                r.setInfo(t.toString());
+                r.setDate(t.getDate_from());
+                setTripReport(expenses, r);
+                reports.add(r);
+            }
+
+            // 2. add expenses that don't belong to any trip
+            List<Expense> orphanExpenses = ExpenseContent.get(getActivity())
+                    .getOrphanExpense(start, end);
+
+            Log.i(DEBUG_TAG, "Orphans: " + orphanExpenses.size());
+
+            for (Expense e : orphanExpenses) {
+                reports.add(getReportFromExpense(e));
+            }
+
+        } else {
+
+            // show seperated expenses of a trip
+            List<Expense> expenses = ExpenseContent.get(getActivity())
+                    .getTripExpenses(mTrip.getId(), start, end);
+            for (Expense expense : expenses) {
+                reports.add(getReportFromExpense(expense));
+            }
+
+
+        }
+
+        if (reports.size() != 0) {
+            reports.add(mTotal);
+        }
+
+
+        return reports;
+    }
+
+    private void setTripReport(List<Expense> expenses, ExpenseReport r) {
+
+        for (Expense expense : expenses) {
+            String type = expense.getType();
+            double amount = Double.parseDouble(expense.getAmount());
+            Log.i(DEBUG_TAG, "Amount: " + amount);
+            switch (type) {
+                case Expense.TYPE_RESTAURANT:
+                    r.addRestaurant(amount);
+                    mTotal.addRestaurant(amount);
+                    break;
+                case Expense.TYPE_OTHER:
+                    r.addOther(amount);
+                    mTotal.addOther(amount);
+                    break;
+                case Expense.TYPE_GIFT:
+                    r.addGifts(amount);
+                    mTotal.addGifts(amount);
+                    break;
+                case Expense.TYPE_HOTEL:
+                    r.addHotel(amount);
+                    mTotal.addHotel(amount);
+                    break;
+                case Expense.TYPE_TRAVEL:
+                    r.addCabs(amount);
+                    mTotal.addCabs(amount);
+                    break;
+                default:
+                    Log.i(DEBUG_TAG, "expense type: " + type + " not recognized");
+                    break;
+            }
+        }
+
+    }
+
+    private ExpenseReport getReportFromExpense(Expense expense) {
+        ExpenseReport r;
+            String type = expense.getType();
+            double amount = Double.parseDouble(expense.getAmount());
+            r = new ExpenseReport();
+            r.setInfo(expense.getDescription());
+            r.setDate(expense.getDate_from());
+//                r.setToDate(expense.getDate_to());
+
+            Log.i(DEBUG_TAG, "Amount: " + amount);
+            switch (type) {
+                case Expense.TYPE_RESTAURANT:
+                    r.setRestaurant(amount);
+                    mTotal.addRestaurant(amount);
+                    break;
+                case Expense.TYPE_OTHER:
+                    r.setOther(amount);
+                    mTotal.addOther(amount);
+                    break;
+                case Expense.TYPE_GIFT:
+                    r.setGifts(amount);
+                    mTotal.addGifts(amount);
+                    break;
+                case Expense.TYPE_HOTEL:
+                    r.setHotel(amount);
+                    mTotal.addHotel(amount);
+                    break;
+                case Expense.TYPE_TRAVEL:
+                    r.setCabs(amount);
+                    mTotal.addCabs(amount);
+                    break;
+                default:
+                    Log.i(DEBUG_TAG, "expense type: " + type + " not recognized");
+                    break;
+            }
+
+          return r;
+
+    }
+
+    private void clearOrders() {
+        for (int i = 0; i < orders.length; i++) {
+            orders[i] = 0;
+        }
+
+        updateIcon();
     }
 
     private class PickDateButtonListener implements View.OnClickListener {
@@ -346,77 +601,6 @@ public class ReportExpenseFragment extends Fragment {
         }
     }
 
-    private List<ExpenseReport> getExpenseReport(Client client, Calendar start, Calendar end) {
-        TripContent tripContent = TripContent.get(getActivity());
-        LocalDate startDate = LocalDate.fromCalendarFields(start);
-        LocalDate endDate = LocalDate.fromCalendarFields(end);
-        List<ExpenseReport> reports = new ArrayList<>();
-        mTotal = new ExpenseReport();
-        mTotal.setInfo("Total");
-
-
-        if (mTrip == null) {
-            List<Trip> trips = client == null ? tripContent.getTrips()
-                    : tripContent.getClientTrips(client.getId());
-            Log.i(DEBUG_TAG, "trips found: " + trips.size());
-            for (Trip t : trips) {
-
-                LocalDate current = LocalDate.fromCalendarFields(t.getDate_from());
-                if (current.isBefore(startDate) || current.isAfter(endDate)) {
-                    continue;
-                }
-
-                ExpenseReport r = new ExpenseReport();
-                if (client == null) {
-                    r.setClient(ClientManager.get(getActivity()).getClient(t.getClient_id()));
-                } else {
-                    r.setClient(client);
-                }
-
-                r.setInfo(t.toString());
-                r.setDate(t.getDate_from());
-
-                List<Expense> expenses = ExpenseContent.get(getActivity())
-                        .getTripExpenses(t.getId(), start, end);
-
-                Log.i(DEBUG_TAG, "Expense found: " + expenses.size());
-
-
-                for (Expense expense : expenses) {
-                    String type = expense.getType();
-                    double amount = Double.parseDouble(expense.getAmount());
-                    Log.i(DEBUG_TAG, "Amount: " + amount);
-                    if (type.equals(Expense.TYPE_RESTAURANT)) {
-                        r.addRestaurant(amount);
-                        mTotal.addRestaurant(amount);
-                    } else if (type.equals(Expense.TYPE_OTHER)) {
-                        r.addOther(amount);
-                        mTotal.addOther(amount);
-                    } else if (type.equals(Expense.TYPE_GIFT)) {
-                        r.addGifts(amount);
-                        mTotal.addGifts(amount);
-                    } else if (type.equals(Expense.TYPE_HOTEL)) {
-                        r.addHotel(amount);
-                        mTotal.addHotel(amount);
-                    } else if (type.equals(Expense.TYPE_TRAVEL)) {
-                        r.addCabs(amount);
-                        mTotal.addCabs(amount);
-                    } else {
-                        Log.i(DEBUG_TAG, "expense type: " + type + " not recognized");
-                    }
-                }
-
-                reports.add(r);
-            }
-        } // // TODO: 023 02 23 trip not selected
-
-
-        reports.add(mTotal);
-
-
-        return reports;
-    }
-
    /* private void bindTotal(ExpenseReport sum) {
         mHotelSum.setText(ReportExportUtils.formatMoney(sum.getHotel()));
         mRestaurantSum.setText(ReportExportUtils.formatMoney(sum.getRestaurant()));
@@ -426,7 +610,23 @@ public class ReportExpenseFragment extends Fragment {
     }
 */
 
-    private class GetTask extends AsyncTask<Calendar, Void, List<ExpenseReport>> {
+    private class GetTrips extends AsyncTask<Client, Void, List<Trip>> {
+        @Override
+        protected List<Trip> doInBackground(Client... params) {
+            if (params.length != 1) {
+                return new ArrayList<>();
+            }
+
+            return loadTrip(params[0]);
+        }
+
+        @Override
+        protected void onPostExecute(List<Trip> trips) {
+            setupSpinner(trips);
+        }
+    }
+
+    private class GetExpenseReport extends AsyncTask<Calendar, Void, List<ExpenseReport>> {
 
         @Override
         protected List<ExpenseReport> doInBackground(Calendar... params) {
@@ -460,26 +660,86 @@ public class ReportExpenseFragment extends Fragment {
 
 //            bindTotal(mTotal);
             mProgressBarContainer.setVisibility(View.GONE);
+            if (mAdapter.getItemCount() > 1) {
+                double total = mTotal.getTotal();
+                mAmount.setText(ReportExportUtils.formatMoney(total));
+            }
+
+            clearOrders();
 //            mRecyclerView.setVisibility(View.VISIBLE);
         }
     }
 
+
 }
 
 class ExpenseReportAdapter extends RecyclerView.Adapter<ExpenseReportAdapter.ViewHolder> {
+    private static final String DEBUG_TAG = "ExpenseReportAdapter";
+    private static final int TYPE_NORMAL = 0;
+    private static final int TYPE_TOTAL = 1;
     List<ExpenseReport> mExpenses;
     Context mContext;
-    private static final String DEBUG_TAG = "ExpenseReportAdapter";
+    private Comparator<ExpenseReport> dateComparatorDesc = new Comparator<ExpenseReport>() {
+        @Override
+        public int compare(ExpenseReport lhs, ExpenseReport rhs) {
+            Calendar total = Calendar.getInstance();
+            total.setTimeInMillis(Long.MAX_VALUE);
+            if (lhs.getDate().equals(total) && rhs.getDate().equals(total)) {
+                return 0;
+            }
 
+            if (lhs.getDate().equals(total)) {
+                return 1;
+            }
+
+            if (rhs.getDate().equals(total)) {
+                return -1;
+            }
+
+
+            return rhs.getDate().compareTo(lhs.getDate());
+        }
+    };
+    private Comparator<ExpenseReport> dateComparator = new Comparator<ExpenseReport>() {
+        @Override
+        public int compare(ExpenseReport lhs, ExpenseReport rhs) {
+            return lhs.getDate().compareTo(rhs.getDate());
+        }
+    };
+    private Comparator<ExpenseReport> titleComparator = new Comparator<ExpenseReport>() {
+        @Override
+        public int compare(ExpenseReport lhs, ExpenseReport rhs) {
+
+            return lhs.getInfo().compareTo(rhs.getInfo());
+        }
+    };
 
     public ExpenseReportAdapter(List<ExpenseReport> expenses, Context context) {
         mExpenses = expenses;
         mContext = context;
     }
-    public void saveReport(Client client) {
+
+    public void sortByDate(boolean order) {
+        if (!order) {
+            Collections.sort(mExpenses, dateComparator);
+
+        } else {
+            Collections.sort(mExpenses, dateComparatorDesc);
+
+        }
+
+        notifyDataSetChanged();
+    }
+
+    public void sortByTitle(boolean order) {
+        Collections.sort(mExpenses, order ? titleComparator : Collections.reverseOrder(titleComparator));
+        notifyDataSetChanged();
+    }
+
+    public String saveReport(Client client) {
         if (mExpenses.size() == 0) {
             Toast.makeText(mContext, R.string.report_nothing_to_save, Toast.LENGTH_SHORT).show();
-            return;
+            return "";
         }
 
         final File file = ReportExportUtils.getFileNameByTime(mContext,
@@ -487,7 +747,7 @@ class ExpenseReportAdapter extends RecyclerView.Adapter<ExpenseReportAdapter.Vie
 
         if (file == null) {
             Log.i(DEBUG_TAG, "FILE NULL");
-            return;
+            return "";
         }
 
         AlertDialog alertDialog = new AlertDialog.Builder(mContext)
@@ -503,6 +763,8 @@ class ExpenseReportAdapter extends RecyclerView.Adapter<ExpenseReportAdapter.Vie
 
         alertDialog.show();
 
+        return file.getPath();
+
     }
 
     public void setData(List<ExpenseReport> data) {
@@ -511,16 +773,29 @@ class ExpenseReportAdapter extends RecyclerView.Adapter<ExpenseReportAdapter.Vie
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+//        int layoutRes = viewType == TYPE_NORMAL ? R.layout.view_report_expense_row
+//                : R.layout.view_report_expense_row_last;
+        int layoutRes = R.layout.view_report_expense_row;
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.view_report_expense_row, parent, false);
+                .inflate(layoutRes, parent, false);
         return new ViewHolder(view);
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if (position == mExpenses.size() - 1) {
+            return TYPE_TOTAL;
+        } else {
+            return TYPE_NORMAL;
+        }
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         ExpenseReport current = mExpenses.get(position);
         holder.bindView(current);
-        if (current.getDate() == null) {
+
+        if (position == getItemCount() - 1) {
             holder.showYear(-1);
             return;
         }
@@ -539,16 +814,30 @@ class ExpenseReportAdapter extends RecyclerView.Adapter<ExpenseReportAdapter.Vie
         return mExpenses.size();
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.date) TextView date;
-        @Bind(R.id.tripTitle) TextView tripTitle;
-        @Bind(R.id.hotel) TextView hotel;
-        @Bind(R.id.cab) TextView cab;
-        @Bind(R.id.gifts) TextView gifts;
-        @Bind(R.id.other) TextView other;
+    public String getReport(Client mClient) {
+        return null;
+    }
 
-        @Bind(R.id.yearChanged) View yearChanged;
-        @Bind(R.id.year) TextView year;
+    class ViewHolder extends RecyclerView.ViewHolder {
+        @Bind(R.id.date)
+        TextView date;
+        @Bind(R.id.tripTitle)
+        TextView tripTitle;
+        @Bind(R.id.hotel)
+        TextView hotel;
+        @Bind(R.id.restaurant)
+        TextView restaurant;
+        @Bind(R.id.cab)
+        TextView cab;
+        @Bind(R.id.gifts)
+        TextView gifts;
+        @Bind(R.id.other)
+        TextView other;
+
+        @Bind(R.id.yearChanged)
+        View yearChanged;
+        @Bind(R.id.year)
+        TextView year;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -557,17 +846,18 @@ class ExpenseReportAdapter extends RecyclerView.Adapter<ExpenseReportAdapter.Vie
         }
 
         public void bindView(ExpenseReport row) {
-            if (row.getDate() != null) {
+            if (getAdapterPosition() != getItemCount() - 1) {
                 date.setText(DateTimeHelper.formatShortDate(row.getDate().getTime()));
             }
 
-            tripTitle.setText(row.getInfo());
 
             tripTitle.setText(row.getInfo());
             hotel.setText(ReportExportUtils.formatMoney(row.getHotel()));
+            restaurant.setText(ReportExportUtils.formatMoney(row.getRestaurant()));
             cab.setText(ReportExportUtils.formatMoney(row.getCabs()));
             gifts.setText(ReportExportUtils.formatMoney(row.getGifts()));
             other.setText(ReportExportUtils.formatMoney(row.getOther()));
+
 
         }
 
@@ -582,26 +872,46 @@ class ExpenseReportAdapter extends RecyclerView.Adapter<ExpenseReportAdapter.Vie
     }
 
     private class GenerateExpenseReport extends AsyncTask<File, Void, Boolean> {
+
+        File mFile;
+        int mId;
+        NotificationCompat.Builder mBuilder;
+        NotificationManager mNotificationManager;
+
+
+
+
+        @Override
+        protected void onPreExecute() {
+
+        }
+
         @Override
         protected Boolean doInBackground(File... params) {
             if (params.length != 1) {
                 return null;
             }
 
-            File file = params[0];
+            mFile = params[0];
+            File parentDir = mFile.getParentFile();
+            if (!parentDir.exists()) {
+                if (!parentDir.mkdir()) {
+                    return false;
+                }
+            }
 
 /** 0. name | 1. date | 2. title | 3. hotel | 4. resturant | 5. cab | 6. gift | 7. other */
-            try (MyCsvWriter writer = new MyCsvWriter(file)){
+            try (MyCsvWriter writer = new MyCsvWriter(mFile)) {
 
                 String[] header = {
                         mContext.getString(R.string.client_name),
-                mContext.getString(R.string.start_time),
-                mContext.getString(R.string.trip_title),
-                mContext.getString(R.string.hotel),
-                mContext.getString(R.string.restaurant),
-                mContext.getString(R.string.cab),
-                mContext.getString(R.string.gifts),
-                mContext.getString(R.string.other)
+                        mContext.getString(R.string.start_time),
+                        mContext.getString(R.string.trip_title),
+                        mContext.getString(R.string.hotel),
+                        mContext.getString(R.string.restaurant),
+                        mContext.getString(R.string.cab),
+                        mContext.getString(R.string.gifts),
+                        mContext.getString(R.string.other)
                 };
 
                 writer.addRow(header);
@@ -618,7 +928,7 @@ class ExpenseReportAdapter extends RecyclerView.Adapter<ExpenseReportAdapter.Vie
                         row[0] = "";
                     }
 
-                    if (report.getDate() != null) {
+                    if (report.getDate().getTimeInMillis() != Long.MAX_VALUE) {
                         row[1] = DateTimeHelper.formatDateForExport(report.getDate().getTime());
                     } else {
                         row[1] = "";
@@ -637,9 +947,12 @@ class ExpenseReportAdapter extends RecyclerView.Adapter<ExpenseReportAdapter.Vie
                 writer.flush();
                 writer.close();
 
+                Thread.sleep(1000);
                 return true;
 
             } catch (IOException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
                 e.printStackTrace();
             }
 
@@ -648,8 +961,45 @@ class ExpenseReportAdapter extends RecyclerView.Adapter<ExpenseReportAdapter.Vie
 
         @Override
         protected void onPostExecute(Boolean result) {
-            Toast.makeText(mContext, result ? R.string.message_finish_export : R.string.message_export_failed,
-                    Toast.LENGTH_SHORT).show();
+//            Toast.makeText(mContext, result ? R.string.message_finish_export : R.string.message_export_failed,
+//                    Toast.LENGTH_SHORT).show();
+
+            mNotificationManager = (NotificationManager) mContext
+                    .getSystemService(Context.NOTIFICATION_SERVICE);
+            mBuilder = new NotificationCompat.Builder(mContext);
+
+            if (result) {
+                mBuilder.setSmallIcon(R.drawable.ic_save)
+                        .setContentTitle(mContext.getString(R.string.message_finish_export))
+                        .setContentText(mFile.getPath())
+                        .setContentInfo("Open the report")
+                        .setAutoCancel(true);
+
+                Intent resultIntent = ReportExportUtils.getOpenIntent(mFile, mContext);
+                if (resultIntent == null) {
+                    return;
+                }
+
+                TaskStackBuilder stackBuilder = TaskStackBuilder.create(mContext);
+                stackBuilder.addParentStack(ReportExpenseActivity.class);
+                stackBuilder.addNextIntent(resultIntent);
+
+                PendingIntent resultPendingIntent =
+                        stackBuilder.getPendingIntent(
+                                0,
+                                PendingIntent.FLAG_UPDATE_CURRENT
+                        );
+
+                mBuilder.setContentIntent(resultPendingIntent);
+                mNotificationManager.notify(mId, mBuilder.build());
+            } else {
+                Toast.makeText(mContext, R.string.message_export_failed, Toast.LENGTH_SHORT)
+                        .show();
+            }
+
+
         }
     }
+
+
 }

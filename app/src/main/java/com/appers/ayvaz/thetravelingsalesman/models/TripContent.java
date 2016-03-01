@@ -212,4 +212,36 @@ public class TripContent {
         String[] whereArgs = new String[]{Integer.toString(id)};
         return mDatabase.delete(DbSchema.TripTable.NAME, whereClause, whereArgs) > 0;
     }
+
+
+    /** added by zoe, for report **/
+
+    public List<Trip> getTrips(Calendar start, Calendar end) {
+        String startDate = CalendarToString(start);
+        String endDate = CalendarToString(end);
+
+        List<Trip> trips = new ArrayList<>();
+        String whereClause = DbSchema.TripTable.Cols.TRIP_DATE_FROM + " < ?"
+                + " AND "
+                + DbSchema.TripTable.Cols.TRIP_DATE_FROM + " > ?";
+
+        String[] whereArgs = new String[] {
+                endDate,
+                startDate
+        };
+
+        String sortOrder = DbSchema.TripTable.Cols.TRIP_DATE_FROM + " DESC";
+
+
+        try (TripCursorWrapper cursor = queryTrips(whereClause, whereArgs,
+                sortOrder)) {
+            cursor.moveToFirst();
+            while (!cursor.isAfterLast()) {
+                trips.add(cursor.getTrip());
+                cursor.moveToNext();
+            }
+        }
+
+        return trips;
+    }
 }

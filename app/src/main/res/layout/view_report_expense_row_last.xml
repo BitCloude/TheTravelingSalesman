@@ -3,6 +3,27 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:id="@+id/yearChanged"
+        android:visibility="gone"
+        android:background="@color/YearBackground"
+        >
+
+        <TextView
+            android:id="@+id/year"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="2014"
+            android:textColor="#ffffff"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:gravity="center" />
+        <include layout = "@layout/view_divider_horizontal"
+            />
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -16,20 +37,19 @@
             android:id="@+id/dateHeader"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="2.5"
+            android:layout_weight="0"
             android:layout_alignParentTop="true"
-            android:layout_alignParentStart="true">
+            android:layout_alignParentStart="true"
+            android:visibility="gone">
 
         </RelativeLayout>
-
-        <include layout="@layout/view_divider_vertical" />
 
         <RelativeLayout
             android:id="@+id/tripHeader"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_marginEnd="5dp"
-            android:layout_weight="2.5"
+            android:layout_weight="5"
             android:layout_marginStart="5dp">
 
             <TextView
@@ -56,7 +76,7 @@
             android:layout_weight="2">
 
             <TextView
-                android:id="@+id/hotelSum"
+                android:id="@+id/hotel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
@@ -81,7 +101,7 @@
             android:layout_weight="2">
 
             <TextView
-                android:id="@+id/cabSum"
+                android:id="@+id/cab"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
@@ -106,7 +126,7 @@
             android:layout_weight="2">
 
             <TextView
-                android:id="@+id/restaurantSum"
+                android:id="@+id/restaurant"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
@@ -131,7 +151,7 @@
             android:layout_weight="2">
 
             <TextView
-                android:id="@+id/giftSum"
+                android:id="@+id/gifts"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
@@ -153,7 +173,7 @@
             android:layout_weight="2">
 
             <TextView
-                android:id="@+id/otherSum"
+                android:id="@+id/other"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"

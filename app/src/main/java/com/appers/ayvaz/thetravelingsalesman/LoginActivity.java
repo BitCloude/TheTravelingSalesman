@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -66,10 +67,9 @@ public class LoginActivity extends AppCompatActivity {
 
         mSharedPreferences = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
         // if not registered, go to register mode
-        mModeRegister = TextUtils.isEmpty(mSharedPreferences.getString(KEY_USERNAME, ""));
 
-        if (!mModeRegister &&
-                TextUtils.isEmpty(mSharedPreferences.getString(KEY_PASSWORD, ""))) {
+
+        if (noPassword()) {
             // no password, start application
             enterApplication();
             return;
@@ -92,12 +92,13 @@ public class LoginActivity extends AppCompatActivity {
 
 
         if (mModeRegister) {
-            mSignInButton.setText(R.string.action_register);
+            mSignInButton.setText(android.R.string.ok);
             mPasswordView.setVisibility(View.GONE);
             mLaterButton.setVisibility(View.VISIBLE);
             mLaterButton.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    setFirstTime(false);
                     finish();
                 }
             });
@@ -135,6 +136,11 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
+    private void setFirstTime(Boolean bool) {
+        mSharedPreferences.edit().putBoolean(LoginUtils.KEY_FIRST_TIME, bool)
+                .apply();
+    }
+
     private void createUser() {
         String name = mUserNameView.getText().toString();
         if (!LoginUtils.isNameValid(name)) {
@@ -149,12 +155,14 @@ public class LoginActivity extends AppCompatActivity {
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        setFirstTime(false);
                         Intent intent = new Intent(LoginActivity.this, SettingsActivity.class);
                         startActivity(intent);
                     }
                 }).setNegativeButton(R.string.not_now, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                setFirstTime(false);
                 enterApplication();
             }
         })
@@ -231,50 +239,24 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
-    /**
-     * Shows the progress UI and hides the login form.
-     */
-
-    /*
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-    private void showProgress(final boolean show) {
-        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
-        // for very easy animations. If available, use these APIs to fade-in
-        // the progress spinner.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
-
-            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-            mLoginFormView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-                }
-            });
-
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mProgressView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-                }
-            });
-        } else {
-            // The ViewPropertyAnimator APIs are not available, so simply show
-            // and hide the relevant UI components.
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-        }
-    }
-
-
-*/
 
     private void enterApplication() {
         Intent intent = new Intent(this, LandingActivity.class);
         startActivity(intent);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (noPassword()) {
+            finish();
+        }
+    }
+
+    private boolean noPassword() {
+        mModeRegister = mSharedPreferences.getBoolean(LoginUtils.KEY_FIRST_TIME, true);
+        return !mModeRegister &&
+                TextUtils.isEmpty(mSharedPreferences.getString(KEY_PASSWORD, ""));
 
     }
 
@@ -284,125 +266,12 @@ public class LoginActivity extends AppCompatActivity {
 
 
 
-    /* private void register() {
-        mSignInButton.setClickable(false);
-
-
-
-        // Reset errors.
-        mUserNameView.setError(null);
-        mPasswordView.setError(null);
-        mPasswordConfirmView.setError(null);
-
-        // Store values at the time of the login attempt.
-        String username = mUserNameView.getText().toString();
-        String password = mPasswordView.getText().toString();
-        String confirm = mPasswordConfirmView.getText().toString();
-
-
-
-
-        boolean cancel = false;
-        View focusView = null;
-
-        // Check for a valid password, if the user entered one.
-        if (!TextUtils.isEmpty(password) && !LoginUtils.isPasswordValid(password)) {
-            mPasswordView.setError(getString(R.string.error_invalid_password));
-            focusView = mPasswordView;
-            cancel = true;
-        }
-
-        if (mConfirmation.getVisibility() == View.VISIBLE
-        && !isPasswordConfirmed(confirm)) {
-            mPasswordConfirmView.setError(getString(R.string.error_invalid_confirm_password));
-            focusView = mPasswordConfirmView;
-            cancel = true;
-        }
-
-        // Check for a valid email address.
-        if (!LoginUtils.isNameValid(username)) {
-            mUserNameView.setError(getString(R.string.error_invalid_username));
-            focusView = mUserNameView;
-            cancel = true;
-        }
-
-        if (cancel) {
-            // There was an error; don't attempt login and focus the first
-            // form field with an error.
-            focusView.requestFocus();
-        } else {
-            // Show a progress spinner, and kick off a background task to
-            // perform the user login attempt.
-            showProgress(true);
-            SharedPreferences.Editor editor = mSharedPreferences.edit();
-            editor.putString(KEY_USERNAME, username);
-
-            if (!TextUtils.isEmpty(password)) {
-                editor.putString(KEY_PASSWORD, LoginUtils.encrypt(password));
-            }
-
-            editor.apply();
-            showProgress(false);
-            unlock();
-            Toast.makeText(this, R.string.register_success, Toast.LENGTH_LONG).show();
-            enterApplication();
-
-        }
-
-        mSignInButton.setClickable(true);
-
-
-    }
-*/
 
     @Override
     protected void onStart() {
         super.onStart();
         mBackCount = 0;
     }
-
-    /**
-     * Represents an asynchronous login/registration task used to authenticate
-     * the user.
-     */
-    /*public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
-
-
-        private final String mPassword;
-
-        UserLoginTask(String password) {
-
-            mPassword = password;
-        }
-
-        @Override
-        protected Boolean doInBackground(Void... params) {
-
-            SharedPreferences sharedPreferences = getSharedPreferences(PREF_NAME, 0);
-            String password = sharedPreferences.getString(KEY_PASSWORD, "");
-
-            return isPasswordConfirmed(password);
-        }
-
-        @Override
-        protected void onPostExecute(final Boolean success) {
-            mAuthTask = null;
-            showProgress(false);
-
-            if (success) {
-                finish();
-            } else {
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
-                mPasswordView.requestFocus();
-            }
-        }
-
-        @Override
-        protected void onCancelled() {
-            mAuthTask = null;
-            showProgress(false);
-        }
-    }*/
 
 
     private void lock() {

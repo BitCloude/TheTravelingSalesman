@@ -11,6 +11,7 @@ import com.appers.ayvaz.thetravelingsalesman.database.DatabaseHelper;
 import com.appers.ayvaz.thetravelingsalesman.database.DbSchema;
 import com.appers.ayvaz.thetravelingsalesman.database.DbSchema.ExpenseTable;
 import com.appers.ayvaz.thetravelingsalesman.database.ExpenseCursorWrapper;
+import com.appers.ayvaz.thetravelingsalesman.database.TripCursorWrapper;
 
 import org.joda.time.LocalDate;
 
@@ -169,32 +170,61 @@ public class ExpenseContent {
         return mDatabase.delete(ExpenseTable.NAME, whereClause, whereArgs) > 0;
     }
 
+
+
+    /** added by Zoe */
+
     public List<Expense> getTripExpenses(int tripId, Calendar start, Calendar end) {
         List<Expense> result = new ArrayList<>();
-//        LocalDate startDate = LocalDate.fromCalendarFields(start);
-//        LocalDate endDate = LocalDate.fromCalendarFields(end);
-
         try (ExpenseCursorWrapper cursor = queryExpenses(ExpenseTable.Cols.EXPENSE_TRIP_ID + " = ?"
-        , new String[]{Integer.toString(tripId)}, null)) {
+                , new String[]{Integer.toString(tripId)}, null)) {
             if (cursor == null) {
                 return result;
             }
 
             while (cursor.moveToNext()) {
                 Expense e = cursor.getExpense();
-//                LocalDate current = LocalDate.fromCalendarFields(e.getDate_from());
-//                if (current.isBefore(startDate) || current.isAfter(endDate)) {
-//                    continue;
-//                }
                 result.add(e);
             }
         }
-            catch (Exception e) {
+        catch (Exception e) {
             e.printStackTrace();
         }
 
         return result;
 
-
     }
+
+    public List<Expense> getOrphanExpense(Calendar start, Calendar end) {
+        String startDate = CalendarToString(start);
+        String endDate = CalendarToString(end);
+        String AND = " and ";
+        String selection = ExpenseTable.Cols.EXPENSE_TRIP_ID + " = ?"
+                + AND
+                + ExpenseTable.Cols.EXPENSE_DATE_FROM + " >= ?"
+                + AND
+                + ExpenseTable.Cols.EXPENSE_DATE_FROM + " <= ?";
+
+        String[] args = new String[] {
+                Integer.toString(0),
+                startDate,
+                endDate
+        };
+
+        String sortOrder = ExpenseTable.Cols.EXPENSE_DATE_FROM + " DESC";
+        List<Expense> result = new ArrayList<>();
+
+        try (ExpenseCursorWrapper cursor = queryExpenses(selection, args, sortOrder)) {
+
+            while (cursor.moveToNext()) {
+                result.add(cursor.getExpense());
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
 }

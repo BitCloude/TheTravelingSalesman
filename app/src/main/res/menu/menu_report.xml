@@ -13,4 +13,9 @@
         android:icon="@drawable/ic_email_white_24dp"
         android:id="@+id/action_send"/>
 
+    <item
+        android:id="@+id/action_open_folder"
+        app:showAsAction="never"
+        android:title="@string/action_open_folder"/>
+
 </menu>

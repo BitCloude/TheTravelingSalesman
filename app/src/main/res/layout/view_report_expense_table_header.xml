@@ -22,7 +22,7 @@
             android:layout_alignParentStart="true">
 
             <TextView
-                android:id="@+id/taskDate"
+                android:id="@+id/date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
@@ -45,7 +45,7 @@
         <include layout="@layout/view_divider_vertical" />
 
         <RelativeLayout
-            android:id="@+id/taskHeader"
+            android:id="@+id/titleHeader"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_marginEnd="5dp"
@@ -53,16 +53,16 @@
             android:layout_marginStart="5dp">
 
             <TextView
-                android:id="@+id/taskTitle"
+                android:id="@+id/title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="@string/task"
+                android:text="@string/trip"
                 android:textColor="@color/TextPrimary"
                 android:lines="2"
+                android:layout_marginLeft="6dp"
                 android:layout_centerVertical="true"
-                android:layout_alignParentStart="true"
-                android:layout_marginLeft="6dp" />
+                android:layout_centerHorizontal="true" />
 
             <ImageView
                 android:id="@+id/titleSorted"
@@ -71,7 +71,8 @@
                 android:src="@drawable/ic_dark_sortable"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentStart="false"
-                android:layout_centerVertical="true" />
+                android:layout_centerVertical="true"
+                android:visibility="gone" />
 
         </RelativeLayout>
 

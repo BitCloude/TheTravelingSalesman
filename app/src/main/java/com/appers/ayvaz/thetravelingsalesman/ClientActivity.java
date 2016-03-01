@@ -5,6 +5,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.CalendarContract;
 import android.support.design.widget.TabLayout;
@@ -151,6 +152,8 @@ public class ClientActivity extends BaseActivity {
                 createNewTask();
             }
         });
+
+        new ClearEvents().execute();
 
 
     }
@@ -302,6 +305,17 @@ public class ClientActivity extends BaseActivity {
     interface ClientChanged {
         void updateUI(Client client);
     }
+
+    private class ClearEvents extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            TaskManager.get(getApplicationContext()).clearTask();
+            return null;
+        }
+    }
+
+
 
 
 }

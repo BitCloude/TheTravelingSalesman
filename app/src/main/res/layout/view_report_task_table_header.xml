@@ -22,7 +22,7 @@
             android:layout_marginStart="5dp">
 
             <TextView
-                android:id="@+id/taskTitle"
+                android:id="@+id/titleHeader"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
@@ -34,9 +34,9 @@
                 android:id="@+id/titleSorted"
                 android:layout_width="14dp"
                 android:layout_height="14dp"
-                android:layout_alignTop="@+id/taskTitle"
+                android:layout_alignTop="@+id/titleHeader"
                 android:layout_marginStart="21dp"
-                android:layout_toEndOf="@+id/taskTitle"
+                android:layout_toEndOf="@+id/titleHeader"
                 android:src="@drawable/ic_dark_sortable" />
         </RelativeLayout>
 
