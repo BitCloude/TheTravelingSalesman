@@ -62,7 +62,8 @@
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
                     android:text="From Hawaii to Paris "
-                    android:textSize="20dp"/>
+                    android:maxLines="1"
+                    android:textSize="17dp"/>
 
                 <TextView
                     android:layout_marginTop="5dp"
@@ -72,6 +73,7 @@
                     android:layout_centerHorizontal="true"
                     android:text="Description of flight"
                     android:textSize="15dp"
+                    android:maxLines="1"
                     android:layout_below="@id/fragment_trips_from"/>
 
 

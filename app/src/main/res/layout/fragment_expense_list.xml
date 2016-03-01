@@ -74,10 +74,11 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
                     android:text="Description "
+                    android:maxLines="1"
                     android:layout_toLeftOf="@id/fragment_expense_amount"
                     android:layout_marginStart="5dp"
                     android:layout_above="@+id/fragment_expense_trip"
-                    android:textSize="20dp"/>
+                    android:textSize="17dp"/>
 
                 <TextView
                     android:layout_marginTop="5dp"
@@ -87,6 +88,7 @@
                     android:layout_centerHorizontal="true"
                     android:text="Expense trip"
                     android:textSize="15dp"
+                    android:maxLines="1"
                     android:layout_below="@id/fragment_expense_amount"/>
 
 
