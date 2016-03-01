@@ -5,8 +5,9 @@
         android:id="@+id/action_trip"
         android:title="@string/trip"
         app:showAsAction="ifRoom"
-        android:icon="@drawable/ic_card_travel_white_18dp"
+
         />
+    <!--android:icon="@drawable/ic_card_travel_white_18dp"-->
 
     <item
         android:id="@+id/action_expense"

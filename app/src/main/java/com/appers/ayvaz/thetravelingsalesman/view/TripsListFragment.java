@@ -85,7 +85,15 @@ public class TripsListFragment extends Fragment {
         Calendar dateFrom = mTrip.getDate_from();
         date.setText(String.format("%tm/%td/%tY", dateFrom, dateFrom, dateFrom));
         //trip_from_to.setText("From " + mTrip.getTrip_from() + " to " + mTrip.getTrip_to());
-        trip_from_to.setText(mTrip.toString());
+        String locFrom = mTrip.getTrip_from();
+        String locTo = mTrip.getTrip_to();
+        if(locFrom.length() > 13){
+            locFrom = locFrom.substring(0,13) +"...";
+        }
+        if(locTo.length() > 13){
+            locTo = locTo.substring(0,13) +"...";
+        }
+        trip_from_to.setText(locFrom + " to " + locTo);
         description.setText(mTrip.getDescription());
         if (mTrip.getType() != null) {
         switch (mTrip.getType()){

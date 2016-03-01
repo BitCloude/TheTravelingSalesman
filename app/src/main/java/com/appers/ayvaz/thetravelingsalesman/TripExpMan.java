@@ -22,6 +22,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -103,7 +104,7 @@ public class TripExpMan extends NavigationDrawerActivity implements SectionsPage
     /**
      * The {@link ViewPager} that will host the section contents.
      */
-    private ViewPager mViewPager;
+    private static ViewPager mViewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -264,10 +265,10 @@ public class TripExpMan extends NavigationDrawerActivity implements SectionsPage
                 linear.removeView(contextChildView);
                 Toast.makeText(getApplicationContext(), "Delete", Toast.LENGTH_SHORT).show();
                 return true;
-            }
+    }
 
-             }
-            return super.onContextItemSelected(item);
+}
+return super.onContextItemSelected(item);
 
 
 
@@ -278,6 +279,14 @@ public class TripExpMan extends NavigationDrawerActivity implements SectionsPage
         super.onNewIntent(intent);
         setIntent(intent);
     }
+    public static void setCurrentTab(int item, Context context){
+        mViewPager.setCurrentItem(item);
+        Toast.makeText(context,"I Tried", Toast.LENGTH_LONG).show();
+
+    }
+    public static int getCurrentItem(){
+       return mViewPager.getCurrentItem();
+    }
 
     @Override
     protected void onResume() {
@@ -285,16 +294,18 @@ public class TripExpMan extends NavigationDrawerActivity implements SectionsPage
 
         String request = null;
         Intent incoming = getIntent();
-        if(incoming != null && incoming.hasExtra("ORIGIN"))
+        if(incoming != null && incoming.hasExtra("ORIGIN")) {
             request = incoming.getStringExtra("ORIGIN");
+            getIntent().removeExtra("ORIGIN");
+        }
         if(incoming != null && incoming.hasExtra("CLIENT"))
             clientDefault = incoming.getStringExtra("CLIENT");
 
         if(request !=null && request.equals("EXPENSE")) {
             mViewPager.setCurrentItem(1); //expense tab
-            Toast.makeText(getApplicationContext(),"expense)", Toast.LENGTH_LONG).show();
+            //Toast.makeText(getApplicationContext(),"expense", Toast.LENGTH_LONG).show();
         }
-        else
+        else if(request != null)
             mViewPager.setCurrentItem(0);
 
         if(fragmentSection == 0)
@@ -356,15 +367,20 @@ public class TripExpMan extends NavigationDrawerActivity implements SectionsPage
              */
             SectionNumberHolder mCallback;
 
-
+            int currentTab;
             static Client selection=null;
-            AutoCompleteTextView autoCompleteTextView;
+            //AutoCompleteTextView autoCompleteTextView;
             TextView dateSet;
             ClientManager clientManager;
             List<Client> clientList;
             List<Object> list;
             boolean tripBool;
             ExpenseContent expenseContent;
+            boolean date_not_set = true;
+            View view_client;
+            TextView clientNameView;
+            ImageButton selectClient;
+            private static final int REQUEST_CLIENT = 2;
 
             TripContent tripContent;
 
@@ -409,22 +425,33 @@ public class TripExpMan extends NavigationDrawerActivity implements SectionsPage
 
                 dateSet = (TextView) rootView.findViewById(R.id.expensesDateText);
                 button = (ImageButton) rootView.findViewById(R.id.fragmentCalenderButton);
-                autoCompleteTextView = (AutoCompleteTextView) rootView.findViewById(R.id.tripExpManAutoClient);
+                clientNameView = (TextView) rootView.findViewById(R.id.client_name_trip_exp_man);
+                selectClient = (ImageButton) rootView.findViewById(R.id.selectClient_trip_exp_man);
+                //autoCompleteTextView = (AutoCompleteTextView) rootView.findViewById(R.id.tripExpManAutoClient);
                 linearLayout = (LinearLayout) rootView.findViewById(R.id.fragmentLinearListLayout);
                 //mCallback.reportSection(getArguments().getInt(ARG_SECTION_NUMBER));
                 clientManager= ClientManager.get(getActivity());
-                clientList = clientManager.getClients();
+                /*clientList = clientManager.getClients();
                 Client clientAll = new Client();
                 clientAll.setFirstName("All");
                 clientAll.setLastName("");
                 ArrayAdapter<Client> adapter = new ArrayAdapter<Client>(getActivity(), android.R.layout.simple_dropdown_item_1line, clientList);
                 adapter.add(clientAll);
-                autoCompleteTextView.setAdapter(adapter);
+                //autoCompleteTextView.setAdapter(adapter);
+                */
                 expenseContent = ExpenseContent.get(getActivity());
 
                 tripContent = TripContent.get(getActivity());
 
-
+                selectClient.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        selection = null;
+                        currentTab = TripExpMan.getCurrentItem();
+                        startActivityForResult(new Intent(getContext(), ClientPickActivity.class),
+                                REQUEST_CLIENT);
+                    }
+                });
 
                 button.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -439,7 +466,7 @@ public class TripExpMan extends NavigationDrawerActivity implements SectionsPage
                 });
 
 
-
+                /*
                 autoCompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -449,35 +476,49 @@ public class TripExpMan extends NavigationDrawerActivity implements SectionsPage
                     }
                 });
 
-
+*/
 
                 return rootView;
             }
            // format("%tD", cal);
             public void onActivityResult(int request_code, int resultCode, Intent intent){
-                Bundle bundle = new Bundle();
-                bundle = intent.getExtras();
-                date = (Calendar) bundle.get("com.appers.avyaz.thetravelingsalesman.task.date");
-                linearLayout.removeAllViews();
-                display();
-
+                if(intent!= null) {
+                    if (request_code == REQUEST_CLIENT) {
+                       // TripExpMan.setCurrentTab(currentTab,getActivity());
+                        UUID uuid = UUID.fromString(intent.getStringExtra(ClientPickActivity.EXTRA_CLIENT_ID));
+                        selection = ClientManager.get(getContext()).getClient(uuid);
+                    } else {
+                        Bundle bundle;
+                        bundle = intent.getExtras();
+                        date = (Calendar) bundle.get("com.appers.avyaz.thetravelingsalesman.task.date");
+                        date_not_set = false;
+                        linearLayout.removeAllViews();
+                        display();
+                    }
+                }
             }
 
             @Override
             public void onResume() {
                 super.onResume();
                 linearLayout.removeAllViews();
-                if(TripExpMan.clientDefault != null && TripCursorWrapper.isUUIDValid(TripExpMan.clientDefault)) {
-                    selection = clientManager.getClient(UUID.fromString(TripExpMan.clientDefault));
-                    autoCompleteTextView.setText(selection.toString());
+               // if(TripExpMan.clientDefault != null && TripCursorWrapper.isUUIDValid(TripExpMan.clientDefault)) {
+                    //selection = clientManager.getClient(UUID.fromString(TripExpMan.clientDefault));
+                    if(selection != null)
+                    clientNameView.setText(selection.toString());
+                    else
+                        clientNameView.setText("Client Not Selected");
 
-                }
+              //  }
                 display();
             }
 
             public void display(){
 
-                dateSet.setText(String.format("%tm/%td/%tY", date,date,date));
+                if(!date_not_set){
+                dateSet.setText(String.format("%tm/%td/%tY", date,date,date));}
+                else {
+                    dateSet.setText("--/--/----");}
 
                 if(selection == null || selection.getFirstName().equals("All")){
                     if (getArguments().getInt(ARG_SECTION_NUMBER) == 1) {
@@ -505,7 +546,7 @@ public class TripExpMan extends NavigationDrawerActivity implements SectionsPage
                 while(i < list.size()) {
                     if(tripBool){
                         Trip trip = (Trip)list.get(i);
-                        if(TripContent.compareCalendars(trip.getDate_from(),date) == -1){
+                        if( !date_not_set && TripContent.compareCalendars(trip.getDate_from(),date) == -1){
                             i++;
                             continue;
                         }
@@ -517,7 +558,7 @@ public class TripExpMan extends NavigationDrawerActivity implements SectionsPage
                     }
                     else{
                         Expense expense = (Expense)list.get(i);
-                        if(TripContent.compareCalendars(expense.getDate_from(),date) == -1){
+                        if(!date_not_set && TripContent.compareCalendars(expense.getDate_from(),date) == -1){
                             i++;
                             continue;
                         }
