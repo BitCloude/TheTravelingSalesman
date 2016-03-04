@@ -2,10 +2,9 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 23
-    buildToolsVersion "23.0.1"
-
+    buildToolsVersion "23.0.2"
     defaultConfig {
-        applicationId "com.appers.ayvaz.thetravelingsalesman"
+        applicationId 'com.simbiosyscorp.thetravelingsalesman'
         minSdkVersion 19
         targetSdkVersion 19
         versionCode 1
@@ -17,7 +16,6 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-
     packagingOptions {
         exclude 'META-INF/DEPENDENCIES.txt'
         exclude 'META-INF/LICENSE.txt'
@@ -30,11 +28,12 @@ android {
         exclude 'META-INF/dependencies.txt'
         exclude 'META-INF/LGPL2.1'
     }
+    productFlavors {
+    }
 }
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-
     compile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:23.1.1'
     compile 'com.android.support:design:23.1.1'
@@ -44,7 +43,6 @@ dependencies {
     compile 'com.jakewharton:butterknife:7.0.1'
     compile 'com.wefika:collapse-calendar-view:0.1.0'
     compile 'org.apache.commons:commons-lang3:3.4'
-
 }
 
 

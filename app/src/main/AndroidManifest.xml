@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.appers.ayvaz.thetravelingsalesman">
+    package="com.simbiosyscorp.thetravelingsalesman">
 
     <uses-feature
         android:name="android.hardware.camera"
@@ -22,40 +22,40 @@
         android:theme="@style/AppTheme"
         tools:replace="android:allowBackup">
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".Expenses"
+            android:name=".ui.Expenses"
             android:label="@string/title_activity_expenses"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".ExpenseAdd"
+            android:name=".ui.ExpenseAdd"
             android:label="@string/title_activity_expense_add"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".Travel"
+            android:name=".ui.Travel"
             android:label="@string/title_activity_travel"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".TravelDetail"
+            android:name=".ui.TravelDetail"
             android:label="@string/title_activity_travel_detail"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".ClientEditActivity" />
+        <activity android:name=".ui.ClientEditActivity" />
         <activity
-            android:name=".ReportsActivity"
+            android:name=".ui.ReportsActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".TripExpMan"
+            android:name=".ui.TripExpMan"
             android:label="@string/title_activity_trip_exp_man"
             android:launchMode="singleTask"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".NotificationActivity"
+            android:name=".ui.NotificationActivity"
             android:label="@string/title_activity_notification"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".LandingActivity"
+            android:name=".ui.LandingActivity"
             android:launchMode="singleTask"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -69,13 +69,13 @@
                 android:resource="@xml/searchable" />
         </activity>
         <activity
-            android:name=".ClientActivity"
-            android:parentActivityName=".LandingActivity"
+            android:name=".ui.ClientActivity"
+            android:parentActivityName=".ui.LandingActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".ClientInfoActivity"
+            android:name=".ui.ClientInfoActivity"
             android:label="@string/title_activity_client_info"
-            android:parentActivityName=".LandingActivity"
+            android:parentActivityName=".ui.LandingActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <!--
         activity
@@ -89,11 +89,11 @@
         -->
 
         <activity
-            android:name=".TaskListActivity"
+            android:name=".ui.TaskListActivity"
             android:launchMode="singleTask"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".TaskSearchResultActivity"
+            android:name=".ui.TaskSearchResultActivity"
             android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
@@ -104,31 +104,30 @@
                 android:resource="@xml/task_searchable" />
         </activity>
         <activity
-            android:name=".ClientPickActivity"
+            android:name=".ui.ClientPickActivity"
             android:launchMode="singleTop" />
         <activity
-            android:name=".ReportTaskActivity"
+            android:name=".ui.ReportTaskActivity"
             android:launchMode="singleTask"
-            android:parentActivityName=".ReportsActivity" />
+            android:parentActivityName=".ui.ReportsActivity" />
         <activity
-            android:name=".ReportExpenseActivity"
+            android:name=".ui.ReportExpenseActivity"
             android:launchMode="singleTask"
-            android:parentActivityName=".ReportsActivity" />
+            android:parentActivityName=".ui.ReportsActivity" />
         <activity
-            android:name=".LoginActivity"
+            android:name=".ui.LoginActivity"
             android:label="@string/app_name"
             android:launchMode="singleTask"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".BaseActivity" />
+        <activity android:name=".ui.BaseActivity" />
         <activity
-            android:name=".SettingsActivity"
+            android:name=".ui.SettingsActivity"
             android:launchMode="singleTask"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".ForgotPasswordActivity"
+            android:name=".ui.ForgotPasswordActivity"
             android:launchMode="singleTask" />
-        <activity android:name=".LinkedInActivity" />
-        <activity android:name=".ResultActivity"></activity>
+        <activity android:name=".ui.ResultActivity"></activity>
     </application>
 
 </manifest>

@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.appers.ayvaz.thetravelingsalesman.ReportsTasksActivity">
+    tools:context="com.simbiosyscorp.thetravelingsalesman.ReportsTasksActivity">
     <include layout="@layout/appbar_layout"/>
     <RelativeLayout
         android:layout_width="match_parent"

@@ -1,4 +1,4 @@
-package com.appers.ayvaz.thetravelingsalesman;
+package com.simbiosyscorp.thetravelingsalesman;
 
 import org.junit.Test;
 
