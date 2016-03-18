@@ -3,15 +3,19 @@ package com.simbiosyscorp.thetravelingsalesman.ui;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GestureDetectorCompat;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -53,6 +57,7 @@ public class ClientListFragment extends Fragment
         implements ActionMode.Callback,
         RecyclerView.OnItemTouchListener, ClientSearchAdapter.OnClientPickListener{
 
+
     private final String DEBUG_TAG = "ClientListFragment: ";
     public static final int RANGE_ALL = 0;
     public static final int RANGE_RECENT = 1;
@@ -64,7 +69,7 @@ public class ClientListFragment extends Fragment
     boolean mSearchOpen;
     private ActionMode actionMode;
     GestureDetectorCompat gestureDetector;
-
+    private static final int REQUEST_SELECT_CONTACT = 0;
     private static final int REQUEST_DELETE = 3;
     private OnFragmentInteractionListener mListener;
     private TabLayout mTablayout;
@@ -198,10 +203,13 @@ public class ClientListFragment extends Fragment
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_add_person:
+            case R.id.action_create_new:
                 Intent intent = ClientEditActivity.newIntent(getActivity());
                 startActivity(intent);
                 return true;
+
+            case R.id.action_import_client:
+                firePickFromContactIntent();
 
 
 
@@ -467,6 +475,14 @@ public class ClientListFragment extends Fragment
         }
     }
 
+    private void firePickFromContactIntent() {
+        Intent pickClientIntent = new Intent(Intent.ACTION_PICK);
+        pickClientIntent.setType(ContactsContract.Contacts.CONTENT_TYPE);
+        if (pickClientIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+            startActivityForResult(pickClientIntent, REQUEST_SELECT_CONTACT);
+        }
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode != Activity.RESULT_OK) {
@@ -484,7 +500,40 @@ public class ClientListFragment extends Fragment
                 }
                 actionMode.finish();
                 mListener.updateFragments(mRange);
+
+                break;
+
+            case REQUEST_SELECT_CONTACT:
+                Uri contactUri = data.getData();
+                alertNewClient(contactUri);
+                break;
+
         }
 
+    }
+
+    private void alertNewClient(final Uri contactUri) {
+        final ClientManager cm = ClientManager.get(getContext());
+        String displayName = cm.getDisplayNameFromContact(contactUri);
+
+        new AlertDialog.Builder(getContext())
+                .setTitle("Import " + displayName + " ? ")
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        Client importClient = cm.getClientFromContact(contactUri);
+                        cm.addClient(importClient);
+                        updateUI();
+                    }
+                })
+                .setNegativeButton(R.string.select_again, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        firePickFromContactIntent();
+                    }
+                })
+                .setNeutralButton(android.R.string.cancel, null)
+                .create().show();
     }
 }

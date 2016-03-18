@@ -191,6 +191,9 @@
     <string name="message_file_not_exit">File doesn\'t exist.</string>
     <string name="open_title">Open through</string>
     <string name="message_no_report">There\'s no report currently.</string>
+    <string name="create_client">Create a new client</string>
+    <string name="import_client">Import from contact book</string>
+    <string name="select_again">Pick another one</string>
 
     <string-array name="security_questions">
         <item>When you were young, what did you want to be when you grew up?</item>
