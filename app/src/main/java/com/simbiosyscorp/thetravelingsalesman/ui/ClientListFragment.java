@@ -29,6 +29,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.SearchView;
@@ -78,6 +79,9 @@ public class ClientListFragment extends Fragment
     private MenuItem mEditClient;
     private TextView mActionTitle;
     @Bind(R.id.recycler_view) RecyclerView mRecyclerView;
+    @Bind(R.id.emptyView) View mEmptyView;
+    @Bind(R.id.emptyTextView) TextView mEmptyTextView;
+    @Bind(R.id.addNew)    Button mAddNewButton;
 
 
     /**
@@ -183,10 +187,16 @@ public class ClientListFragment extends Fragment
 
         @Override
         protected void onPostExecute(List<Client> clients) {
+            displayEmptyView(clients.isEmpty(), !mSearchOpen && mRange == RANGE_ALL);
+
+
             if (mSearchOpen && mSearchAdapter != null) {
                 mRecyclerView.setAdapter(mSearchAdapter);
                 return;
             }
+
+
+
 
             if (mAdapter == null) {
                 mAdapter = new ClientAdapter(clients);
@@ -244,6 +254,7 @@ public class ClientListFragment extends Fragment
                                 ((LandingActivity) getActivity()).hideTab();
                                 addPerson.setVisible(false);
                                 mSearchOpen = true;
+                                mAddNewButton.setVisibility(View.GONE);
                             }
                             return true;
                         }
@@ -255,6 +266,7 @@ public class ClientListFragment extends Fragment
                                 addPerson.setVisible(true);
                                 mRecyclerView.setAdapter(mAdapter);
                                 mSearchOpen = false;
+                                mSearchAdapter = null;
                             }
                             return true;
                         }
@@ -293,12 +305,32 @@ public class ClientListFragment extends Fragment
 
         @Override
         protected void onPostExecute(List<Client> clients) {
-            mSearchAdapter = new ClientSearchAdapter(clients, ClientListFragment.this);
-            mRecyclerView.setAdapter(mSearchAdapter);
+
+            displayEmptyView(clients.size() == 0, false);
+
+
+            if (mSearchAdapter == null) {
+                mSearchAdapter = new ClientSearchAdapter(clients, ClientListFragment.this);
+                mRecyclerView.setAdapter(mSearchAdapter);
+            } else {
+                mSearchAdapter.setClients(clients);
+                mSearchAdapter.notifyDataSetChanged();
+            }
+
         }
     }
 
-/** action mode */
+    private void displayEmptyView(boolean showView, boolean showButton) {
+        if (showView) {
+            mEmptyView.setVisibility(View.VISIBLE);
+            mEmptyTextView.setText(getActivity().getString(R.string.emptyList, "client"));
+            mAddNewButton.setVisibility(showButton ? View.VISIBLE : View.GONE);
+        } else {
+            mEmptyView.setVisibility(View.GONE);
+        }
+    }
+
+    /** action mode */
 
     private void myToggleSelection(int idx) {
         mAdapter.toggleSelection(idx);
@@ -505,35 +537,62 @@ public class ClientListFragment extends Fragment
 
             case REQUEST_SELECT_CONTACT:
                 Uri contactUri = data.getData();
-                alertNewClient(contactUri);
+                alertImportClient(contactUri);
                 break;
 
         }
 
     }
 
-    private void alertNewClient(final Uri contactUri) {
+    private void alertImportClient(Uri contactUri) {
         final ClientManager cm = ClientManager.get(getContext());
-        String displayName = cm.getDisplayNameFromContact(contactUri);
+        final String contactId = cm.getContactId(contactUri);
+        String displayName = cm.getDisplayNameFromContact(contactId);
 
-        new AlertDialog.Builder(getContext())
-                .setTitle("Import " + displayName + " ? ")
-                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
+        final UUID uuid = cm.getClientId(contactId);
 
-                        Client importClient = cm.getClientFromContact(contactUri);
-                        cm.addClient(importClient);
-                        updateUI();
-                    }
-                })
-                .setNegativeButton(R.string.select_again, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        firePickFromContactIntent();
-                    }
-                })
-                .setNeutralButton(android.R.string.cancel, null)
-                .create().show();
+        if (uuid != null) {
+            new AlertDialog.Builder(getContext())
+                    .setMessage(getActivity().getString(R.string.message_duplicate_client, displayName))
+                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            importClient(contactId, uuid);
+                        }
+                    })
+                    .setNegativeButton(android.R.string.cancel, null)
+                    .create().show();
+        } else {
+
+            new AlertDialog.Builder(getContext())
+                    .setTitle("Import " + displayName + " ? ")
+                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            importClient(contactId, null);
+                        }
+                    })
+                    .setNegativeButton(R.string.select_again, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            firePickFromContactIntent();
+                        }
+                    })
+                    .setNeutralButton(android.R.string.cancel, null)
+                    .create().show();
+        }
+    }
+
+
+
+    private void importClient(String contactId, UUID uuid) {
+        ClientManager cm = ClientManager.get(getActivity());
+        Client importClient = cm.getClientFromContact(contactId, uuid);
+        if (uuid != null) {
+            cm.updateClient(importClient);
+        } else {
+            cm.addClient(importClient);
+        }
+        updateUI();
     }
 }

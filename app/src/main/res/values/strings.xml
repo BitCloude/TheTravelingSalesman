@@ -194,6 +194,9 @@
     <string name="create_client">Create a new client</string>
     <string name="import_client">Import from contact book</string>
     <string name="select_again">Pick another one</string>
+    <string name="add_a_new_one">Add a new one?</string>
+    <string name="emptyList">No %s found.</string>
+    <string name="message_duplicate_client">Client %s exists, update?</string>
 
     <string-array name="security_questions">
         <item>When you were young, what did you want to be when you grew up?</item>

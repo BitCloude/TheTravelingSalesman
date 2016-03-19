@@ -11,6 +11,7 @@ import android.os.Environment;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.CommonDataKinds;
 import android.provider.ContactsContract.Data;
+import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -253,7 +254,7 @@ public class ClientManager {
         return cursor;
     }
 
-    private String getContactId(Uri contactUri) {
+    public String getContactId(Uri contactUri) {
         ContentResolver cr = mContext.getContentResolver();
         Cursor contactCursor = cr.query(
                 contactUri,
@@ -277,6 +278,10 @@ public class ClientManager {
 
     public String getDisplayNameFromContact(Uri contactUri) {
         String id = getContactId(contactUri);
+        return getDisplayNameFromContact(id);
+    }
+
+    public String getDisplayNameFromContact(String id) {
 
         if (id != null) {
             ContentResolver cr = mContext.getContentResolver();
@@ -301,19 +306,34 @@ public class ClientManager {
         return null;
     }
 
-    public Client getClientFromContact(Uri contactUri) {
+    public UUID getClientId(String contactId) {
+        Cursor cursor = queryClientByContactId(contactId);
+        if (cursor != null) {
+            UUID uuid = null;
+            if (cursor.moveToFirst()) {
+                uuid = UUID.fromString(cursor.getString(cursor.getColumnIndex(Cols.UUID)));
+                Log.i(DEBUGTAG, "uuid: " + uuid);
+            }
+            cursor.close();
+            return uuid;
+        }
 
-        String id = getContactId(contactUri);
+        return null;
+    }
 
+    public Client getClientFromContact(String id, UUID uuid) {
         if (id == null) {
             return null;
         }
+
 
         ContentResolver cr = mContext.getContentResolver();
         // use contact id to get phone, email and other information
         final String[] selectionArg = new String[]{id};
 
-        Client client = new Client();
+
+        Client client = uuid == null ? new Client() : getClient(uuid);
+
 
         // contact id
         client.setContactId(id);
@@ -331,19 +351,28 @@ public class ClientManager {
         if (cursor != null) {
             if (cursor.moveToFirst()) {
 
-                if (!TextUtils.isEmpty(cursor.getString(0))) {
-                    Log.i(DEBUGTAG, "last name: " + cursor.getString(0));
+                if (cursor.getString(0) != null) {
+
                     client.setLastName(cursor.getString(0));
+                } else {
+                    client.setLastName("");
                 }
 
-                if (!TextUtils.isEmpty(cursor.getString(1))) {
-                    Log.i(DEBUGTAG, "first name: " + cursor.getString(1));
+
+                if (cursor.getString(1) != null) {
+
                     client.setFirstName(cursor.getString(1));
+                } else {
+                    client.setFirstName("");
                 }
 
 
             }
+            cursor.close();
         }
+
+        Log.i(DEBUGTAG, "first name: " + client.getFirstName());
+        Log.i(DEBUGTAG, "last name: " + client.getLastName());
 
 
         // phone: only import the first two, ignore label
@@ -354,17 +383,23 @@ public class ClientManager {
                 selectionArg, null);
 
         if (cursor != null) {
-            Log.i(DEBUGTAG, "data count: " + cursor.getCount());
+            Log.i(DEBUGTAG, "phone count: " + cursor.getCount());
 
             if (cursor.moveToFirst()) {
                 client.setFirstPhone(cursor.getString(1));
                 if (cursor.moveToNext()) {
                     client.setSecondPhone(cursor.getString(1));
+                } else {
+                    client.setSecondPhone("");
                 }
+            } else {
+                client.setFirstPhone("");
+                client.setSecondPhone("");
             }
 
             cursor.close();
         }
+        Log.i(DEBUGTAG, "phone: " + client.getFirstPhone() + ", " + client.getSecondPhone());
 
         // email: only import the first one
         cursor = cr.query(Data.CONTENT_URI,
@@ -379,6 +414,8 @@ public class ClientManager {
 
             if (cursor.moveToFirst()) {
                 client.setEmail(cursor.getString(1));
+            } else {
+                client.setEmail("");
             }
 
             cursor.close();
@@ -417,6 +454,8 @@ public class ClientManager {
 
                 Log.i(DEBUGTAG, sb.toString());
                 client.setAddress(sb.toString());
+            } else {
+                client.setAddress("");
             }
         }
 
@@ -430,10 +469,16 @@ public class ClientManager {
 
         if (cursor != null) {
             if (cursor.moveToFirst()) {
-                if (!TextUtils.isEmpty(cursor.getString(0)))
+                if (cursor.getString(0) != null)
                     client.setCompany(cursor.getString(0));
-                if (!TextUtils.isEmpty(cursor.getString(1)))
+                else {
+                    client.setCompany("");
+                }
+                if (cursor.getString(1) != null)
                     client.setDesignation(cursor.getString(1));
+                else {
+                    client.setDesignation("");
+                }
                 Log.i(DEBUGTAG, "company: " + client.getCompany() + "title: "
                         + client.getDesignation());
             }
@@ -456,7 +501,11 @@ public class ClientManager {
                         || url.startsWith("linkedin.com")) {
                     Log.i(DEBUGTAG, "is linkedIn");
                     client.setLinkedIn(url);
+                } else {
+                    client.setLinkedIn("");
                 }
+            } else {
+                client.setLinkedIn("");
             }
             cursor.close();
         }
@@ -472,8 +521,9 @@ public class ClientManager {
         if (cursor != null) {
             if (cursor.moveToFirst()) {
                 Log.i(DEBUGTAG, "Note: " + cursor.getString(0));
-                if (!TextUtils.isEmpty(cursor.getString(0)))
-                    client.setNote(cursor.getString(0));
+                client.setNote(cursor.getString(0));
+            } else {
+                client.setNote("");
             }
             cursor.close();
         }
@@ -511,6 +561,10 @@ public class ClientManager {
 
 
         return client;
+    }
+
+    private Cursor queryClientByContactId(String contactId) {
+        return query(Cols.CONTACT_ID + "=?", new String[]{contactId}, null);
     }
 
 
