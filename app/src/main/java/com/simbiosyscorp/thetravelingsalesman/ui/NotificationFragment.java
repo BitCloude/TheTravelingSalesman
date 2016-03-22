@@ -1,6 +1,7 @@
 package com.simbiosyscorp.thetravelingsalesman.ui;
 
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -9,6 +10,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
 
 import com.simbiosyscorp.thetravelingsalesman.R;
 import com.simbiosyscorp.thetravelingsalesman.adapter.TaskAdapter;
@@ -29,6 +32,11 @@ public class NotificationFragment extends Fragment {
 
     @Bind(R.id.recycler_view)
     RecyclerView mRecyclerView;
+    @Bind(R.id.emptyView) View mEmptyView;
+    @Bind(R.id.emptyTextView)
+    TextView mEmptyTextView;
+    @Bind(R.id.addNew)
+    Button mAddNew;
 
     private TaskAdapter mAdapter;
 
@@ -72,6 +80,17 @@ public class NotificationFragment extends Fragment {
 
         @Override
         protected void onPostExecute(List<Task> tasks) {
+            if (tasks.isEmpty()) {
+                mEmptyView.setVisibility(View.VISIBLE);
+                mEmptyTextView.setText(getActivity().getString(R.string.emptyList, "task"));
+                mAddNew.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(getActivity(), LandingActivity.class);
+                        startActivity(intent);
+                    }
+                });
+            }
             if (mAdapter == null) {
                 mAdapter = new TaskAdapter(tasks, getActivity());
                 mRecyclerView.setAdapter(mAdapter);

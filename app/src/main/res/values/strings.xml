@@ -197,6 +197,7 @@
     <string name="add_a_new_one">Add a new one?</string>
     <string name="emptyList">No %s found.</string>
     <string name="message_duplicate_client">Client %s exists, update?</string>
+    <string name="import_or_create">Would you like to import from contact book or create a new one?</string>
 
     <string-array name="security_questions">
         <item>When you were young, what did you want to be when you grew up?</item>

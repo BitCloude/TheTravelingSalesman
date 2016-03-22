@@ -205,6 +205,12 @@ public class TaskReportAdapter extends RecyclerView.Adapter<TaskReportAdapter.Vi
             }
 
             mFile = params[0];
+            File parentDir = mFile.getParentFile();
+            if (!parentDir.exists() && !parentDir.mkdir()) {
+
+               return false;
+
+            }
 
             try (MyCsvWriter writer = new MyCsvWriter(params[0])) {
                 String[] header = {

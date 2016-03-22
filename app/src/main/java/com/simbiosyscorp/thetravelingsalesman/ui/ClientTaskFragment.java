@@ -15,6 +15,8 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.simbiosyscorp.thetravelingsalesman.R;
@@ -56,6 +58,11 @@ public class ClientTaskFragment extends Fragment implements ClientActivity.Clien
     private int mMode;
     private TaskAdapter mAdapter;
     private int mSelected;
+    @Bind(R.id.emptyView) View mEmptyView;
+    @Bind(R.id.emptyTextView)
+    TextView mEmptyTextView;
+    @Bind(R.id.addNew)
+    Button mAddNewButton;
 
     public ClientTaskFragment() {
         // Required empty public constructor
@@ -120,6 +127,8 @@ public class ClientTaskFragment extends Fragment implements ClientActivity.Clien
     private void updateUI() {
         List<Task> list;
 
+
+
         if (mMode == BY_CLIENT) {
             list = TaskManager.get(getContext()).query(mClientId);
         } else {
@@ -127,6 +136,8 @@ public class ClientTaskFragment extends Fragment implements ClientActivity.Clien
             list = TaskManager.get(getContext()).queryInstance(mDate);
 
         }
+
+        displayEmptyView(list.isEmpty());
 
         if (mAdapter == null) {
             mAdapter = new TaskAdapter(list, getActivity());
@@ -138,6 +149,17 @@ public class ClientTaskFragment extends Fragment implements ClientActivity.Clien
 
 
     }
+
+    private void displayEmptyView(boolean isEmpty) {
+        if (isEmpty) {
+            mEmptyView.setVisibility(View.VISIBLE);
+            mEmptyTextView.setText(getActivity().getString(R.string.emptyList, "task"));
+            mAddNewButton.setVisibility(View.GONE);
+        } else {
+            mEmptyView.setVisibility(View.GONE);
+        }
+    }
+
 
 
 

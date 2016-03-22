@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -34,7 +35,10 @@ public class ClientCallLogFragment extends Fragment implements ClientActivity.Cl
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_NUMBER1 = "param1";
     private static final String ARG_NUMBER2 = "param2";
-
+    @Bind(R.id.emptyView) View mEmptyView;
+    @Bind(R.id.emptyTextView) TextView mEmptyTextView;
+    @Bind(R.id.addNew)
+    Button mAddNewButton;
 
     private String mNumber1 = "10086";
     private String mNumber2 = "95533";
@@ -98,6 +102,8 @@ public class ClientCallLogFragment extends Fragment implements ClientActivity.Cl
 
     public void updateUI() {
         List<CallEntry> callLog = MessageBox.get(getContext()).getCallLog(mNumber1, mNumber2);
+        displayEmptyView(callLog.isEmpty());
+
         if (mAdapter == null) {
             mAdapter = new CallLogAdapter(callLog);
             mRecyclerView.setAdapter(mAdapter);
@@ -106,6 +112,16 @@ public class ClientCallLogFragment extends Fragment implements ClientActivity.Cl
             mAdapter.notifyDataSetChanged();
         }
 
+    }
+
+    private void displayEmptyView(boolean isEmpty) {
+        if (isEmpty) {
+            mEmptyView.setVisibility(View.VISIBLE);
+            mEmptyTextView.setText(getActivity().getString(R.string.emptyList, "call log"));
+            mAddNewButton.setVisibility(View.GONE);
+        } else {
+            mEmptyView.setVisibility(View.GONE);
+        }
     }
 
 

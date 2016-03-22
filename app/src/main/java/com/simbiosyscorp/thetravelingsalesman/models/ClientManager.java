@@ -17,6 +17,7 @@ import android.util.Log;
 
 import com.simbiosyscorp.thetravelingsalesman.database.ClientCursorWrapper;
 import com.simbiosyscorp.thetravelingsalesman.database.DatabaseHelper;
+import com.simbiosyscorp.thetravelingsalesman.database.DbSchema;
 import com.simbiosyscorp.thetravelingsalesman.ui.ClientListFragment;
 import com.simbiosyscorp.thetravelingsalesman.utils.PictureUtils;
 
@@ -62,6 +63,7 @@ public class ClientManager {
                     CommonDataKinds.Organization.COMPANY,
                     CommonDataKinds.Organization.TITLE
             };
+    private static final String RECENT_LIMIT = "10";
 
 
     private static ClientManager content;
@@ -145,6 +147,7 @@ public class ClientManager {
             whereClause = Cols.STARED + " = 1";
         } else if (range == ClientListFragment.RANGE_RECENT) {
             Log.i("client", "recent not implemented");
+            return getRecentClient();
         }
 
         try (ClientCursorWrapper cursor = queryClients(whereClause, whereArgs,
@@ -331,9 +334,11 @@ public class ClientManager {
         // use contact id to get phone, email and other information
         final String[] selectionArg = new String[]{id};
 
+        Log.i(DEBUGTAG, "uuid param: " + uuid);
 
         Client client = uuid == null ? new Client() : getClient(uuid);
 
+        Log.i(DEBUGTAG, "new client id: " + client.getId());
 
         // contact id
         client.setContactId(id);
@@ -538,20 +543,24 @@ public class ClientManager {
 
         if (cursor != null) {
             if (cursor.moveToFirst()) {
-                Log.i(DEBUGTAG, "photo uri: " + cursor.getString(0));
-                Uri photoUri = Uri.parse(cursor.getString(0));
-                try {
-                    AssetFileDescriptor fd = cr.openAssetFileDescriptor(
-                            photoUri, "r");
-                    if (fd != null) {
-                        InputStream in = fd.createInputStream();
-                        File to = getPhotoFile(client, false);
-                        PictureUtils.copyFile(in, to);
-                    }
+                String s = cursor.getString(0);
+                Log.i(DEBUGTAG, "photo uri: " + s);
+                if (!TextUtils.isEmpty(s)) {
+                    Uri photoUri = Uri.parse(cursor.getString(0));
+                    try {
+                        AssetFileDescriptor fd = cr.openAssetFileDescriptor(
+                                photoUri, "r");
+                        if (fd != null) {
+                            InputStream in = fd.createInputStream();
+                            File to = getPhotoFile(client, false);
+                            PictureUtils.copyFile(in, to);
+                        }
 
-                } catch (IOException e) {
-                    return null;
+                    } catch (IOException e) {
+                        return null;
+                    }
                 }
+
 
 
             }
@@ -565,6 +574,54 @@ public class ClientManager {
 
     private Cursor queryClientByContactId(String contactId) {
         return query(Cols.CONTACT_ID + "=?", new String[]{contactId}, null);
+    }
+
+    public List<Client> getRecentClient() {
+        List<Client> clients = new ArrayList<>();
+
+        String query = String.format("SELECT * FROM %s INNER JOIN %s ON %s = %s GROUP BY %s "
+                + "ORDER BY %s DESC LIMIT %s",
+                DbSchema.ClientTable.NAME,
+                DbSchema.TaskTable.NAME,
+                Cols.UUID,
+                DbSchema.TaskTable.Cols.CLIENT_ID,
+                Cols.UUID,
+                DbSchema.TaskTable.Cols.EVENT_ID,
+                RECENT_LIMIT);
+
+        String[] args = new String[] {
+                /*Cols._ID,
+                Cols.COMPANY,
+                Cols.EMAIL,
+                Cols.FIRST_NAME,
+                Cols.LAST_NAME,
+                Cols.FIRST_PHONE,
+                Cols.SECOND_PHONE,
+                Cols.NOTE,
+                Cols.LINKEDIN,
+                DbSchema.TaskTable.Cols.EVENT_ID*/
+        };
+
+        Cursor cursor = mDatabase.rawQuery(query, args);
+
+        if (cursor != null) {
+            ClientCursorWrapper c = new ClientCursorWrapper(cursor);
+
+            while (c.moveToNext()) {
+                Client client = c.getClient();
+                clients.add(client);
+                Log.i(DEBUGTAG, "-----");
+                Log.i(DEBUGTAG, "name: " + c.getString(c.getColumnIndex(Cols.FIRST_NAME)));
+                Log.i(DEBUGTAG, "event id: " + c.getString(c.getColumnIndex(DbSchema.TaskTable.Cols.EVENT_ID)));
+            }
+
+            c.close();
+        }
+
+//        RecentClient r = new RecentClient(new Client());
+//        clients.add(r);
+
+        return clients;
     }
 
 

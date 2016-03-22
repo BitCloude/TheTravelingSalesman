@@ -18,6 +18,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.SearchView;
@@ -29,6 +30,7 @@ import com.simbiosyscorp.thetravelingsalesman.adapter.TaskAdapter;
 import com.simbiosyscorp.thetravelingsalesman.models.Client;
 import com.simbiosyscorp.thetravelingsalesman.models.ClientManager;
 import com.simbiosyscorp.thetravelingsalesman.models.Task;
+import com.simbiosyscorp.thetravelingsalesman.models.TaskList;
 import com.simbiosyscorp.thetravelingsalesman.models.TaskManager;
 import com.simbiosyscorp.thetravelingsalesman.view.DividerItemDecoration;
 import com.wefika.calendar.CollapseCalendarView;
@@ -45,8 +47,10 @@ import butterknife.ButterKnife;
 
 public class TaskListActivity extends NavigationDrawerActivity {
 
-    private final String DEBUG_TAG = "TaskListActivity: ";
+
+    private final String DEBUG_TAG = "TaskListActivity";
     private final int REQUEST_CLIENT = 0;
+    private static final int REQUEST_CLIENT_CREATE = 1;
 
     @Bind(R.id.calendar)    CollapseCalendarView mCalendarView;
     @Bind(R.id.recyclerView)    RecyclerView mRecyclerView;
@@ -56,6 +60,10 @@ public class TaskListActivity extends NavigationDrawerActivity {
     ProgressBar mProgressBar;
     @Bind(R.id.progressBarFrame)
     FrameLayout mProgressBarContainer;
+
+    @Bind(R.id.emptyView) View mEmptyView;
+    @Bind(R.id.emptyTextView) TextView mEmptyTextView;
+    @Bind(R.id.addNew)    Button mAddNewButton;
     //    private FragmentManager mFragmentManager;
 //    private OnDateChanged mFragment;
     private TaskManager mTaskManager;
@@ -106,6 +114,14 @@ public class TaskListActivity extends NavigationDrawerActivity {
             @Override
             public void onDateSelected(LocalDate localDate) {
                 changeRange(localDate);
+            }
+        });
+
+        mAddNewButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivityForResult(new Intent(TaskListActivity.this, ClientPickActivity.class),
+                        REQUEST_CLIENT_CREATE);
             }
         });
 
@@ -194,6 +210,10 @@ public class TaskListActivity extends NavigationDrawerActivity {
             boolean s = mAdapter.setClient(mSelected, client);
             Log.i(DEBUG_TAG, "update " + (s ? "success" : "failed"));
             mAdapter.notifyItemChanged(mSelected);
+        } else if (requestCode == REQUEST_CLIENT_CREATE) {
+            UUID id = UUID.fromString(data.getStringExtra(ClientPickActivity.EXTRA_CLIENT_ID));
+            Intent intent = ClientActivity.newIntent(this, id);
+            startActivity(intent);
         }
     }
 
@@ -264,6 +284,12 @@ public class TaskListActivity extends NavigationDrawerActivity {
 
         @Override
         protected void onPostExecute(List<Task> tasks) {
+            if (tasks.isEmpty()) {
+                mEmptyView.setVisibility(View.VISIBLE);
+                mEmptyTextView.setText(getString(R.string.emptyList, "task"));
+            } else {
+                mEmptyView.setVisibility(View.GONE);
+            }
             if (mAdapter == null) {
                 mAdapter = new TaskAdapter(tasks, TaskListActivity.this);
                 mRecyclerView.setAdapter(mAdapter);

@@ -9,6 +9,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
 
 import com.simbiosyscorp.thetravelingsalesman.R;
 import com.simbiosyscorp.thetravelingsalesman.adapter.MessageAdapterSlow;
@@ -35,6 +37,11 @@ public class ClientMessageFragment extends Fragment  implements ClientActivity.C
     private static final String ARG_NUMBER2 = "number1";
     private static final String ARG_NUMBER1 = "number2";
     @Bind(R.id.recycler_view) RecyclerView mRecyclerView;
+    @Bind(R.id.emptyView) View mEmptyView;
+    @Bind(R.id.emptyTextView)
+    TextView mEmptyTextView;
+    @Bind(R.id.addNew)
+    Button mAddNewButton;
 
     //    int[] toViews = {0, R.id.sms_contact, R.id.sms_body};
     int[] toViews = {0, android.R.id.text1, android.R.id.text2};
@@ -119,6 +126,16 @@ public class ClientMessageFragment extends Fragment  implements ClientActivity.C
         updateUI();
     }
 
+    private void displayEmptyView(boolean isEmpty) {
+        if (isEmpty) {
+            mEmptyView.setVisibility(View.VISIBLE);
+            mEmptyTextView.setText(getActivity().getString(R.string.emptyList, "message"));
+            mAddNewButton.setVisibility(View.GONE);
+        } else {
+            mEmptyView.setVisibility(View.GONE);
+        }
+    }
+
     private class UpdateMessageTask extends AsyncTask<Void, Void, List<MyMessage>> {
 
         @Override
@@ -129,6 +146,8 @@ public class ClientMessageFragment extends Fragment  implements ClientActivity.C
 
         @Override
         protected void onPostExecute(List<MyMessage> messages) {
+            displayEmptyView(messages.isEmpty());
+
             if (mAdapter == null) {
                 mAdapter = new MessageAdapterSlow(getContext(), messages);
                 mRecyclerView.setAdapter(mAdapter);

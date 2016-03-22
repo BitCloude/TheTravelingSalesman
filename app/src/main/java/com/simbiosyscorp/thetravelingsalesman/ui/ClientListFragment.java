@@ -145,6 +145,28 @@ public class ClientListFragment extends Fragment
                 new GestureDetectorCompat(getContext(), new ClientListGestureListener());
 
         updateUI();
+        mAddNewButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog dialog = new AlertDialog.Builder(getActivity())
+                        .setMessage(R.string.import_or_create)
+                        .setPositiveButton(R.string.import_client, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                firePickFromContactIntent();
+                            }
+                        })
+                        .setNegativeButton(R.string.create_client, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Intent intent = ClientEditActivity.newIntent(getActivity());
+                                startActivity(intent);
+                            }
+                        })
+                        .create();
+                dialog.show();
+            }
+        });
 
 
 
@@ -194,8 +216,6 @@ public class ClientListFragment extends Fragment
                 mRecyclerView.setAdapter(mSearchAdapter);
                 return;
             }
-
-
 
 
             if (mAdapter == null) {
@@ -529,6 +549,9 @@ public class ClientListFragment extends Fragment
                     int currPos = selectedItemPositions.get(i);
                     mAdapter.removeData(currPos, getContext());
                     mAdapter.notifyItemChanged(currPos);
+                }
+                if (mAdapter.getItemCount() == 0) {
+                    displayEmptyView(true, mRange == RANGE_ALL);
                 }
                 actionMode.finish();
                 mListener.updateFragments(mRange);
