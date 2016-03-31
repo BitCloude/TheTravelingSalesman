@@ -11,14 +11,13 @@ import android.os.Environment;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.CommonDataKinds;
 import android.provider.ContactsContract.Data;
-import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.simbiosyscorp.thetravelingsalesman.database.ClientCursorWrapper;
 import com.simbiosyscorp.thetravelingsalesman.database.DatabaseHelper;
 import com.simbiosyscorp.thetravelingsalesman.database.DbSchema;
-import com.simbiosyscorp.thetravelingsalesman.ui.ClientListFragment;
+import com.simbiosyscorp.thetravelingsalesman.view.ClientListFragment;
 import com.simbiosyscorp.thetravelingsalesman.utils.PictureUtils;
 
 import java.io.File;

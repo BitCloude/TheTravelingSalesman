@@ -14,8 +14,8 @@ import android.widget.TextView;
 import com.simbiosyscorp.thetravelingsalesman.R;
 import com.simbiosyscorp.thetravelingsalesman.models.Client;
 import com.simbiosyscorp.thetravelingsalesman.models.ClientManager;
-import com.simbiosyscorp.thetravelingsalesman.ui.ClientActivity;
-import com.simbiosyscorp.thetravelingsalesman.ui.ClientEditActivity;
+import com.simbiosyscorp.thetravelingsalesman.view.ClientActivity;
+import com.simbiosyscorp.thetravelingsalesman.view.ClientEditActivity;
 
 import java.util.ArrayList;
 import java.util.List;

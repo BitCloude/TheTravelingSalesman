@@ -22,7 +22,7 @@ import android.widget.Toast;
 import com.simbiosyscorp.thetravelingsalesman.R;
 import com.simbiosyscorp.thetravelingsalesman.models.Client;
 import com.simbiosyscorp.thetravelingsalesman.models.Task;
-import com.simbiosyscorp.thetravelingsalesman.ui.ReportTaskActivity;
+import com.simbiosyscorp.thetravelingsalesman.view.ReportTaskActivity;
 import com.simbiosyscorp.thetravelingsalesman.utils.DateTimeHelper;
 import com.simbiosyscorp.thetravelingsalesman.utils.MyCsvWriter;
 import com.simbiosyscorp.thetravelingsalesman.utils.ReportExportUtils;

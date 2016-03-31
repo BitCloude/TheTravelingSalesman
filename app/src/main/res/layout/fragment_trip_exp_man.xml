@@ -7,7 +7,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".ui.TripExpMan$PlaceholderFragment">
+    tools:context=".view.TripExpMan$PlaceholderFragment">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -36,36 +36,34 @@
                     android:layout_weight="5"
                     />
                     -->
-                <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                <RelativeLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
+                    android:layout_gravity="center"
                     android:layout_weight="5"
-                    android:padding="6dp"
-                    android:layout_gravity="center">
+                    android:padding="6dp">
 
-                    <TextView
-                        android:id="@+id/client_name_trip_exp_man"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_alignParentTop="true"
-                        android:layout_marginEnd="6dp"
-                        android:gravity="center"
-                        android:layout_toStartOf="@+id/selectClient_trip_exp_man"
-                        android:lines="1"
-                        android:text="Client Not Selected"
-                        android:textColor="@color/TextPrimary"
-                        android:textSize="18sp" />
-
-                    <ImageButton
+                    <Button
                         android:id="@+id/selectClient_trip_exp_man"
                         style="?android:attr/buttonStyleSmall"
-                        android:layout_width="24dp"
+                        android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_alignBottom="@+id/client_name_trip_exp_man"
                         android:layout_alignParentEnd="true"
                         android:layout_alignParentTop="true"
                         android:background="@android:color/transparent"
-                        android:src="@drawable/ic_keyboard_arrow_right_grey_900_18dp" />
+                        android:drawableEnd="@drawable/ic_keyboard_arrow_right_grey_900_18dp" />
+
+                    <FrameLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                        <ImageButton
+                            android:id="@+id/button_clear"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@android:color/transparent"
+                            android:src="@drawable/ic_cancel_black_18dp" />
+                    </FrameLayout>
                 </RelativeLayout>
 
                 <TextView

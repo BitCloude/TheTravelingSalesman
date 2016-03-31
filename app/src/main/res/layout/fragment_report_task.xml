@@ -6,7 +6,7 @@
     android:layout_marginTop="8dp"
     android:layout_marginBottom="8dp"
 
-    tools:context=".ui.ReportTaskFragment">
+    tools:context=".view.ReportTaskFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
