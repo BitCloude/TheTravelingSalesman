@@ -22,7 +22,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            >
+            android:gravity="center_horizontal">
 
         <RadioButton
             android:id="@+id/buttonTravelPlane"
@@ -31,13 +31,8 @@
 
             />
             <!--android:src="@drawable/ic_trip_detail_plane" -->
-            <View
-                android:layout_width="0dp"
-                android:layout_height="1dp"
-                android:layout_weight="1"
-                android:clickable="false"/>
 
-        <RadioButton
+            <RadioButton
             android:id="@+id/buttonTravelTrain"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -45,13 +40,8 @@
 
             />
         <!-- android:src="@drawable/ic_trip_detail_train" -->
-            <View
-                android:layout_width="0dp"
-                android:layout_height="1dp"
-                android:layout_weight="1"
-                android:clickable="false"/>
 
-        <RadioButton
+            <RadioButton
             android:id="@+id/buttonTravelCar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

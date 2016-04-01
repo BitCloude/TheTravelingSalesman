@@ -207,7 +207,7 @@ Spinner spinnerType;
         //getMenuInflater().inflate(R.menu.menu_main, menu);
         menu.add(1, 11, 100, "OK");
         //menu.findItem(11).setIcon(android.R.drawable.ic_menu_save);
-        menu.findItem(11).setIcon(android.R.drawable.checkbox_on_background);
+        menu.findItem(11).setIcon(R.drawable.ic_done_white_24dp);
         menu.findItem(11).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
         return true;
     }

@@ -368,7 +368,7 @@ public class TravelDetail extends AppCompatActivity implements PhotoViewFragment
         // Inflate the menu; this adds items to the action bar if it is present.
         menu.add(2, 22, 100, "OK");
         //menu.findItem(11).setIcon(android.R.drawable.ic_menu_save);
-        menu.findItem(22).setIcon(android.R.drawable.checkbox_on_background);
+        menu.findItem(22).setIcon(R.drawable.ic_done_white_24dp);
         menu.findItem(22).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
         return true;
     }

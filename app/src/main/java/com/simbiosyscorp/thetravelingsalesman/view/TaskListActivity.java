@@ -276,7 +276,7 @@ public class TaskListActivity extends NavigationDrawerActivity {
         @Override
         protected void onPreExecute() {
             mProgressBarContainer.setVisibility(View.VISIBLE);
-            mRecyclerView.setVisibility(View.GONE);
+//            mRecyclerView.setVisibility(View.GONE);
         }
 
 
@@ -285,9 +285,11 @@ public class TaskListActivity extends NavigationDrawerActivity {
             if (tasks.isEmpty()) {
                 mEmptyView.setVisibility(View.VISIBLE);
                 mEmptyTextView.setText(getString(R.string.emptyList, "task"));
+
             } else {
                 mEmptyView.setVisibility(View.GONE);
             }
+
             if (mAdapter == null) {
                 mAdapter = new TaskAdapter(tasks, TaskListActivity.this);
                 mRecyclerView.setAdapter(mAdapter);
@@ -299,7 +301,7 @@ public class TaskListActivity extends NavigationDrawerActivity {
             mAdapter.setShowYear(!mCalendarMode);
 
             mProgressBarContainer.setVisibility(View.GONE);
-            mRecyclerView.setVisibility(View.VISIBLE);
+//            mRecyclerView.setVisibility(View.VISIBLE);
 
         }
     }
@@ -388,6 +390,8 @@ public class TaskListActivity extends NavigationDrawerActivity {
 
                         mOptionsMenu.setGroupVisible(R.id.nonSearchAction, false);
 
+                        mAddNewButton.setVisibility(View.GONE);
+
                         return true;
                     }
 
@@ -400,6 +404,10 @@ public class TaskListActivity extends NavigationDrawerActivity {
                         mSearchAdapter.clearData();
                         mRecyclerView.setAdapter(mAdapter);
                         mOptionsMenu.setGroupVisible(R.id.nonSearchAction, true);
+
+                        if (mAdapter.getItemCount() == 0) {
+                            mAddNewButton.setVisibility(View.VISIBLE);
+                        }
                         return true;
                     }
                 });
