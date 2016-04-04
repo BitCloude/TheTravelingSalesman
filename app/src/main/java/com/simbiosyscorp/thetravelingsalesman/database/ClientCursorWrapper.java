@@ -43,6 +43,7 @@ public class ClientCursorWrapper extends CursorWrapper {
         client.setStared(stared);
         client.setLinkedIn(linkedIn);
         client.setContactId(getString(getColumnIndex(Cols.CONTACT_ID)));
+        client.setDesignation(getString(getColumnIndex(Cols.DESIGNATION)));
 //        client.setImage(img);
 
         return client;

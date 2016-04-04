@@ -8,7 +8,7 @@ import com.simbiosyscorp.thetravelingsalesman.database.DbSchema.ClientTable;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     // version 2 : add client's link to contact book
-    private static final int VERSION = 2;
+    private static final int VERSION = 3;
     private static final String DATABASE_NAME = "clientBase.db";
     private static final String TYPE_INT = " INT";
     private static final String TYPE_BLOB = " BLOB";
@@ -23,7 +23,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         String sql = String.format("create table %s " +
-                        "( %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
+                        "( %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
                 ClientTable.NAME,
                 PRIMARY_KEY,
                 ClientTable.Cols.UUID,
@@ -37,7 +37,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 ClientTable.Cols.COMPANY,
                 ClientTable.Cols.LINKEDIN,
                 ClientTable.Cols.NOTE,
-                ClientTable.Cols.CONTACT_ID
+                ClientTable.Cols.CONTACT_ID,
+                ClientTable.Cols.DESIGNATION
                 );
         db.execSQL(sql);
 
@@ -77,7 +78,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(expenseSql);
 
         String tripSql = String.format("create table %s " +
-                        "( %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, FOREIGN KEY(%s) REFERENCES %s(%s))",
+                        "( %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,  FOREIGN KEY(%s) REFERENCES %s(%s))",
                 DbSchema.TripTable.NAME,
                 PRIMARY_KEY_TRIP,
                 DbSchema.TripTable.Cols.TRIP_CLIENT_ID,          //foreign key
@@ -107,6 +108,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     ClientTable.NAME,
                     ClientTable.Cols.CONTACT_ID);
             db.execSQL(query);
+        }
+
+        if (newVersion == 3) {
+            db.execSQL(String.format("Alter TABLE %s ADD COLUMN %s",
+                    ClientTable.NAME,
+                    ClientTable.Cols.DESIGNATION));
         }
 
     }

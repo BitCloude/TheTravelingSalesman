@@ -83,7 +83,7 @@ public class TravelDetail extends AppCompatActivity implements PhotoViewFragment
         editTravelFrom = (EditText) findViewById(R.id.travelDetailOriginEdit);
         editTravelTo = (EditText) findViewById(R.id.travelDetailDestinationEdit);
 
-       radPlane.setButtonDrawable(R.drawable.ic_travel_detail_plane_dark);
+        radPlane.setButtonDrawable(R.drawable.ic_travel_detail_plane_dark);
         radTrain.setButtonDrawable(R.drawable.ic_travel_detail_train_dark);
         radCar.setButtonDrawable(R.drawable.ic_travel_detail_car_dark);
 
@@ -93,20 +93,20 @@ public class TravelDetail extends AppCompatActivity implements PhotoViewFragment
                 if (checkedId == radCar.getId()) {
                         tripType = "Road";
 
-                        radCar.setButtonDrawable(R.drawable.ic_travel_detail_car);
+                    radCar.setButtonDrawable(R.drawable.ic_travel_detail_car);
                     radPlane.setButtonDrawable(R.drawable.ic_travel_detail_plane_dark);
                     radTrain.setButtonDrawable(R.drawable.ic_travel_detail_train_dark);
 
                 } else if (checkedId == radPlane.getId()) {
-                        tripType = "Air";
-                         radPlane.setButtonDrawable(R.drawable.ic_travel_detail_plane);
+                    tripType = "Air";
+                    radPlane.setButtonDrawable(R.drawable.ic_travel_detail_plane);
                     radCar.setButtonDrawable(R.drawable.ic_travel_detail_car_dark);
                     radTrain.setButtonDrawable(R.drawable.ic_travel_detail_train_dark);
 
                 } else if (checkedId == radTrain.getId()) {
 
-                        tripType = "Rail";
-                        radTrain.setButtonDrawable(R.drawable.ic_travel_detail_train);
+                    tripType = "Rail";
+                    radTrain.setButtonDrawable(R.drawable.ic_travel_detail_train);
                     radCar.setButtonDrawable(R.drawable.ic_travel_detail_car_dark);
                     radPlane.setButtonDrawable(R.drawable.ic_travel_detail_plane_dark);
 

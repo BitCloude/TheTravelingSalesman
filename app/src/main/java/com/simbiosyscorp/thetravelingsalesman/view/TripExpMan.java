@@ -1,6 +1,7 @@
 package com.simbiosyscorp.thetravelingsalesman.view;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -8,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -174,11 +176,14 @@ public class TripExpMan extends NavigationDrawerActivity
         TripContent tripContent = TripContent.get(getApplicationContext());
         ExpenseContent expenseContent = ExpenseContent.get(getApplicationContext());
         if (obj instanceof Trip) {
-            tripContent.delete(((Trip) obj).getId());
-            Toast.makeText(getApplicationContext(), "" + ((Trip) obj).getId(), Toast.LENGTH_LONG).show();
+            boolean tripDeletionResult = tripContent.delete(((Trip) obj).getId());
+            Toast.makeText(getApplicationContext(), "Trip was" + (tripDeletionResult ? "":" not")
+                    + " deleted.", Toast.LENGTH_LONG).show();
+
+
         } else if (obj instanceof Expense) {
-            expenseContent.delete(((Expense) obj).getId());
-            Toast.makeText(getApplicationContext(), "" + ((Expense) obj).getId(), Toast.LENGTH_LONG).show();
+            boolean result = expenseContent.delete(((Expense) obj).getId());
+            Toast.makeText(this, "Expense was" + (result ? "":" not") + " deleted.", Toast.LENGTH_LONG).show();
         }
 
 
@@ -249,18 +254,25 @@ public class TripExpMan extends NavigationDrawerActivity
             case 11: {
 
                 editIntent(contextChildView.getTag());
-                Toast.makeText(getApplicationContext(), "Edit", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getApplicationContext(), "Edit", Toast.LENGTH_SHORT).show();
                 return true;
             }
 
             case 22: {
                 // SectionsPagerAdapter.PlaceholderFragment placeholderFragment = (SectionsPagerAdapter.PlaceholderFragment)getSupportFragmentManager().findFragmentById(R.id.fragmentLinearLayout);
                 // if(placeholderFragment != null){
-                removeUtil(contextChildView.getTag());
-
-                LinearLayout linear = (LinearLayout) contextChildView.getParent();
-                linear.removeView(contextChildView);
-                Toast.makeText(getApplicationContext(), "Delete", Toast.LENGTH_SHORT).show();
+                String itemType = fragmentSection == 0 ? "Trip" : "Expense";
+                new AlertDialog.Builder(this)
+                        .setMessage(getString(R.string.r_u_sure, itemType))
+                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                delete();
+                            }
+                        })
+                        .setNegativeButton(android.R.string.cancel, null)
+                        .create().show();
+//                Toast.makeText(getApplicationContext(), "Delete", Toast.LENGTH_SHORT).show();
                 return true;
             }
 
@@ -268,6 +280,13 @@ public class TripExpMan extends NavigationDrawerActivity
         return super.onContextItemSelected(item);
 
 
+    }
+
+    private void delete() {
+        removeUtil(contextChildView.getTag());
+
+        LinearLayout linear = (LinearLayout) contextChildView.getParent();
+        linear.removeView(contextChildView);
     }
 
     @Override

@@ -22,32 +22,39 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:gravity="center_horizontal">
+            android:gravity="center">
 
         <RadioButton
             android:id="@+id/buttonTravelPlane"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
 
-            />
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:paddingEnd="20dp"
+            android:paddingStart="20dp" />
             <!--android:src="@drawable/ic_trip_detail_plane" -->
 
             <RadioButton
             android:id="@+id/buttonTravelTrain"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
 
-            />
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:paddingEnd="20dp"
+                android:paddingStart="20dp" />
         <!-- android:src="@drawable/ic_trip_detail_train" -->
 
             <RadioButton
             android:id="@+id/buttonTravelCar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="end"
+            android:layout_gravity="center"
 
-            />
+                android:gravity="center"
+                android:paddingEnd="20dp"
+                android:paddingStart="20dp" />
             <!-- android:src="@drawable/ic_trip_detail_car" -->
 
         </RadioGroup>

@@ -229,6 +229,7 @@ public class Client {
         values.put(DbSchema.ClientTable.Cols.STARED, isStared() ? 1 : 0);
         values.put(DbSchema.ClientTable.Cols.LINKEDIN, getLinkedIn());
         values.put(DbSchema.ClientTable.Cols.CONTACT_ID, getContactId());
+        values.put(DbSchema.ClientTable.Cols.DESIGNATION, getDesignation());
 //        values.put(ClientTable.Cols.IMAGE, client.getImage());
 
         return values;
