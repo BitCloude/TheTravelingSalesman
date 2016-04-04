@@ -20,7 +20,7 @@ import com.simbiosyscorp.thetravelingsalesman.R;
 import com.simbiosyscorp.thetravelingsalesman.models.Client;
 import com.simbiosyscorp.thetravelingsalesman.models.Task;
 import com.simbiosyscorp.thetravelingsalesman.models.TaskManager;
-import com.simbiosyscorp.thetravelingsalesman.ui.TaskListActivity;
+import com.simbiosyscorp.thetravelingsalesman.view.TaskListActivity;
 import com.simbiosyscorp.thetravelingsalesman.utils.DateTimeHelper;
 
 import org.joda.time.LocalDate;

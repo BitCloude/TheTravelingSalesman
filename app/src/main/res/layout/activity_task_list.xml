@@ -3,6 +3,9 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 <include layout="@layout/layout_collapse_calenar_view"/>
+
+    <include layout = "@layout/view_empty_list"/>
+
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"

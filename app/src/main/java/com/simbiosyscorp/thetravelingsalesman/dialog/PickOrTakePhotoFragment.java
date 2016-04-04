@@ -10,7 +10,7 @@ import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 
 import com.simbiosyscorp.thetravelingsalesman.R;
-import com.simbiosyscorp.thetravelingsalesman.ui.ClientEditFragment;
+import com.simbiosyscorp.thetravelingsalesman.view.ClientEditFragment;
 
 
 public class PickOrTakePhotoFragment extends DialogFragment {

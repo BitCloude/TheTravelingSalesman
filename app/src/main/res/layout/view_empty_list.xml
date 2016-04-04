@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:id="@+id/emptyView"
+        android:visibility="visible"
+        android:background="#f1fdfd">
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:id="@+id/emptyTextView"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:textColor="#444444" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/add_a_new_one"
+                android:id="@+id/addNew"
+                android:layout_below="@+id/emptyTextView"
+                android:layout_centerHorizontal="true"
+                android:background="@color/colorPrimaryDark"
+                android:textColor="#ffffff"
+                android:padding="4dp" />
+        </RelativeLayout>
+    </FrameLayout>

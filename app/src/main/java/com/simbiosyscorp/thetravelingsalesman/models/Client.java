@@ -13,7 +13,7 @@ import java.util.UUID;
 public class Client {
     private final UUID id;
     private String firstName, lastName, email, company, firstPhone, secondPhone,
-            designation, note, group, address, linkedIn;
+            designation, note, group, address, linkedIn, contactId;
 
     public static final String LINKEDIN_DOMAIN = "https://www.linkedin.com/";
 
@@ -24,12 +24,16 @@ public class Client {
 
     }
 
+
+
     @Override
     public String toString() {
-        if (!TextUtils.isEmpty(firstName) || !TextUtils.isEmpty(lastName)) {
-            return firstName +
-                    (TextUtils.isEmpty(firstName) ? "" : " ")
-                    + lastName;
+        if (!TextUtils.isEmpty(firstName)) {
+            return TextUtils.isEmpty(lastName) ? firstName : (firstName + " " + lastName);
+        }
+
+        if (!TextUtils.isEmpty(lastName)) {
+            return lastName;
         }
 
         if (!TextUtils.isEmpty(firstPhone)) {
@@ -48,6 +52,13 @@ public class Client {
         return s == null || s.equals("");
     }
 
+    public String getContactId() {
+        return contactId;
+    }
+
+    public void setContactId(String contactId) {
+        this.contactId = contactId;
+    }
 
     public String getLinkedIn() {
         return linkedIn;
@@ -97,6 +108,7 @@ public class Client {
     }
 
     public void setCompany(String company) {
+
         this.company = company;
     }
 
@@ -105,6 +117,7 @@ public class Client {
     }
 
     public void setDesignation(String designation) {
+
         this.designation = designation;
     }
 
@@ -172,13 +185,22 @@ public class Client {
                 (temp ? "_tmp" : "") + ".jpg";
     }
 
+    private boolean hasPhone() {
+        return !isEmpty(firstPhone) || !isEmpty(secondPhone);
+    }
+
     public String getSecondRow() {
         String dash = "";
-        if (!isEmpty(company) && (!isEmpty(firstPhone) || !isEmpty(secondPhone))) {
+        boolean hasPhone = hasPhone();
+        if (!isEmpty(company) && hasPhone) {
             dash = " - ";
         }
 
-        return company + dash + (isEmpty(getFirstPhone()) ? getSecondPhone() : getFirstPhone());
+        String phone = hasPhone ? (isEmpty(getFirstPhone()) ? getSecondPhone() : getFirstPhone())
+                : "";
+
+        return (TextUtils.isEmpty(company) ? "" : company)
+                + dash + phone;
     }
 
     public String getFullName() {
@@ -206,6 +228,8 @@ public class Client {
         values.put(DbSchema.ClientTable.Cols.SECOND_PHONE, secondPhone);
         values.put(DbSchema.ClientTable.Cols.STARED, isStared() ? 1 : 0);
         values.put(DbSchema.ClientTable.Cols.LINKEDIN, getLinkedIn());
+        values.put(DbSchema.ClientTable.Cols.CONTACT_ID, getContactId());
+        values.put(DbSchema.ClientTable.Cols.DESIGNATION, getDesignation());
 //        values.put(ClientTable.Cols.IMAGE, client.getImage());
 
         return values;

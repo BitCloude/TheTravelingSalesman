@@ -63,7 +63,7 @@ public class ReportExportUtils {
             Log.i(DEBUG_TAG, "overwriting");
         }
 
-        Log.i("......", "Path: " + file.getPath());
+        Log.i(DEBUG_TAG, "Path: " + file.getPath());
         return file;
     }
 

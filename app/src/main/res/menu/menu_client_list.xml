@@ -12,7 +12,21 @@
     <item android:id="@+id/action_add_person"
         android:title="Add a client"
         android:icon="@drawable/ic_person_add_white_24dp"
-        app:showAsAction="collapseActionView|ifRoom"/>
+        app:showAsAction="collapseActionView|ifRoom">
+
+        <menu>
+            <item android:id="@+id/action_import_client"
+                android:title="@string/import_client" />
+            <item android:id="@+id/action_create_new"
+                android:title="@string/create_client" />
+        </menu>
+        <item
+            android:id="@+id/action_help"
+            android:title="@string/help"
+            app:showAsAction="never"/>
+
+
+    </item>
 
 
 </menu>

@@ -22,7 +22,7 @@ import android.widget.Toast;
 import com.simbiosyscorp.thetravelingsalesman.R;
 import com.simbiosyscorp.thetravelingsalesman.models.Client;
 import com.simbiosyscorp.thetravelingsalesman.models.Task;
-import com.simbiosyscorp.thetravelingsalesman.ui.ReportTaskActivity;
+import com.simbiosyscorp.thetravelingsalesman.view.ReportTaskActivity;
 import com.simbiosyscorp.thetravelingsalesman.utils.DateTimeHelper;
 import com.simbiosyscorp.thetravelingsalesman.utils.MyCsvWriter;
 import com.simbiosyscorp.thetravelingsalesman.utils.ReportExportUtils;
@@ -205,6 +205,12 @@ public class TaskReportAdapter extends RecyclerView.Adapter<TaskReportAdapter.Vi
             }
 
             mFile = params[0];
+            File parentDir = mFile.getParentFile();
+            if (!parentDir.exists() && !parentDir.mkdir()) {
+
+               return false;
+
+            }
 
             try (MyCsvWriter writer = new MyCsvWriter(params[0])) {
                 String[] header = {
