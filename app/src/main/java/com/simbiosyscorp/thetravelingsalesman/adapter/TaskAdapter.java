@@ -20,6 +20,7 @@ import com.simbiosyscorp.thetravelingsalesman.R;
 import com.simbiosyscorp.thetravelingsalesman.models.Client;
 import com.simbiosyscorp.thetravelingsalesman.models.Task;
 import com.simbiosyscorp.thetravelingsalesman.models.TaskManager;
+import com.simbiosyscorp.thetravelingsalesman.view.ClientActivity;
 import com.simbiosyscorp.thetravelingsalesman.view.TaskListActivity;
 import com.simbiosyscorp.thetravelingsalesman.utils.DateTimeHelper;
 
@@ -43,8 +44,14 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
 
     List<Task> mTasks;
 
+    public TaskAdapter(List<Task> taskList, Context context) {
+        mTasks = taskList;
+        mContext = context;
+        sort();
+    }
 
     public boolean delete(int position) {
+        Log.i(DEBUG_TAG, "Thread id: " + Thread.currentThread().getId());
         Log.i(DEBUG_TAG, "Selected: " + position);
 
         if (position < 0 || position > mTasks.size()) {
@@ -69,11 +76,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
 
 
 
-    public TaskAdapter(List<Task> taskList, Context context) {
-        mTasks = taskList;
-        mContext = context;
-        sort();
-    }
+
 
     public void setShowYear(boolean b) {
         withYear = b;
@@ -271,9 +274,18 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
                 menu.setHeaderTitle(mTask.getTitle());
 
 
-            } else {
+            } else if (v.getContext() instanceof ClientActivity){
                 ((Activity) v.getContext()).getMenuInflater()
                         .inflate(R.menu.menu_client_task_context, menu);
+
+                menu.setHeaderTitle(mTask.getTitle());
+            } else {
+                ((Activity) v.getContext()).getMenuInflater()
+                        .inflate(R.menu.menu_task_context, menu);
+
+
+                menu.findItem(R.id.action_change_client).setVisible(false);
+                menu.findItem(R.id.action_view_client).setVisible(false);
 
                 menu.setHeaderTitle(mTask.getTitle());
             }

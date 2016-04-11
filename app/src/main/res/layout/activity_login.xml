@@ -103,7 +103,8 @@
                 android:text="@string/action_sign_in_short"
                 android:textStyle="bold"
                 android:textColor="#ffffff"
-                android:background="#fdb045" />
+                android:background="#fdb045"
+                android:layout_marginBottom="8dp" />
 
         </LinearLayout>
 

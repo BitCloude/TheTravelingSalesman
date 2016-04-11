@@ -511,14 +511,14 @@ class SectionsPagerAdapter extends FragmentPagerAdapter {
                     selection = ClientManager.get(getContext()).getClient(uuid);
 
                 }
-//                else {
-//                    Bundle bundle;
-//                    bundle = intent.getExtras();
-//                    date = (Calendar) bundle.get("com.appers.avyaz.thetravelingsalesman.task.date");
-//                    date_not_set = false;
-//                    linearLayout.removeAllViews();
-//                    display();
-//                }
+                else {
+                    Bundle bundle;
+                    bundle = intent.getExtras();
+                    date = (Calendar) bundle.get("com.appers.avyaz.thetravelingsalesman.task.date");
+                    date_not_set = false;
+                    linearLayout.removeAllViews();
+                    display();
+                }
             }
         }
 

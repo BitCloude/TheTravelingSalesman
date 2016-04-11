@@ -1,24 +1,33 @@
 package com.simbiosyscorp.thetravelingsalesman.view;
 
 
+import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.simbiosyscorp.thetravelingsalesman.R;
 import com.simbiosyscorp.thetravelingsalesman.adapter.TaskAdapter;
+import com.simbiosyscorp.thetravelingsalesman.models.Client;
+import com.simbiosyscorp.thetravelingsalesman.models.ClientManager;
 import com.simbiosyscorp.thetravelingsalesman.models.Task;
 import com.simbiosyscorp.thetravelingsalesman.models.TaskManager;
 
 import java.util.List;
+import java.util.UUID;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -37,7 +46,10 @@ public class NotificationFragment extends Fragment {
     @Bind(R.id.addNew)
     Button mAddNew;
 
+
     private TaskAdapter mAdapter;
+    private int mSelected;
+
 
     public NotificationFragment() {
         // Required empty public constructor
@@ -56,9 +68,59 @@ public class NotificationFragment extends Fragment {
                 DividerItemDecoration.VERTICAL_LIST));
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
+        mAddNew.setVisibility(View.GONE);
+
+        registerForContextMenu(mRecyclerView);
+
         updateUI();
         return view;
     }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+
+        mSelected = mAdapter.getSelected();
+
+        switch (item.getItemId()) {
+            case R.id.action_delete:
+                alertDeletion();
+                return true;
+
+            case R.id.action_view_client:
+                startActivity(ClientInfoActivity.newIntent(getActivity(),
+                        mAdapter.getSelectedClient()));
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+
+    }
+
+    private void alertDeletion() {
+        AlertDialog dialog = new AlertDialog.Builder(getActivity())
+                .setMessage(getString(R.string.r_u_sure, "Task"))
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        boolean result = mAdapter.delete(mSelected);
+
+                        Toast.makeText(getActivity(),
+                                getString(R.string.task_delete_result,
+                                        result ? "" : "not"), Toast.LENGTH_SHORT)
+                                .show();
+
+                    }
+                })
+                .setNegativeButton(android.R.string.cancel, null)
+                .create();
+
+        dialog.show();
+
+    }
+
+
+
 
     private void updateUI() {
         new GetUpcomingTaskTask().execute();
@@ -82,14 +144,18 @@ public class NotificationFragment extends Fragment {
             if (tasks.isEmpty()) {
                 mEmptyView.setVisibility(View.VISIBLE);
                 mEmptyTextView.setText(getActivity().getString(R.string.emptyList, "task"));
-                mAddNew.setOnClickListener(new View.OnClickListener() {
+                /*mAddNew.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         Intent intent = new Intent(getActivity(), LandingActivity.class);
                         startActivity(intent);
                     }
-                });
+                });*/
+            } else {
+                mEmptyView.setVisibility(View.GONE);
             }
+
+
             if (mAdapter == null) {
                 mAdapter = new TaskAdapter(tasks, getActivity());
                 mRecyclerView.setAdapter(mAdapter);

@@ -59,6 +59,7 @@ Spinner spinnerType;
     Trip selectedTrip;
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

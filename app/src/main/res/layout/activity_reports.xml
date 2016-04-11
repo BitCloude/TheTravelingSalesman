@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:weightSum="2"
-    android:background="@color/colorPrimaryDark"
     tools:context=".view.ReportsActivity">
 
     <Button
@@ -20,7 +19,8 @@
         android:background="@color/ColorExpense"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="137dp"
-        android:padding="6dp" />
+        android:padding="6dp"
+        android:textColor="#ffffff" />
 
     <Button
         android:id="@+id/btn_tasks"
@@ -34,5 +34,6 @@
         android:layout_below="@+id/btn_expenses"
         android:layout_alignStart="@+id/btn_expenses"
         android:layout_marginTop="157dp"
-        android:padding="6dp" />
+        android:padding="6dp"
+        android:textColor="#ffffff" />
 </RelativeLayout>

@@ -43,27 +43,30 @@
                     android:layout_weight="5"
                     android:padding="6dp">
 
-                    <Button
-                        android:id="@+id/selectClient_trip_exp_man"
-                        style="?android:attr/buttonStyleSmall"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentTop="true"
-                        android:background="@android:color/transparent"
-                        android:drawableEnd="@drawable/ic_keyboard_arrow_right_grey_900_18dp" />
-
                     <FrameLayout
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:id="@+id/frameLayout2">
 
                         <ImageButton
                             android:id="@+id/button_clear"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:background="@android:color/transparent"
-                            android:src="@drawable/ic_cancel_black_18dp" />
+                            android:src="@drawable/ic_cancel_black_18dp"
+                            android:layout_margin="5dp" />
                     </FrameLayout>
+
+                    <Button
+                        android:id="@+id/selectClient_trip_exp_man"
+                        style="?android:attr/buttonStyleSmall"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@android:color/transparent"
+                        android:drawableEnd="@drawable/ic_keyboard_arrow_right_grey_900_18dp"
+                        android:layout_alignParentTop="true"
+                        android:layout_toEndOf="@+id/frameLayout2" />
+
                 </RelativeLayout>
 
                 <TextView
