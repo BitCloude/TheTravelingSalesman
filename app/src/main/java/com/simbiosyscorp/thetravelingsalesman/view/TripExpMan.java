@@ -208,9 +208,9 @@ public class TripExpMan extends NavigationDrawerActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
+//        if (id == R.id.action_settings) {
+//            return true;
+//        }
         if (id == 66) {
 
             //SectionsPagerAdapter.PlaceholderFragment placeholderFragment = (SectionsPagerAdapter.PlaceholderFragment) getSupportFragmentManager().findFragmentById(R.id.fragmentLinearLayout);

@@ -178,7 +178,8 @@ public class ClientEditFragment extends Fragment {
 
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (mPhotoTmp != null && takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+        if (mPhotoTmp != null
+                && takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
             Uri uri = Uri.fromFile(mPhotoTmp);
             takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
             startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);

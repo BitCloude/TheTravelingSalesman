@@ -16,47 +16,47 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/app_icon_512"
         android:label="@string/app_name"
         android:screenOrientation="portrait"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:replace="android:allowBackup">
         <activity
-            android:name=".view.MainActivity"
+            android:name="com.simbiosyscorp.thetravelingsalesman.view.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".view.Expenses"
+            android:name="com.simbiosyscorp.thetravelingsalesman.view.Expenses"
             android:label="@string/title_activity_expenses"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".view.ExpenseAdd"
+            android:name="com.simbiosyscorp.thetravelingsalesman.view.ExpenseAdd"
             android:label="@string/title_activity_expense_add"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".view.Travel"
+            android:name="com.simbiosyscorp.thetravelingsalesman.view.Travel"
             android:label="@string/title_activity_travel"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".view.TravelDetail"
+            android:name="com.simbiosyscorp.thetravelingsalesman.view.TravelDetail"
             android:label="@string/title_activity_travel_detail"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".view.ClientEditActivity" />
+        <activity android:name="com.simbiosyscorp.thetravelingsalesman.view.ClientEditActivity" />
         <activity
-            android:name=".view.ReportsActivity"
+            android:name="com.simbiosyscorp.thetravelingsalesman.view.ReportsActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".view.TripExpMan"
+            android:name="com.simbiosyscorp.thetravelingsalesman.view.TripExpMan"
             android:label="@string/title_activity_trip_exp_man"
             android:launchMode="singleTask"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".view.NotificationActivity"
+            android:name="com.simbiosyscorp.thetravelingsalesman.view.NotificationActivity"
             android:label="@string/title_activity_notification"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".view.LandingActivity"
+            android:name="com.simbiosyscorp.thetravelingsalesman.view.LandingActivity"
             android:launchMode="singleTask"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -70,31 +70,22 @@
                 android:resource="@xml/searchable" />
         </activity>
         <activity
-            android:name=".view.ClientActivity"
-            android:parentActivityName=".view.LandingActivity"
+            android:name="com.simbiosyscorp.thetravelingsalesman.view.ClientActivity"
+            android:parentActivityName="com.simbiosyscorp.thetravelingsalesman.view.LandingActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".view.ClientInfoActivity"
+            android:name="com.simbiosyscorp.thetravelingsalesman.view.ClientInfoActivity"
             android:label="@string/title_activity_client_info"
-            android:parentActivityName=".view.LandingActivity"
+            android:parentActivityName="com.simbiosyscorp.thetravelingsalesman.view.LandingActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <!--
-        activity
-            android:name=".TaskActivity"
-            android:launchMode="singleInstance"
-            android:parentActivityName=".TaskListActivity" />
+
 
         <activity
-            android:name=".TaskPagerActivity"
-            android:parentActivityName=".TaskListActivity" /
-        -->
-
-        <activity
-            android:name=".view.TaskListActivity"
+            android:name="com.simbiosyscorp.thetravelingsalesman.view.TaskListActivity"
             android:launchMode="singleTask"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".view.TaskSearchResultActivity"
+            android:name="com.simbiosyscorp.thetravelingsalesman.view.TaskSearchResultActivity"
             android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
@@ -105,32 +96,32 @@
                 android:resource="@xml/task_searchable" />
         </activity>
         <activity
-            android:name=".view.ClientPickActivity"
+            android:name="com.simbiosyscorp.thetravelingsalesman.view.ClientPickActivity"
             android:launchMode="singleTop" />
         <activity
-            android:name=".view.ReportTaskActivity"
+            android:name="com.simbiosyscorp.thetravelingsalesman.view.ReportTaskActivity"
             android:launchMode="singleTask"
-            android:parentActivityName=".view.ReportsActivity" />
+            android:parentActivityName="com.simbiosyscorp.thetravelingsalesman.view.ReportsActivity" />
         <activity
-            android:name=".view.ReportExpenseActivity"
+            android:name="com.simbiosyscorp.thetravelingsalesman.view.ReportExpenseActivity"
             android:launchMode="singleTask"
-            android:parentActivityName=".view.ReportsActivity" />
+            android:parentActivityName="com.simbiosyscorp.thetravelingsalesman.view.ReportsActivity" />
         <activity
-            android:name=".view.LoginActivity"
+            android:name="com.simbiosyscorp.thetravelingsalesman.view.LoginActivity"
             android:label="@string/app_name"
             android:launchMode="singleTask"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".view.BaseActivity" />
+        <activity android:name="com.simbiosyscorp.thetravelingsalesman.view.BaseActivity" />
         <activity
-            android:name=".view.SettingsActivity"
+            android:name="com.simbiosyscorp.thetravelingsalesman.view.SettingsActivity"
             android:launchMode="singleTask"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".view.ForgotPasswordActivity"
+            android:name="com.simbiosyscorp.thetravelingsalesman.view.ForgotPasswordActivity"
             android:launchMode="singleTask" />
-        <activity android:name=".view.ResultActivity" />
-        <activity android:name=".view.ImportClientActivity" />
-        <activity android:name=".view.HelpActivity"
+        <activity android:name="com.simbiosyscorp.thetravelingsalesman.view.ResultActivity" />
+        <activity android:name="com.simbiosyscorp.thetravelingsalesman.view.ImportClientActivity" />
+        <activity android:name="com.simbiosyscorp.thetravelingsalesman.view.HelpActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:launchMode="singleTask"
             >

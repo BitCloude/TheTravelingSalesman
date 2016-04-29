@@ -6,57 +6,34 @@
 
     <string name="title_activity_expenses">Expenses</string>
     <string name="title_activity_expense_add">ExpenseAdd</string>
-    <string name="title_activity_expense_details">ExpenseDetails</string>
     <string name="title_activity_travel">Travel</string>
     <string name="title_activity_travel_detail">TravelDetail</string>
     <string name="title_activity_client_edit">Edit client</string>
-    <string name="title_activity_reports">Reports</string>
-    <string name="title_activity_task_add">Add a task</string>
     <string name="title_activity_landing">My Clients</string>
     <string name="title_activity_notification">Upcoming Tasks</string>
     <string name="title_activity_task">All Tasks</string>
     <string name="title_activity_client">Client Activity</string>
     <string name="title_activity_report_task">Task Report</string>
-    <string name="title_activity_expense_task">Expense Report</string>
     <string name="title_activity_client_info">Client info</string>
-    <string name="title_activity_task_list_with_calendar">TaskListWithCalendar</string>
     <string name="title_activity_trip_exp_man">TripExpMan</string>
     <string name="title_activity_client_pick">Pick a client</string>
 
-    <string-array name="client_array">
-        <item>Client1</item>
-        <item>Client2</item>
-        <item>Client3</item>
-        <item>Client0</item>
-    </string-array>
-    <string name="notifications">Notifications</string>
     <string name="reminders">Upcoming Tasks</string>
-    <string name="message">Message</string>
     <string name="trip">Trip</string>
-    <string name="export_data">Export Data</string>
-    <string name="conn_linkedin">Connect to LinkedIn</string>
     <string name="help">Help</string>
     <string name="exit">Exit</string>
     <string name="clients">Clients</string>
-    <string name="travel">Travel</string>
     <string name="expense">Expenses</string>
     <string name="reports">Reports</string>
     <string name="tasks">Tasks</string>
     <!-- Reports submenu -->
-    <string name="client_report">Client Report</string>
-    <string name="expense_report">Expense Report</string>
-    <string name="upcoming_travels">Upcoming Travels</string>
 
 
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
-    <string name="action_websearch">Web search</string>
-    <string name="app_not_available">Sorry, there\'s no web browser available</string>
 
 
     <!-- Client details -->
-    <string name="name">Name</string>
-    <string name="middle_name">Middle Name</string>
     <string name="email">Email</string>
     <string name="phone">Phone</string>
     <string name="address">Address</string>
@@ -64,36 +41,24 @@
     <string name="designation">Designation</string>
     <string name="notes">Notes</string>
     <string name="group">Group</string>
-    <string name="dob">Date of birth</string>
     <string-array name="pick_or_take_a_photo">
         <item>"Pick a photo from gallery"</item>
         <item>"Take a photo"</item>
     </string-array>
 
-    <string name="new_note">New Note</string>
     <string name="client_name">Client Name</string>
-    <string name="emails">Emails</string>
 
-    <string name="sms">Messages</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="ok">OK</string>
     <string name="edit">Edit</string>
 
     <string name="linkedIn">LinkedIn</string>
     <string name="linkedInHint">Profile</string>
     <!-- Add Task  -->
-    <string name="hint_task_new">New task, note</string>
     <string name="client">Client</string>
     <string-array name="tab_titles_client">
         <item>Tasks</item>
         <item>Call</item>
         <item>Text</item>
-    </string-array>
-    <string-array name="tab_titles_task">
-        <item>Time</item>
-        <item>Invite</item>
-        <item>Location</item>
-        <!--item>Notes</item-->
     </string-array>
     <string name="location">Location</string>
     <string-array name="tab_titles_landing">
@@ -102,7 +67,6 @@
         <item>Favorite</item>
     </string-array>
     <string name="note">Note</string>
-    <string name="section_format">Hello World from section: %1$d</string>
     <string name="amount">Amount</string>
     <string name="date">Date</string>
     <string name="first_name">First Name</string>
@@ -120,7 +84,6 @@
 
     <string name="task">Task</string>
     <string name="time">Time</string>
-    <string name="status">Status</string>
 
     <string name="go">Go</string>
 
@@ -130,33 +93,22 @@
     <string name="end_time">End Time</string>
     <string name="start_time">Start Time</string>
     <string name="saving">Writing to file</string>
-    <string name="report_saved">Report saved.</string>
     <string name="report_nothing_to_save">Nothing to export.</string>
     <string name="client_not_selected">(Not Selected)</string>
     <string name="title_activity_report_expense">Expense Report</string>
-    <string name="title_activity_login">Sign in</string>
 
     <!-- Strings related to login -->
     <string name="prompt_username">Username</string>
     <string name="prompt_password">Password</string>
     <string name="prompt_password_old">Old password</string>
     <string name="prompt_password_new">New password</string>
-    <string name="prompt_password_new_label">Leave blank if don\'t want to change</string>
     <string name="prompt_password_confirmation">Confirm new password</string>
-    <string name="action_register">Register</string>
     <string name="action_sign_in_short">Sign in</string>
     <string name="error_invalid_username">This email address is invalid</string>
     <string name="error_invalid_password">Password should be between 4 and 16 characters</string>
     <string name="error_incorrect_password">This password is incorrect</string>
-    <string name="error_field_required">This field is required</string>
-    <string name="permission_rationale">"Contacts permissions are needed for providing email
-        completions."
-    </string>
     <string name="change_password">Change password</string>
     <string name="error_invalid_confirm_password">Password doesn\'t match</string>
-    <string name="error_wrong_password">Wrong password</string>
-    <string name="register_success">You have created a password.</string>
-    <string name="no_name">(No Name)</string>
     <string name="message_settings_changes">Settings changed.</string>
     <string name="title_activity_settings">Settings</string>
     <string name="write_security_question">Write a question</string>
@@ -188,7 +140,6 @@
     <string name="message_no_file_explorer">File explorer not found.</string>
     <string name="action_open_folder">Open report folder</string>
     <string name="select_a">Select a %s</string>
-    <string name="message_file_not_exit">File doesn\'t exist.</string>
     <string name="open_title">Open through</string>
     <string name="message_no_report">There\'s no report currently.</string>
     <string name="create_client">Create a new client</string>

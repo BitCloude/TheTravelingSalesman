@@ -383,8 +383,8 @@ public class TravelDetail extends AppCompatActivity implements PhotoViewFragment
                 // app icon in action bar clicked; goto parent activity.
                 this.finish();
                 return true;
-            case R.id.action_settings:
-                return true;
+//            case R.id.action_settings:
+//                return true;
             case 22:
                 if(saveData()){
                 Intent intent = new Intent(getApplicationContext(), TripExpMan.class);

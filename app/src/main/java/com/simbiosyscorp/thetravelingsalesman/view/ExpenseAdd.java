@@ -225,8 +225,8 @@ Spinner spinnerType;
                 // app icon in action bar clicked; goto parent activity.
                 this.finish();
                 return true;
-            case R.id.action_settings:
-                return true;
+//            case R.id.action_settings:
+//                return true;
             case 11:
                 if(saveData()) {
                     Intent intent = new Intent(getApplicationContext(), TripExpMan.class);

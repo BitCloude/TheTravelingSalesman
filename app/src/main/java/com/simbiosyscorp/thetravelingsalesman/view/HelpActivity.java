@@ -28,7 +28,12 @@ public class HelpActivity extends AppCompatActivity {
         mNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mFirst.setVisibility(View.GONE);
+                if (mFirst.getVisibility() == View.GONE) {
+                    finish();
+                } else {
+                    mFirst.setVisibility(View.GONE);
+                }
+
             }
         });
     }

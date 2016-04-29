@@ -11,7 +11,6 @@ import com.simbiosyscorp.thetravelingsalesman.R;
 import com.simbiosyscorp.thetravelingsalesman.adapter.TaskAdapter;
 import com.simbiosyscorp.thetravelingsalesman.models.Task;
 import com.simbiosyscorp.thetravelingsalesman.models.TaskManager;
-import com.simbiosyscorp.thetravelingsalesman.view.DividerItemDecoration;
 
 import java.util.List;
 

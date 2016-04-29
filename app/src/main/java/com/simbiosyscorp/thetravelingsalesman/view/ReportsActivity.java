@@ -25,5 +25,9 @@ public class ReportsActivity extends NavigationDrawerActivity {
         startActivity(ReportTaskActivity.newIntent(this, ReportTaskActivity.REPORT_TYPE_TASK));
     }
 
-
+    @Override
+    protected void onStart() {
+        super.onStart();
+        checkMenu(R.id.nav_reports);
+    }
 }
